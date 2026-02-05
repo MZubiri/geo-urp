@@ -1,0 +1,359 @@
+.biblioteca {
+  padding: 40px 24px;
+  max-width: 1000px;
+  margin: auto;
+}
+
+.biblioteca h1 {
+  text-align: center;
+  letter-spacing: .2em;
+}
+
+.sub {
+  text-align: center;
+  opacity: .85;
+  margin-bottom: 48px;
+}
+
+.lista {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.paper {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+  padding: 22px;
+  border-radius: 16px;
+  background: linear-gradient(160deg, #42313A, #2E2300);
+  border: 1px solid rgba(241,220,201,.2);
+}
+
+.paper h3 {
+  margin: 0 0 6px;
+}
+
+.autores {
+  font-size: .9rem;
+  opacity: .85;
+  margin-bottom: 8px;
+}
+
+.meta {
+  display: flex;
+  gap: 16px;
+  font-size: .85rem;
+  opacity: .8;
+}
+
+.btn {
+  align-self: center;
+  padding: 10px 16px;
+  border-radius: 10px;
+  background: #6C2D2C;
+  border: 1px solid #DB9501;
+  color: #F1DCC9;
+  white-space: nowrap;
+}
+
+.filtros {
+  display: flex;
+  gap: 16px;
+  justify-content: center;
+  margin-bottom: 32px;
+  flex-wrap: wrap;
+}
+
+.filtros select {
+  background: #2E2300;
+  color: #F1DCC9;
+  border: 1px solid rgba(241,220,201,.3);
+  border-radius: 10px;
+  padding: 8px 12px;
+}
+
+.filtros input {
+  background: #2E2300;
+  color: #F1DCC9;
+  border: 1px solid rgba(241,220,201,.3);
+  border-radius: 10px;
+  padding: 8px 12px;
+  min-width: 220px;
+}
+
+.filtros input::placeholder {
+  color: rgba(241,220,201,.6);
+}
+
+.vacio {
+  text-align: center;
+  opacity: .7;
+  margin-top: 32px;
+}
+
+
+/* ===== TABS BIBLIOTECA ===== */
+.tabs {
+  display: inline-flex;
+  background: rgba(46, 35, 0, 0.6); /* bark */
+  border-radius: 14px;
+  padding: 6px;
+  gap: 6px;
+  margin: 24px auto 40px;
+}
+
+.tabs button {
+  background: transparent;
+  border: none;
+  padding: 10px 18px;
+  border-radius: 10px;
+  color: #F1DCC9; /* parchment */
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+
+.tabs button:hover {
+  background: rgba(241, 220, 201, 0.15);
+}
+
+.tabs button.activo {
+  background: #6C2D2C; /* chestnut */
+  color: #F1DCC9;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+}
+
+.barra-control {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 24px;
+  flex-wrap: wrap;
+  margin: 32px auto 40px;
+}
+
+/* Contenedor estable para tabs + filtros */
+.barra-control {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 24px;
+  flex-wrap: wrap;
+  margin: 32px auto 40px;
+}
+
+/* Zona de filtros con altura reservada */
+.filtros {
+  min-height: 42px;   /* 👈 clave */
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.filtros input,
+.filtros select {
+  height: 36px;
+}
+
+.barra-control {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  align-items: center;
+  gap: 32px;
+  margin: 32px auto 40px;
+  max-width: 1000px;
+}
+
+.filtros {
+  min-height: 42px;
+  min-width: 420px; /* 👈 CLAVE ABSOLUTA */
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.tabs {
+  justify-self: center;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* ===============================
+   📱 BIBLIOTECA · MOBILE
+   =============================== */
+@media (max-width: 768px) {
+
+  .biblioteca {
+    padding: 24px 16px;
+  }
+
+  .biblioteca h1 {
+    font-size: 1.8rem;
+    text-align: center;
+  }
+
+  .biblioteca .sub {
+    text-align: center;
+    font-size: 0.95rem;
+  }
+
+  /* tabs */
+  .tabs {
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .tabs button {
+    font-size: 0.85rem;
+    padding: 6px 12px;
+  }
+
+  /* filtros */
+  .barra-control,
+  .filtros {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 12px;
+  }
+
+  .filtros input,
+  .filtros select {
+    width: 100%;
+  }
+
+  /* cards */
+  .paper {
+    padding: 16px;
+  }
+
+  .paper h3 {
+    font-size: 1rem;
+    line-height: 1.4;
+  }
+
+  .btn {
+    width: 100%;
+    text-align: center;
+    margin-top: 12px;
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* ===============================
+   📱 FIX DEFINITIVO · BIBLIOTECA
+   =============================== */
+@media (max-width: 768px) {
+
+  /* contenedor principal */
+  .biblioteca {
+    padding: 24px 16px;
+  }
+
+  .biblioteca h1 {
+    font-size: 1.8rem;
+    text-align: center;
+    letter-spacing: 0.15em;
+  }
+
+  .biblioteca .sub {
+    font-size: 0.95rem;
+    text-align: center;
+    margin-bottom: 28px;
+  }
+
+  /* 🔥 RESET TOTAL DEL CONTROL BAR */
+  .barra-control {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: stretch !important;
+    gap: 16px !important;
+    margin: 24px auto 32px !important;
+    max-width: 100% !important;
+  }
+
+  /* tabs */
+  .tabs {
+    margin: 0 auto;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .tabs button {
+    padding: 6px 12px;
+    font-size: 0.85rem;
+  }
+
+  /* 🔥 RESET FILTROS */
+  .filtros {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: stretch !important;
+    gap: 12px !important;
+
+    min-width: 0 !important;      /* 💀 mata el 420px */
+    min-height: auto !important;  /* 💀 mata alturas forzadas */
+  }
+
+  .filtros input,
+  .filtros select {
+    width: 100% !important;
+    height: 38px;
+  }
+
+  /* cards */
+  .paper {
+    flex-direction: column;
+    gap: 14px;
+    padding: 16px;
+  }
+
+  .paper h3 {
+    font-size: 1rem;
+    line-height: 1.4;
+  }
+
+  .meta {
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .btn {
+    width: 100%;
+    text-align: center;
+    margin-top: 8px;
+  }
+}

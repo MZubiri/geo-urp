@@ -1,0 +1,167 @@
+<section class="biblioteca">
+  <h1>Biblioteca GEO-URP</h1>
+  <p class="sub">
+    Recursos académicos del Departamento de Investigación
+  </p>
+
+  <!-- 🧭 BARRA DE CONTROL -->
+  <div class="barra-control">
+
+    <!-- TABS -->
+    <nav class="tabs">
+      <button
+        [class.activo]="seccionActiva === 'investigaciones'"
+        (click)="seccionActiva = 'investigaciones'">
+        Investigaciones
+      </button>
+
+      <button
+        [class.activo]="seccionActiva === 'examenes'"
+        (click)="seccionActiva = 'examenes'">
+        Exámenes
+      </button>
+
+      <button
+        [class.activo]="seccionActiva === 'libros'"
+        (click)="seccionActiva = 'libros'">
+        Libros
+      </button>
+    </nav>
+
+    <!-- 🔍 FILTROS INVESTIGACIONES -->
+    <div class="filtros" *ngIf="seccionActiva === 'investigaciones'">
+      <input
+        type="text"
+        placeholder="Buscar por título…"
+        [(ngModel)]="busqueda"
+      />
+
+      <select [(ngModel)]="filtroArea">
+        <option *ngFor="let a of areas" [value]="a">
+          {{ a }}
+        </option>
+      </select>
+
+      <select [(ngModel)]="filtroAnio">
+        <option value="Todos">Año</option>
+        <option *ngFor="let y of anios" [ngValue]="y">
+          {{ y }}
+        </option>
+      </select>
+    </div>
+
+    <!-- 🔍 FILTROS EXÁMENES -->
+    <div class="filtros" *ngIf="seccionActiva === 'examenes'">
+      <input
+        type="text"
+        placeholder="Buscar curso…"
+        [(ngModel)]="busquedaExamen"
+      />
+
+      <select [(ngModel)]="filtroTipoExamen">
+        <option value="Todos">Tipo</option>
+        <option value="Parcial">Parcial</option>
+        <option value="Final">Final</option>
+        <option value="Práctica">Práctica</option>
+      </select>
+
+      <select [(ngModel)]="filtroAnioExamen">
+        <option value="Todos">Año</option>
+        <option *ngFor="let y of anios" [ngValue]="y">
+          {{ y }}
+        </option>
+      </select>
+    </div>
+
+    <!-- 🔍 FILTROS LIBROS -->
+    <div class="filtros" *ngIf="seccionActiva === 'libros'">
+      <input
+        type="text"
+        placeholder="Buscar libro o autor…"
+        [(ngModel)]="busquedaLibro"
+      />
+
+      <select [(ngModel)]="filtroAreaLibro">
+        <option *ngFor="let a of areasLibros" [value]="a">
+          {{ a }}
+        </option>
+      </select>
+    </div>
+
+  </div>
+
+  <!-- ======================= -->
+  <!-- 🧪 INVESTIGACIONES -->
+  <!-- ======================= -->
+  <section *ngIf="seccionActiva === 'investigaciones'">
+
+    <div class="lista">
+      <article class="paper" *ngFor="let i of investigacionesFiltradas">
+        <div class="info">
+          <h3>{{ i.titulo }}</h3>
+          <p class="autores">{{ i.autores }}</p>
+
+          <div class="meta">
+            <span>{{ i.area }}</span>
+            <span>{{ i.anio }}</span>
+          </div>
+        </div>
+
+        <a class="btn" [href]="i.archivo" target="_blank">
+          Ver PDF
+        </a>
+      </article>
+    </div>
+
+    <p *ngIf="investigacionesFiltradas.length === 0" class="vacio">
+      No se encontraron investigaciones con esos criterios.
+    </p>
+  </section>
+
+  <!-- ======================= -->
+  <!-- 📝 EXÁMENES -->
+  <!-- ======================= -->
+  <section *ngIf="seccionActiva === 'examenes'">
+
+    <div class="lista">
+      <article class="paper" *ngFor="let e of examenesFiltrados">
+        <div class="info">
+          <h3>{{ e.curso }}</h3>
+          <p class="autores">{{ e.tipo }} · {{ e.anio }}</p>
+        </div>
+
+        <a class="btn" [href]="e.archivo" target="_blank">
+          Ver examen
+        </a>
+      </article>
+    </div>
+
+    <p *ngIf="examenesFiltrados.length === 0" class="vacio">
+      No se encontraron exámenes con esos criterios.
+    </p>
+  </section>
+
+  <!-- ======================= -->
+  <!-- 📦 LIBROS -->
+  <!-- ======================= -->
+  <section *ngIf="seccionActiva === 'libros'">
+
+    <div class="lista">
+      <article class="paper" *ngFor="let l of librosFiltrados">
+        <div class="info">
+          <h3>{{ l.titulo }}</h3>
+          <p class="autores">{{ l.autor }} · {{ l.area }}</p>
+        </div>
+
+        <button class="btn aprobar" (click)="solicitarLibro(l)">
+          Solicitar PDF
+        </button>
+      </article>
+    </div>
+
+    <p *ngIf="librosFiltrados.length === 0" class="vacio">
+      No se encontraron libros con esos criterios.
+    </p>
+  </section>
+
+</section>

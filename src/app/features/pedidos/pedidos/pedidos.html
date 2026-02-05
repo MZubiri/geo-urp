@@ -1,0 +1,125 @@
+<section class="pedidos">
+  <h1>Pedidos de Documentos</h1>
+  <p class="sub">Gestión de solicitudes geotécnicas</p>
+
+  <!-- ========================= -->
+  <!-- 🖥️ VISTA DESKTOP (TABLA) -->
+  <!-- ========================= -->
+  <table class="tabla desktop-only">
+    <thead>
+      <tr>
+        <th>#</th>
+        <th>Documento</th>
+        <th>Solicitante</th>
+        <th>Fecha</th>
+        <th>Estado / Acción</th>
+      </tr>
+    </thead>
+
+    <tbody>
+      <tr *ngFor="let p of pedidos">
+        <td>{{ p.id }}</td>
+        <td>{{ p.titulo }}</td>
+        <td>{{ p.solicitante }}</td>
+        <td>{{ p.fecha }}</td>
+        <td>
+
+          <!-- 🟡 PENDIENTE -->
+          <ng-container *ngIf="p.estado === 'Pendiente'; else estadoFinal">
+            <button class="btn aprobar"
+                    (click)="abrirModal(p, 'aprobar')">
+              Enviar
+            </button>
+            <button class="btn rechazar"
+                    (click)="abrirModal(p, 'rechazar')">
+              Denegar
+            </button>
+          </ng-container>
+
+          <!-- 🟢 / 🔴 FINAL -->
+          <ng-template #estadoFinal>
+            <span class="estado"
+                  [class]="p.estado.toLowerCase()">
+              {{ p.estado }}
+            </span>
+          </ng-template>
+
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- ========================= -->
+  <!-- 📱 VISTA MÓVIL (CARDS) -->
+  <!-- ========================= -->
+  <div class="mobile-only">
+    <div class="pedido-card"
+         *ngFor="let p of pedidos">
+
+      <strong>{{ p.titulo }}</strong>
+
+      <span><b>Solicitante:</b> {{ p.solicitante }}</span>
+      <span><b>Fecha:</b> {{ p.fecha }}</span>
+
+      <div class="acciones">
+
+        <!-- 🟡 PENDIENTE -->
+        <ng-container *ngIf="p.estado === 'Pendiente'; else estadoFinalMobile">
+          <button class="btn aprobar"
+                  (click)="abrirModal(p, 'aprobar')">
+            Enviar
+          </button>
+
+          <button class="btn rechazar"
+                  (click)="abrirModal(p, 'rechazar')">
+            Denegar
+          </button>
+        </ng-container>
+
+        <!-- 🟢 / 🔴 FINAL -->
+        <ng-template #estadoFinalMobile>
+          <span class="estado"
+                [class]="p.estado.toLowerCase()">
+            {{ p.estado }}
+          </span>
+        </ng-template>
+
+      </div>
+    </div>
+  </div>
+
+</section>
+
+<!-- ========================= -->
+<!-- 🪟 MODAL CONFIRMACIÓN -->
+<!-- ========================= -->
+<div class="overlay" *ngIf="mostrarModal">
+  <div class="modal">
+    <h3>Confirmar acción</h3>
+
+    <p>
+      ¿Deseas
+      <strong>
+        {{ accion === 'aprobar'
+          ? 'enviar el documento'
+          : 'rechazar la solicitud' }}
+      </strong>
+      <br><br>
+      <em>{{ pedidoSeleccionado?.titulo }}</em>
+    </p>
+
+    <div class="acciones">
+      <button class="btn cancelar"
+              (click)="cerrarModal()">
+        Cancelar
+      </button>
+
+      <button class="btn confirmar"
+              [class.aprobar]="accion === 'aprobar'"
+              [class.rechazar]="accion === 'rechazar'"
+              (click)="confirmarAccion()">
+        Confirmar
+      </button>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,94 @@
+.eventos {
+  padding: 40px 24px;
+}
+
+.eventos h1 {
+  text-align: center;
+  letter-spacing: .2em;
+}
+
+.sub {
+  text-align: center;
+  opacity: .85;
+  margin-bottom: 40px;
+}
+
+.lista {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  max-width: 900px;
+  margin: auto;
+}
+
+.evento {
+  display: flex;
+  gap: 20px;
+  background: linear-gradient(160deg, #42313A, #2E2300);
+  border: 1px solid rgba(241,220,201,.2);
+  border-radius: 18px;
+  padding: 20px;
+}
+
+.fecha {
+  min-width: 64px;
+  text-align: center;
+  border-right: 1px solid rgba(241,220,201,.2);
+}
+
+.fecha span {
+  font-size: 1.8rem;
+  color: #DB9501;
+}
+
+.fecha small {
+  text-transform: uppercase;
+  opacity: .8;
+}
+
+.info h3 {
+  margin: 0 0 8px;
+}
+
+.meta {
+  display: flex;
+  gap: 16px;
+  font-size: .85rem;
+  opacity: .85;
+  margin-bottom: 12px;
+}
+
+.tipo {
+  color: #DB9501;
+}
+
+.btn {
+  display: inline-block;
+  padding: 8px 14px;
+  border-radius: 10px;
+  background: #6C2D2C;
+  border: 1px solid #DB9501;
+  color: #F1DCC9;
+}
+
+/* ===== ESTADOS ===== */
+
+.evento.proximo {
+  border-left: 6px solid #DB9501; /* dorado */
+}
+
+.evento.pasado {
+  opacity: 0.55;
+  filter: grayscale(0.4);
+}
+
+.evento.pasado .btn {
+  display: none;
+}
+
+.estado {
+  display: inline-block;
+  font-size: 0.85rem;
+  color: #C05805;
+  font-weight: 600;
+}

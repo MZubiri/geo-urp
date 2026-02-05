@@ -1,0 +1,150 @@
+.hero{
+  min-height: calc(100vh - 80px);
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  text-align:center;
+  gap:24px;
+}
+
+h1{
+  font-size:clamp(3rem, 6vw, 5rem);
+  letter-spacing:.25em;
+  margin:0;
+}
+
+.subtitle{
+  font-size:1.1rem;
+  opacity:.85;
+  line-height:1.6;
+}
+
+.actions{
+  display:flex;
+  gap:16px;
+  flex-wrap:wrap;
+  justify-content:center;
+}
+
+.btn{
+  padding:12px 22px;
+  border-radius:12px;
+  border:1px solid color-mix(in oklab, var(--parchment) 25%, transparent);
+  background:transparent;
+  color:var(--parchment);
+}
+
+.btn:hover{
+  background:color-mix(in oklab, var(--leather) 60%, black);
+}
+
+.btn.primary{
+  background:color-mix(in oklab, var(--chestnut) 75%, black);
+  border-color:var(--goldenrod);
+}
+
+
+
+.hero {
+  min-height: calc(100vh - 80px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  background:
+    radial-gradient(circle at top, #3b2a1e, #1e140d);
+  color: #f1e6d8;
+}
+
+.hero-inner {
+  max-width: 720px;
+  padding: 40px 24px;
+}
+
+.hero h1 {
+  font-size: 4rem;
+  letter-spacing: 2px;
+  margin-bottom: 12px;
+}
+
+.subtitle {
+  font-size: 1.3rem;
+  line-height: 1.6;
+  opacity: 0.85;
+}
+
+.subtitle span {
+  font-size: 1rem;
+  opacity: 0.7;
+}
+
+.divider {
+  width: 80px;
+  height: 2px;
+  background: #e6d3a3;
+  margin: 28px auto;
+}
+
+.descripcion {
+  font-size: 1rem;
+  line-height: 1.8;
+  opacity: 0.75;
+}
+
+/* responsive */
+@media (max-width: 768px) {
+  .hero h1 {
+    font-size: 3rem;
+  }
+
+  .subtitle {
+    font-size: 1.1rem;
+  }
+}
+
+
+.hero {
+  min-height: calc(100vh - 80px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  background: radial-gradient(circle at top, #3b2a1e, #1e140d);
+  color: #f1e6d8;
+}
+
+.hero-inner {
+  max-width: 720px;
+  padding: 32px 20px;
+}
+
+.hero h1 {
+  font-size: clamp(2.2rem, 6vw, 4rem);
+  letter-spacing: 0.15em;
+  margin-bottom: 12px;
+}
+
+.subtitle {
+  font-size: 1.1rem;
+  line-height: 1.6;
+  opacity: 0.85;
+}
+
+.descripcion {
+  font-size: 0.95rem;
+  line-height: 1.7;
+  opacity: 0.75;
+}
+
+
+@media (max-width: 480px) {
+  .hero h1 {
+    font-size: 2rem;
+    letter-spacing: 0.12em;
+  }
+
+  .subtitle {
+    font-size: 1rem;
+  }
+}

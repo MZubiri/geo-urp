@@ -1,0 +1,23 @@
+<header class="topbar" *ngIf="mostrarTopbar">
+  <div class="topbar-inner">
+
+<div class="brand" routerLink="/" tabindex="0">
+  <strong>GEO-URP</strong>
+  <span>Investigación · Ciencia · Comunidad</span>
+</div>
+
+    <nav class="nav-links">
+      <a routerLink="/directorio" routerLinkActive="activo">Directorio</a>
+      <a routerLink="/eventos" routerLinkActive="activo">Eventos</a>
+      <a routerLink="/biblioteca" routerLinkActive="activo">Biblioteca</a>
+      <a routerLink="/pedidos" routerLinkActive="activo">Pedidos</a>
+      <a routerLink="/miembros" routerLinkActive="activo">Miembros</a>
+      <a routerLink="/usuarios" routerLinkActive="activo">Usuarios</a>
+    </nav>
+
+  </div>
+</header>
+
+<main class="main-content">
+  <router-outlet></router-outlet>
+</main>

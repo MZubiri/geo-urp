@@ -1,0 +1,137 @@
+<section class="usuarios">
+  <h1>Usuarios GEO-URP</h1>
+  <p class="sub">Gestión de accesos y permisos del sistema</p>
+
+  <!-- 🔍 BARRA DE CONTROL -->
+  <div class="barra-control">
+    <input
+      type="text"
+      placeholder="Buscar por código o nombre"
+      [(ngModel)]="busqueda"
+    />
+
+    <select [(ngModel)]="filtroDepartamento">
+      <option *ngFor="let d of departamentos" [value]="d">
+        {{ d }}
+      </option>
+    </select>
+
+    <select [(ngModel)]="filtroRol">
+      <option *ngFor="let r of roles" [value]="r">
+        {{ r }}
+      </option>
+    </select>
+  </div>
+
+  <!-- 📋 TABLA -->
+  <table>
+    <thead>
+      <tr>
+        <th>Código</th>
+        <th>Nombre</th>
+        <th>Departamento</th>
+        <th>Rol</th>
+        <th>Estado</th>
+        <th>Acciones</th>
+      </tr>
+    </thead>
+
+    <tbody>
+      <tr *ngFor="let u of usuariosFiltrados; trackBy: trackByCodigo">
+        <td>{{ u.codigo }}</td>
+        <td>{{ u.nombre }}</td>
+        <td>{{ u.departamento }}</td>
+        <td>{{ u.rol }}</td>
+        <td>
+          <span class="estado" [class.inactivo]="u.estado === 'Inactivo'">
+            {{ u.estado }}
+          </span>
+        </td>
+        <td class="acciones">
+          <button type="button" (click)="editar(u)">✏️</button>
+          <!-- <button type="button" (click)="cambiarPassword(u)">🔑</button> -->
+          <button type="button" (click)="eliminar(u)">🗑️</button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</section>
+
+<!-- ===================== -->
+<!-- 🪟 MODAL EDITAR -->
+<!-- ===================== -->
+<div class="modal-backdrop" *ngIf="modalForm">
+  <div class="modal">
+    <h3>Editar usuario</h3>
+
+    <input
+      type="text"
+      placeholder="Nombre"
+      [(ngModel)]="usuarioSeleccionado!.nombre"
+    />
+
+    <input
+      type="email"
+      placeholder="Correo"
+      [(ngModel)]="usuarioSeleccionado!.correo"
+    />
+
+    <select [(ngModel)]="usuarioSeleccionado!.departamento">
+      <option *ngFor="let d of departamentos.slice(1)" [value]="d">
+        {{ d }}
+      </option>
+    </select>
+
+    <select [(ngModel)]="usuarioSeleccionado!.rol">
+      <option value="Admin">Admin</option>
+      <option value="Editor">Editor</option>
+      <option value="Consulta">Consulta</option>
+    </select>
+
+    <div class="modal-acciones">
+      <button type="button" (click)="guardar()">Guardar</button>
+      <button type="button" (click)="cerrar()">Cancelar</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===================== -->
+<!-- 🔑 MODAL CONTRASEÑA -->
+<!-- ===================== -->
+<div class="modal-backdrop" *ngIf="modalPassword">
+  <div class="modal">
+    <h3>Cambiar contraseña</h3>
+
+    <input
+      type="password"
+      placeholder="Nueva contraseña"
+      [(ngModel)]="nuevaPassword"
+    />
+
+    <div class="modal-acciones">
+      <button type="button" (click)="guardarPassword()">Guardar</button>
+      <button type="button" (click)="cerrar()">Cancelar</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===================== -->
+<!-- 🗑️ MODAL ELIMINAR -->
+<!-- ===================== -->
+<div class="modal-backdrop" *ngIf="modalEliminar">
+  <div class="modal">
+    <h3>¿Eliminar usuario?</h3>
+    <p>{{ usuarioSeleccionado?.nombre }}</p>
+
+    <div class="modal-acciones">
+      <button
+        type="button"
+        class="danger"
+        (click)="confirmarEliminar()"
+      >
+        Eliminar
+      </button>
+      <button type="button" (click)="cerrar()">Cancelar</button>
+    </div>
+  </div>
+</div>

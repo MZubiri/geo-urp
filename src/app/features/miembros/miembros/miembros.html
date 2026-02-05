@@ -1,0 +1,99 @@
+<section class="miembros">
+  <h1>Miembros GEO-URP</h1>
+  <p class="sub">Gestión de miembros activos</p>
+
+  <!-- 🔍 FILTROS -->
+  <div class="barra-control">
+    <input
+      type="text"
+      placeholder="Buscar por código o nombre…"
+      [(ngModel)]="busqueda"
+    />
+
+    <select [(ngModel)]="filtroCarrera">
+      <option *ngFor="let c of carreras" [value]="c">{{ c }}</option>
+    </select>
+
+    <button class="btn aprobar" (click)="abrirCrear()">➕ Agregar</button>
+  </div>
+
+  <!-- 📋 TABLA -->
+  <div class="tabla-wrapper">
+    <table class="tabla">
+      <thead>
+        <tr>
+          <th>Código</th>
+          <th>Nombre</th>
+          <th>Carrera</th>
+          <th>Unido desde</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        <tr *ngFor="let m of miembrosFiltrados">
+          <td>{{ m.codigo }}</td>
+          <td>{{ m.nombre }}</td>
+          <td>{{ m.carrera }}</td>
+          <td>{{ m.unidoDesde }}</td>
+          <td class="acciones">
+            <button class="btn" (click)="abrirEditar(m)">✏️</button>
+            <button class="btn info" (click)="abrirContacto(m)">📇</button>
+            <button class="btn danger" (click)="abrirEliminar(m)">🗑️</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <p *ngIf="miembrosFiltrados.length === 0" class="vacio">
+    No se encontraron miembros.
+  </p>
+
+  <!-- 🪟 MODAL CONTACTO -->
+  <div class="modal-backdrop" *ngIf="modalContacto">
+    <div class="modal">
+      <h3>Datos de contacto</h3>
+      <p><b>Correo:</b> {{ miembroSeleccionado?.correo }}</p>
+      <p><b>Teléfono:</b> {{ miembroSeleccionado?.telefono }}</p>
+      <button class="btn" (click)="cerrarModales()">Cerrar</button>
+    </div>
+  </div>
+
+ <!-- 🪟 MODAL EDITAR / CREAR -->
+<div class="modal-backdrop" *ngIf="modalForm">
+  <div class="modal">
+
+    <h3>{{ modoForm === 'crear' ? 'Agregar miembro' : 'Editar miembro' }}</h3>
+
+    <div class="form-grid">
+      <input placeholder="Código" [(ngModel)]="miembroSeleccionado!.codigo">
+      <input placeholder="Nombre" [(ngModel)]="miembroSeleccionado!.nombre">
+      <input placeholder="Carrera" [(ngModel)]="miembroSeleccionado!.carrera">
+      <input type="date" [(ngModel)]="miembroSeleccionado!.unidoDesde">
+      <input placeholder="Correo" [(ngModel)]="miembroSeleccionado!.correo">
+      <input placeholder="Teléfono" [(ngModel)]="miembroSeleccionado!.telefono">
+    </div>
+
+    <div class="modal-acciones">
+      <button class="btn aprobar" (click)="guardar()">Guardar</button>
+      <button class="btn" (click)="cerrarModales()">Cancelar</button>
+    </div>
+
+  </div>
+</div>
+
+
+  <!-- 🪟 MODAL ELIMINAR -->
+  <div class="modal-backdrop" *ngIf="modalEliminar">
+    <div class="modal">
+      <h3>Eliminar miembro</h3>
+      <p>¿Eliminar a <b>{{ miembroSeleccionado?.nombre }}</b>?</p>
+
+      <div class="modal-acciones">
+        <button class="btn danger" (click)="confirmarEliminar()">Eliminar</button>
+        <button class="btn" (click)="cerrarModales()">Cancelar</button>
+      </div>
+    </div>
+  </div>
+</section>

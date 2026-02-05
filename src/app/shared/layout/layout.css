@@ -1,0 +1,153 @@
+/* ===== TOPBAR ===== */
+.topbar {
+  background: linear-gradient(145deg, #2a1d14, #1e140d);
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+}
+
+.topbar-inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 14px 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+/* ===== BRAND ===== */
+.brand strong {
+  font-size: 1.4rem;
+  letter-spacing: 1px;
+  color: #f1e6d8;
+}
+
+.brand span {
+  display: block;
+  font-size: 0.75rem;
+  opacity: 0.7;
+}
+
+/* ===== NAV ===== */
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+}
+
+.nav-links a {
+  text-decoration: none;
+  color: #f1e6d8;
+  font-size: 0.9rem;
+  opacity: 0.75;
+  padding: 6px 2px;
+  transition: opacity 0.2s ease, border-bottom 0.2s ease;
+  border-bottom: 2px solid transparent;
+}
+
+.nav-links a:hover {
+  opacity: 1;
+}
+
+/* activo */
+.nav-links a.activo {
+  opacity: 1;
+  border-bottom: 2px solid #e6d3a3;
+}
+
+/* ===== LOGIN BUTTON ===== */
+.login-btn {
+  margin-left: 12px;
+  padding: 6px 14px;
+  border-radius: 999px;
+  background: #e6d3a3;
+  color: #2b1e14 !important;
+  font-weight: 600;
+  opacity: 1 !important;
+}
+
+.login-btn:hover {
+  background: #f1e6d8;
+}
+
+/* ===== MAIN ===== */
+.main-content {
+  padding: 32px 24px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 900px) {
+  .nav-links {
+    gap: 12px;
+    font-size: 0.85rem;
+  }
+
+  .brand span {
+    display: none;
+  }
+}
+
+
+.brand {
+  display: flex;
+  flex-direction: column;
+  cursor: pointer;
+  user-select: none;
+}
+
+.brand strong {
+  font-size: 1.6rem;
+  letter-spacing: 1px;
+}
+
+.brand span {
+  font-size: 0.85rem;
+  opacity: 0.7;
+}
+
+.brand:hover {
+  opacity: 0.9;
+}
+
+.brand:focus {
+  outline: none;
+}
+
+
+@media (max-width: 768px) {
+
+  .topbar-inner {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+
+  .nav-links {
+    width: 100%;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+
+  .nav-links a {
+    font-size: 0.85rem;
+    padding: 6px 4px;
+  }
+
+  .brand strong {
+    font-size: 1.4rem;
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,20 @@
+<section class="directorio">
+  <h1>MESA DIRECTIVA 2026</h1>
+  
+
+  <div class="grid">
+    @for (d of directores; track d.correo) {
+      <article class="card">
+        <img [src]="d.foto" alt="Foto de {{ d.nombre }}" />
+
+        <h3>{{ d.nombre }}</h3>
+        <span class="cargo">{{ d.cargo }}</span>
+        <span class="area">{{ d.area }}</span>
+
+        <a class="mail" href="mailto:{{ d.correo }}">
+          {{ d.correo }}
+        </a>
+      </article>
+    }
+  </div>
+</section>

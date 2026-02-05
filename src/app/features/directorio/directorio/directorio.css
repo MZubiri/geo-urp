@@ -1,0 +1,72 @@
+.directorio {
+  padding: 40px 24px;
+}
+
+.directorio h1 {
+  text-align: center;
+  letter-spacing: 0.25em;
+  margin-bottom: 12px;
+}
+
+.sub {
+  text-align: center;
+  opacity: 0.85;
+  margin-bottom: 48px;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 28px;
+}
+
+.card {
+  background: linear-gradient(
+    160deg,
+    #42313A,
+    #2E2300
+  );
+  border: 1px solid rgba(241, 220, 201, 0.2);
+  border-radius: 18px;
+  padding: 22px;
+  text-align: center;
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 16px 40px rgba(0,0,0,0.45);
+}
+
+.card img {
+  width: 96px;
+  height: 96px;
+  border-radius: 50%;
+  object-fit: cover;
+  margin-bottom: 14px;
+  border: 2px solid #DB9501;
+  background: #6C2D2C;
+}
+
+.card h3 {
+  margin: 8px 0 6px;
+}
+
+.cargo {
+  display: block;
+  font-weight: 600;
+  color: #DB9501;
+}
+
+.area {
+  display: block;
+  font-size: 0.85rem;
+  opacity: 0.85;
+  margin-bottom: 10px;
+}
+
+.mail {
+  font-size: 0.85rem;
+  color: #F1DCC9;
+  opacity: 0.9;
+}

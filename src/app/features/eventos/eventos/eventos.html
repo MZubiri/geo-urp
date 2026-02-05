@@ -1,0 +1,42 @@
+<section class="eventos">
+  <h1>Eventos Próximos</h1>
+  <p class="sub">Actividades académicas y de investigación</p>
+
+   <div class="lista">
+    <article
+      class="evento"
+      *ngFor="let e of eventos"
+      [class.pasado]="isPast(e)"
+      [class.proximo]="isUpcoming(e)"
+    >
+      <div class="fecha">
+        <span>{{ e.fechaInicio | date:'dd' }}</span>
+        <small>{{ e.fechaInicio | date:'MMM' }}</small>
+      </div>
+
+      <div class="info">
+        <h3>{{ e.titulo }}</h3>
+        <p>{{ e.descripcion }}</p>
+
+        <div class="meta">
+          <span>{{ e.lugar }}</span>
+          <span class="tipo">{{ e.tipo }}</span>
+        </div>
+
+        <!-- SOLO si es próximo -->
+        <a
+          *ngIf="isUpcoming(e)"
+          class="btn"
+          [href]="googleCalendarLink(e)"
+          target="_blank">
+          Agregar a calendario
+        </a>
+
+        <!-- SOLO si ya pasó -->
+        <span *ngIf="isPast(e)" class="estado">
+          Evento finalizado
+        </span>
+      </div>
+    </article>
+  </div>
+</section>

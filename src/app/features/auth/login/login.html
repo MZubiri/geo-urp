@@ -1,0 +1,39 @@
+<section class="login-wrapper">
+  <div class="login-card">
+
+    <h1 class="titulo">GEO-URP</h1>
+    <p class="sub">Acceso al sistema</p>
+
+    <input
+      type="email"
+      placeholder="Correo institucional"
+      [(ngModel)]="correo"
+    />
+
+    <input
+      type="password"
+      placeholder="Contraseña"
+      [(ngModel)]="password"
+    />
+
+    <button
+      type="button"
+      (click)="login()"
+      [disabled]="cargando"
+    >
+      {{ cargando ? 'Ingresando…' : 'Ingresar' }}
+    </button>
+
+    <p class="error" *ngIf="error">
+      {{ error }}
+    </p>
+
+    <div class="demo">
+      <p><strong>Demo:</strong></p>
+      <small>admin@urp.edu.pe / admin123</small><br />
+      <small>editor@urp.edu.pe / editor123</small><br />
+      <small>consulta@urp.edu.pe / consulta123</small>
+    </div>
+
+  </div>
+</section>

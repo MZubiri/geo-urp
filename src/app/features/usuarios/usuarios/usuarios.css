@@ -1,0 +1,249 @@
+/* ===== CONTENEDOR ===== */
+.usuarios {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 32px 24px 60px;
+  color: #f1e6d8;
+}
+
+.usuarios h1 {
+  font-size: 2.4rem;
+  margin-bottom: 6px;
+}
+
+.usuarios .sub {
+  opacity: 0.8;
+  margin-bottom: 28px;
+}
+
+/* ===== BARRA DE CONTROL ===== */
+.barra-control {
+  display: grid;
+  grid-template-columns: 1fr auto auto;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.barra-control input,
+.barra-control select {
+  padding: 10px 14px;
+  border-radius: 10px;
+  border: none;
+  background: #f5f0ea;
+  color: #2b1e14;
+  font-size: 0.95rem;
+}
+
+/* ===== TABLA ===== */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  background: rgba(0, 0, 0, 0.25);
+  border-radius: 16px;
+  overflow: hidden;
+}
+
+thead {
+  background: rgba(0, 0, 0, 0.35);
+}
+
+th, td {
+  padding: 14px 16px;
+  text-align: left;
+}
+
+th {
+  font-weight: 600;
+  letter-spacing: 0.5px;
+}
+
+tbody tr {
+  transition: background 0.2s ease;
+}
+
+tbody tr:hover {
+  background: rgba(255, 255, 255, 0.06);
+}
+
+/* ===== ESTADO ===== */
+.estado {
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 0.8rem;
+  background: #4caf50;
+  color: #0f2a14;
+}
+
+.estado.inactivo {
+  background: #b23b3b;
+  color: #2a0f0f;
+}
+
+/* ===== ACCIONES ===== */
+.acciones {
+  display: flex;
+  gap: 8px;
+}
+
+.acciones button {
+  background: #f5f0ea;
+  border: none;
+  border-radius: 8px;
+  padding: 6px 8px;
+  cursor: pointer;
+  transition: transform 0.15s ease, background 0.15s ease;
+}
+
+.acciones button:hover {
+  transform: translateY(-1px);
+  background: #fff;
+}
+
+/* ===== MODALES ===== */
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.65);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.modal {
+  background: linear-gradient(
+    145deg,
+    #3b2a1e,
+    #2a1d14
+  );
+  border-radius: 18px;
+  padding: 24px 26px;
+  min-width: 420px;
+  max-width: 90vw;
+  box-shadow: 0 25px 60px rgba(0, 0, 0, 0.6);
+}
+
+.modal h3 {
+  margin-top: 0;
+  margin-bottom: 14px;
+}
+
+/* ===== FORM ===== */
+.modal input,
+.modal select {
+  width: 100%;
+  padding: 10px 12px;
+  border-radius: 8px;
+  border: none;
+  margin-bottom: 10px;
+  background: #f5f0ea;
+  color: #2b1e14;
+}
+
+/* ===== ACCIONES MODAL ===== */
+.modal-acciones {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-top: 18px;
+}
+
+.modal-acciones button {
+  padding: 8px 14px;
+  border-radius: 10px;
+  border: none;
+  cursor: pointer;
+  background: #e6d3a3;
+  color: #2b1e14;
+}
+
+.modal-acciones button:hover {
+  background: #f1e6d8;
+}
+
+.modal-acciones .danger {
+  background: #b23b3b;
+  color: #fff;
+}
+
+.modal-acciones .danger:hover {
+  background: #d14a4a;
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 768px) {
+  .barra-control {
+    grid-template-columns: 1fr;
+  }
+
+  table {
+    font-size: 0.9rem;
+  }
+
+  .modal {
+    min-width: auto;
+  }
+}
+
+
+
+
+
+
+/* ===============================
+   📱 USUARIOS · MOBILE
+   =============================== */
+@media (max-width: 768px) {
+
+  .usuarios {
+    padding: 24px 16px;
+  }
+
+  .usuarios h1 {
+    font-size: 1.8rem;
+    text-align: center;
+  }
+
+  .barra-control {
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .barra-control input,
+  .barra-control select {
+    width: 100%;
+  }
+
+  table thead {
+    display: none;
+  }
+
+  table, tbody, tr, td {
+    display: block;
+    width: 100%;
+  }
+
+  tr {
+    background: rgba(255,255,255,0.04);
+    border-radius: 14px;
+    padding: 12px;
+    margin-bottom: 16px;
+  }
+
+  td {
+    padding: 6px 0;
+  }
+
+  td::before {
+    content: attr(data-label);
+    display: block;
+    font-size: 0.75rem;
+    opacity: 0.6;
+  }
+
+  .acciones {
+    display: flex;
+    gap: 10px;
+    margin-top: 10px;
+  }
+}
