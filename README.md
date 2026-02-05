@@ -57,3 +57,13 @@ Angular CLI does not come with an end-to-end testing framework by default. You c
 ## Additional Resources
 
 For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+
+
+## Backend roadmap (ASP.NET Core Web API)
+
+Se agregó una propuesta inicial para construir el backend en ASP.NET Core:
+
+- Plan de implementación por RF: `docs/backend/aspnet-core-webapi-plan.md`
+- Contrato inicial OpenAPI: `docs/backend/openapi-v1.yaml`
+
+Estos documentos sirven como base para empezar a construir la API en una carpeta `backend/` o en un repositorio separado.
