@@ -1,0 +1,114 @@
+openapi: 3.0.3
+info:
+  title: Geo URP API
+  version: 1.0.0
+  description: API base para RF-001 a RF-015
+servers:
+  - url: https://api.geo-urp.local/api/v1
+paths:
+  /auth/login:
+    post:
+      summary: Iniciar sesión
+      tags: [Auth]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [email, password]
+              properties:
+                email: { type: string, format: email }
+                password: { type: string, format: password }
+      responses:
+        '200':
+          description: Login exitoso
+  /public/board-members:
+    get:
+      summary: Lista pública de mesa directiva
+      tags: [BoardMembers]
+      responses:
+        '200': { description: OK }
+  /admin/board-members:
+    get:
+      summary: Listar directiva (admin)
+      tags: [BoardMembers]
+      security: [{ bearerAuth: [] }]
+      responses:
+        '200': { description: OK }
+    post:
+      summary: Crear directivo
+      tags: [BoardMembers]
+      security: [{ bearerAuth: [] }]
+      responses:
+        '201': { description: Creado }
+  /admin/board-members/{id}:
+    put:
+      summary: Actualizar directivo
+      tags: [BoardMembers]
+      security: [{ bearerAuth: [] }]
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema: { type: integer }
+      responses:
+        '200': { description: Actualizado }
+    delete:
+      summary: Eliminar directivo
+      tags: [BoardMembers]
+      security: [{ bearerAuth: [] }]
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema: { type: integer }
+      responses:
+        '204': { description: Eliminado }
+  /public/events:
+    get:
+      summary: Listar eventos públicos
+      tags: [Events]
+      responses:
+        '200': { description: OK }
+  /public/events/calendar:
+    get:
+      summary: Calendario mensual de eventos
+      tags: [Events]
+      parameters:
+        - in: query
+          name: month
+          required: true
+          schema: { type: integer, minimum: 1, maximum: 12 }
+        - in: query
+          name: year
+          required: true
+          schema: { type: integer, minimum: 2000 }
+      responses:
+        '200': { description: OK }
+  /admin/events:
+    get:
+      summary: Listar eventos (admin)
+      tags: [Events]
+      security: [{ bearerAuth: [] }]
+      responses:
+        '200': { description: OK }
+    post:
+      summary: Crear evento
+      tags: [Events]
+      security: [{ bearerAuth: [] }]
+      responses:
+        '201': { description: Creado }
+  /public/contact:
+    post:
+      summary: Enviar mensaje de contacto
+      tags: [Contact]
+      responses:
+        '201': { description: Creado }
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
