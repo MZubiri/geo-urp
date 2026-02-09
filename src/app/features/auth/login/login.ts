@@ -1,19 +1,10 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { HttpErrorResponse } from '@angular/common/http';
 import { Router } from '@angular/router';
 
-interface UsuarioLogin {
-  correo: string;
-  password: string;
-  rol: 'Admin' | 'Editor' | 'Consulta';
-}
-
-const USUARIOS_FAKE: UsuarioLogin[] = [
-  { correo: 'admin@urp.edu.pe', password: 'admin123', rol: 'Admin' },
-  { correo: 'editor@urp.edu.pe', password: 'editor123', rol: 'Editor' },
-  { correo: 'consulta@urp.edu.pe', password: 'consulta123', rol: 'Consulta' },
-];
+import { AuthService } from '../../../core/auth/auth.service';
 
 @Component({
   selector: 'app-login',
@@ -23,42 +14,52 @@ const USUARIOS_FAKE: UsuarioLogin[] = [
   styleUrl: './login.css',
 })
 export class Login {
-
-  correo = '';
+  email = '';
   password = '';
   error = '';
-
   cargando = false;
 
-  constructor(private router: Router) {}
+  constructor(
+    private router: Router,
+    private authService: AuthService,
+  ) {}
 
   login(): void {
+    if (!this.email || !this.password) {
+      this.error = 'Completa correo y contraseña.';
+      return;
+    }
+
     this.error = '';
     this.cargando = true;
 
-    const usuario = USUARIOS_FAKE.find(
-      u => u.correo === this.correo && u.password === this.password
-    );
+    this.authService
+      .login({ email: this.email, password: this.password })
+      .subscribe({
+        next: () => {
+          this.cargando = false;
+          this.router.navigate(['/directorio']);
+        },
+        error: (error: HttpErrorResponse) => {
+          this.cargando = false;
+          this.error = this.getErrorMessage(error);
+        },
+      });
+  }
 
-    setTimeout(() => {
-      this.cargando = false;
+  private getErrorMessage(error: HttpErrorResponse): string {
+    if (error.status === 0) {
+      return 'No se pudo conectar con la API. Revisa si está disponible o si hay CORS.';
+    }
 
-      if (!usuario) {
-        this.error = 'Credenciales inválidas';
-        return;
-      }
+    if (error.status === 401) {
+      return 'Credenciales inválidas.';
+    }
 
-      // guardar sesión fake
-      localStorage.setItem(
-        'session',
-        JSON.stringify({
-          correo: usuario.correo,
-          rol: usuario.rol
-        })
-      );
+    if (typeof error.error === 'string' && error.error.trim().length > 0) {
+      return error.error;
+    }
 
-      // redirección fake
-      this.router.navigate(['/directorio']);
-    }, 800);
+    return 'Ocurrió un error al iniciar sesión. Inténtalo nuevamente.';
   }
 }
