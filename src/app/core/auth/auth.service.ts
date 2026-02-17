@@ -34,6 +34,11 @@ export class AuthService {
       );
   }
 
+  isAuthenticated(): boolean {
+    const session = this.getSession();
+    return Boolean(session?.token);
+  }
+
   logout(): void {
     localStorage.removeItem(this.sessionStorageKey);
   }
@@ -46,5 +51,20 @@ export class AuthService {
     };
 
     localStorage.setItem(this.sessionStorageKey, JSON.stringify(session));
+  }
+
+  private getSession(): SessionData | null {
+    const storedSession = localStorage.getItem(this.sessionStorageKey);
+
+    if (!storedSession) {
+      return null;
+    }
+
+    try {
+      return JSON.parse(storedSession) as SessionData;
+    } catch {
+      this.logout();
+      return null;
+    }
   }
 }

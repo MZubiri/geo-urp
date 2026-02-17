@@ -1,10 +1,9 @@
 <header class="topbar" *ngIf="mostrarTopbar">
   <div class="topbar-inner">
-
-<div class="brand" routerLink="/" tabindex="0">
-  <strong>GEO-URP</strong>
-  <span>Investigación · Ciencia · Comunidad</span>
-</div>
+    <div class="brand" routerLink="/" tabindex="0">
+      <strong>GEO-URP</strong>
+      <span>Investigación · Ciencia · Comunidad</span>
+    </div>
 
     <nav class="nav-links">
       <a routerLink="/directorio" routerLinkActive="activo">Directorio</a>
@@ -13,8 +12,8 @@
       <a routerLink="/pedidos" routerLinkActive="activo">Pedidos</a>
       <a routerLink="/miembros" routerLinkActive="activo">Miembros</a>
       <a routerLink="/usuarios" routerLinkActive="activo">Usuarios</a>
+      <button type="button" (click)="cerrarSesion()">Salir</button>
     </nav>
-
   </div>
 </header>
 

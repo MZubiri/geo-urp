@@ -151,3 +151,16 @@
 
 
 
+
+.nav-links button {
+  border: 1px solid rgba(230, 211, 163, 0.5);
+  background: transparent;
+  color: #f1e6d8;
+  border-radius: 8px;
+  padding: 6px 10px;
+  cursor: pointer;
+}
+
+.nav-links button:hover {
+  background: rgba(230, 211, 163, 0.2);
+}
