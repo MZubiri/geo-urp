@@ -3,17 +3,15 @@ import { Routes } from '@angular/router';
 import { authGuard } from './core/auth/auth.guard';
 
 export const routes: Routes = [
-  { path: '', pathMatch: 'full', redirectTo: 'login' },
+  { path: '', pathMatch: 'full', redirectTo: 'directorio' },
 
   {
     path: 'directorio',
-    canActivate: [authGuard],
     loadComponent: () => import('./features/directorio/directorio/directorio').then((m) => m.Directorio),
   },
 
   {
     path: 'eventos',
-    canActivate: [authGuard],
     loadComponent: () => import('./features/eventos/eventos/eventos').then((m) => m.Eventos),
   },
 
@@ -46,5 +44,5 @@ export const routes: Routes = [
     loadComponent: () => import('./features/auth/login/login').then((m) => m.Login),
   },
 
-  { path: '**', redirectTo: 'login' },
+  { path: '**', redirectTo: 'directorio' },
 ];
