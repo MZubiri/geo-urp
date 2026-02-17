@@ -4,6 +4,8 @@
   <p class="sub" *ngIf="cargando">Cargando miembros...</p>
   <p class="sub error" *ngIf="error">{{ error }}</p>
 
+  <p class="sub" *ngIf="!cargando && !error && miembros.length === 0">No hay miembros para mostrar.</p>
+
   <div class="admin-box" *ngIf="authService.isAdmin()">
     <h3>{{ editandoId ? 'Editar miembro' : 'Nuevo miembro' }}</h3>
 

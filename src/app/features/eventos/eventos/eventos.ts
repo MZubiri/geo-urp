@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HttpErrorResponse } from '@angular/common/http';
+import { finalize } from 'rxjs/operators';
 
 import { AuthService } from '../../../core/auth/auth.service';
 import { EventItem, EventsService } from '../../../core/events/events.service';
@@ -51,18 +52,19 @@ export class Eventos implements OnInit {
     this.cargando = true;
     this.error = '';
 
-    this.eventsService.getPublic().subscribe({
-      next: (response) => {
-        this.cargando = false;
-        this.eventos = this.normalizeEvents(response).sort(
-          (a, b) => new Date(this.startDate(a)).getTime() - new Date(this.startDate(b)).getTime(),
-        );
-      },
-      error: (error: HttpErrorResponse) => {
-        this.cargando = false;
-        this.error = this.getErrorMessage(error);
-      },
-    });
+    this.eventsService
+      .getPublic()
+      .pipe(finalize(() => (this.cargando = false)))
+      .subscribe({
+        next: (response) => {
+          this.eventos = this.normalizeEvents(response).sort(
+            (a, b) => new Date(this.startDate(a)).getTime() - new Date(this.startDate(b)).getTime(),
+          );
+        },
+        error: (error: HttpErrorResponse) => {
+          this.error = this.getErrorMessage(error);
+        },
+      });
   }
 
   editar(evento: EventItem): void {
@@ -181,8 +183,15 @@ export class Eventos implements OnInit {
       return response;
     }
 
-    if (this.isRecord(response) && Array.isArray(response['data'])) {
-      return response['data'] as EventItem[];
+    if (!this.isRecord(response)) {
+      return [];
+    }
+
+    const container =
+      response['data'] ?? response['items'] ?? response['results'] ?? response['value'] ?? response['content'];
+
+    if (Array.isArray(container)) {
+      return container as EventItem[];
     }
 
     return [];

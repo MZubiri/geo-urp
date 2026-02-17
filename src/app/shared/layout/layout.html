@@ -8,6 +8,7 @@
     <nav class="nav-links">
       <a routerLink="/directorio" routerLinkActive="activo">Directorio</a>
       <a routerLink="/eventos" routerLinkActive="activo">Eventos</a>
+      <a routerLink="/login" routerLinkActive="activo">Login</a>
       <button type="button" (click)="cerrarSesion()" *ngIf="authService.isAuthenticated()">Salir</button>
     </nav>
   </div>

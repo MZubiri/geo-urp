@@ -5,6 +5,8 @@
   <p class="sub" *ngIf="cargando">Cargando eventos...</p>
   <p class="sub error" *ngIf="error">{{ error }}</p>
 
+  <p class="sub" *ngIf="!cargando && !error && eventos.length === 0">No hay eventos para mostrar.</p>
+
   <div class="admin-box" *ngIf="authService.isAdmin()">
     <h3>{{ editandoId ? 'Editar evento' : 'Nuevo evento' }}</h3>
 

@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HttpErrorResponse } from '@angular/common/http';
+import { finalize } from 'rxjs/operators';
 
 import { AuthService } from '../../../core/auth/auth.service';
 import { BoardMember, BoardMembersService } from '../../../core/board-members/board-members.service';
@@ -49,16 +50,17 @@ export class Directorio implements OnInit {
     this.cargando = true;
     this.error = '';
 
-    this.boardMembersService.getPublic().subscribe({
-      next: (response) => {
-        this.cargando = false;
-        this.miembros = this.normalizeMembers(response);
-      },
-      error: (error: HttpErrorResponse) => {
-        this.cargando = false;
-        this.error = this.getErrorMessage(error);
-      },
-    });
+    this.boardMembersService
+      .getPublic()
+      .pipe(finalize(() => (this.cargando = false)))
+      .subscribe({
+        next: (response) => {
+          this.miembros = this.normalizeMembers(response);
+        },
+        error: (error: HttpErrorResponse) => {
+          this.error = this.getErrorMessage(error);
+        },
+      });
   }
 
   editar(member: BoardMember): void {
@@ -141,8 +143,15 @@ export class Directorio implements OnInit {
       return response;
     }
 
-    if (this.isRecord(response) && Array.isArray(response['data'])) {
-      return response['data'] as BoardMember[];
+    if (!this.isRecord(response)) {
+      return [];
+    }
+
+    const container =
+      response['data'] ?? response['items'] ?? response['results'] ?? response['value'] ?? response['content'];
+
+    if (Array.isArray(container)) {
+      return container as BoardMember[];
     }
 
     return [];
