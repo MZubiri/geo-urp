@@ -3,6 +3,9 @@
 
   <p class="sub" *ngIf="cargando">Cargando miembros...</p>
   <p class="sub error" *ngIf="error">{{ error }}</p>
+  <div class="acciones" *ngIf="error">
+    <button type="button" (click)="cargarMiembros()">Reintentar</button>
+  </div>
 
   <p class="sub" *ngIf="!cargando && !error && miembros.length === 0">No hay miembros para mostrar.</p>
 

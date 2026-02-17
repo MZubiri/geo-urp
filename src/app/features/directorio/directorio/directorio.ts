@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HttpErrorResponse } from '@angular/common/http';
-import { finalize } from 'rxjs/operators';
+import { finalize, timeout } from 'rxjs/operators';
 
 import { AuthService } from '../../../core/auth/auth.service';
 import { BoardMember, BoardMembersService } from '../../../core/board-members/board-members.service';
@@ -52,7 +52,7 @@ export class Directorio implements OnInit {
 
     this.boardMembersService
       .getPublic()
-      .pipe(finalize(() => (this.cargando = false)))
+      .pipe(timeout(10000), finalize(() => (this.cargando = false)))
       .subscribe({
         next: (response) => {
           this.miembros = this.normalizeMembers(response);
@@ -139,19 +139,46 @@ export class Directorio implements OnInit {
   }
 
   private normalizeMembers(response: unknown): BoardMember[] {
-    if (Array.isArray(response)) {
-      return response;
+    return this.extractArray(response) as BoardMember[];
+  }
+
+  private extractArray(payload: unknown): unknown[] {
+    if (Array.isArray(payload)) {
+      return payload;
     }
 
-    if (!this.isRecord(response)) {
+    if (!this.isRecord(payload)) {
       return [];
     }
 
-    const container =
-      response['data'] ?? response['items'] ?? response['results'] ?? response['value'] ?? response['content'];
+    const directKeys = ['data', 'items', 'results', 'value', 'content'];
 
-    if (Array.isArray(container)) {
-      return container as BoardMember[];
+    for (const key of directKeys) {
+      const candidate = payload[key];
+
+      if (Array.isArray(candidate)) {
+        return candidate;
+      }
+
+      if (this.isRecord(candidate)) {
+        const nested = this.extractArray(candidate);
+        if (nested.length > 0) {
+          return nested;
+        }
+      }
+    }
+
+    for (const value of Object.values(payload)) {
+      if (Array.isArray(value)) {
+        return value;
+      }
+
+      if (this.isRecord(value)) {
+        const nested = this.extractArray(value);
+        if (nested.length > 0) {
+          return nested;
+        }
+      }
     }
 
     return [];
@@ -164,6 +191,10 @@ export class Directorio implements OnInit {
   private getErrorMessage(error: HttpErrorResponse): string {
     if (typeof error.error === 'string' && error.error) {
       return error.error;
+    }
+
+    if (error.status) {
+      return `No se pudo completar la operación en directorio (HTTP ${error.status}).`;
     }
 
     return 'No se pudo completar la operación en directorio.';
