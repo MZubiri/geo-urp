@@ -1,19 +1,43 @@
 <section class="directorio">
-  <h1>MESA DIRECTIVA 2026</h1>
-  
+  <h1>Mesa Directiva</h1>
+
+  <p class="sub" *ngIf="cargando">Cargando miembros...</p>
+  <p class="sub error" *ngIf="error">{{ error }}</p>
+
+  <div class="admin-box" *ngIf="authService.isAdmin()">
+    <h3>{{ editandoId ? 'Editar miembro' : 'Nuevo miembro' }}</h3>
+
+    <div class="form-grid">
+      <input type="text" placeholder="Nombre completo" [(ngModel)]="form.fullName" />
+      <input type="text" placeholder="Cargo" [(ngModel)]="form.roleName" />
+      <input type="text" placeholder="Área" [(ngModel)]="form.specialty" />
+      <input type="email" placeholder="Correo" [(ngModel)]="form.email" />
+      <input type="text" placeholder="URL foto" [(ngModel)]="form.imageUrl" />
+    </div>
+
+    <div class="acciones">
+      <button type="button" (click)="guardar()" [disabled]="guardando">
+        {{ guardando ? 'Guardando...' : (editandoId ? 'Actualizar' : 'Crear') }}
+      </button>
+      <button type="button" (click)="cancelarEdicion()" *ngIf="editandoId">Cancelar</button>
+    </div>
+  </div>
 
   <div class="grid">
-    @for (d of directores; track d.correo) {
+    @for (m of miembros; track m.id ?? m.email ?? $index) {
       <article class="card">
-        <img [src]="d.foto" alt="Foto de {{ d.nombre }}" />
+        <img [src]="m.imageUrl || m.photoUrl || '/directorio/foto.jpg'" alt="Foto de {{ m.fullName || m.name }}" />
 
-        <h3>{{ d.nombre }}</h3>
-        <span class="cargo">{{ d.cargo }}</span>
-        <span class="area">{{ d.area }}</span>
+        <h3>{{ m.fullName || m.name }}</h3>
+        <span class="cargo">{{ m.roleName || m.role || 'Sin cargo' }}</span>
+        <span class="area">{{ m.specialty || 'Sin área' }}</span>
 
-        <a class="mail" href="mailto:{{ d.correo }}">
-          {{ d.correo }}
-        </a>
+        <a class="mail" href="mailto:{{ m.email }}">{{ m.email || 'Sin correo' }}</a>
+
+        <div class="acciones" *ngIf="authService.isAdmin()">
+          <button type="button" (click)="editar(m)">Editar</button>
+          <button type="button" (click)="eliminar(m)">Eliminar</button>
+        </div>
       </article>
     }
   </div>

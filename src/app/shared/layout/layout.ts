@@ -19,7 +19,7 @@ export class Layout {
 
   constructor(
     private router: Router,
-    private authService: AuthService,
+    public authService: AuthService,
   ) {
     this.router.events.pipe(filter((e) => e instanceof NavigationEnd)).subscribe((e: NavigationEnd) => {
       this.mostrarTopbar = e.urlAfterRedirects !== '/login';

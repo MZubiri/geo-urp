@@ -35,8 +35,33 @@ export class AuthService {
   }
 
   isAuthenticated(): boolean {
+    return Boolean(this.getToken());
+  }
+
+  isAdmin(): boolean {
+    return this.getRoleId() === 1;
+  }
+
+  getToken(): string | null {
     const session = this.getSession();
-    return Boolean(session?.token);
+    return session?.token ?? null;
+  }
+
+  getRoleId(): number | null {
+    const token = this.getToken();
+
+    if (!token) {
+      return null;
+    }
+
+    const payload = this.decodeTokenPayload(token);
+    const roleValue =
+      payload?.['roleId'] ??
+      payload?.['role'] ??
+      payload?.['http://schemas.microsoft.com/ws/2008/06/identity/claims/role'];
+
+    const roleId = Number(roleValue);
+    return Number.isNaN(roleId) ? null : roleId;
   }
 
   logout(): void {
@@ -64,6 +89,22 @@ export class AuthService {
       return JSON.parse(storedSession) as SessionData;
     } catch {
       this.logout();
+      return null;
+    }
+  }
+
+  private decodeTokenPayload(token: string): Record<string, unknown> | null {
+    const parts = token.split('.');
+
+    if (parts.length < 2) {
+      return null;
+    }
+
+    try {
+      const payload = parts[1].replace(/-/g, '+').replace(/_/g, '/');
+      const decoded = atob(payload);
+      return JSON.parse(decoded) as Record<string, unknown>;
+    } catch {
       return null;
     }
   }
