@@ -1,0 +1,170 @@
+<section class="usuarios">
+  <div class="encabezado">
+    <div>
+      <h1>Usuarios GEO-URP</h1>
+      <p class="sub">Administra usuarios y cambia sus roles desde una sola vista.</p>
+    </div>
+  </div>
+
+  <div class="barra-control">
+    <input
+      type="text"
+      placeholder="Buscar por nombre o correo"
+      [(ngModel)]="busqueda"
+    />
+
+    <select [(ngModel)]="filtroRol">
+      <option *ngFor="let r of roles; trackBy: trackByValue" [value]="r">{{ r }}</option>
+    </select>
+
+    <select [(ngModel)]="filtroEstado">
+      <option value="Todos">Todos</option>
+      <option value="Activo">Activo</option>
+      <option value="Inactivo">Inactivo</option>
+    </select>
+  </div>
+
+  <p *ngIf="mensaje" class="feedback ok">{{ mensaje }}</p>
+  <p *ngIf="cargando" class="feedback">Cargando usuarios...</p>
+  <p *ngIf="!cargando && error" class="feedback error">{{ error }}</p>
+
+  <table *ngIf="!cargando && !error">
+    <thead>
+      <tr>
+        <th>Nombre</th>
+        <th>Correo</th>
+        <th>Roles</th>
+        <th>Estado</th>
+        <th>Acciones</th>
+      </tr>
+    </thead>
+
+    <tbody>
+      <tr *ngFor="let u of usuariosFiltrados; trackBy: trackById">
+        <td data-label="Nombre">{{ u.name }}</td>
+        <td data-label="Correo">{{ u.email }}</td>
+        <td data-label="Roles">
+          <div class="roles-list" *ngIf="rolesDeUsuario(u).length > 0; else sinRoles">
+            <span class="rol-badge" *ngFor="let role of rolesDeUsuario(u); trackBy: trackByValue">
+              {{ role }}
+            </span>
+          </div>
+
+          <ng-template #sinRoles>
+            <span class="rol-badge vacio">Sin rol</span>
+          </ng-template>
+        </td>
+        <td data-label="Estado">
+          <span class="estado" [class.inactivo]="u.isActive === false">
+            {{ u.isActive === false ? 'Inactivo' : 'Activo' }}
+          </span>
+        </td>
+        <td data-label="Acciones" class="acciones">
+          <button type="button" (click)="abrirRoles(u)">Roles</button>
+          <button type="button" (click)="editar(u)">Editar</button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <p *ngIf="!cargando && !error && usuariosFiltrados.length === 0" class="feedback">
+    No se encontraron usuarios.
+  </p>
+</section>
+
+<div class="modal-backdrop" *ngIf="modalForm">
+  <div class="modal">
+    <h3>{{ editandoId ? 'Editar usuario' : 'Crear usuario' }}</h3>
+    <p class="modal-copy">Completa los datos y selecciona los roles que tendra acceso.</p>
+
+    <div class="modal-grid">
+      <label class="field">
+        <span>Nombre</span>
+        <input type="text" placeholder="Nombre completo" [(ngModel)]="form.name" />
+      </label>
+
+      <label class="field">
+        <span>Correo</span>
+        <input type="email" placeholder="correo@geourp.org" [(ngModel)]="form.email" />
+      </label>
+
+      <label class="field field-wide">
+        <span>Contrasena {{ editandoId ? '(opcional)' : '(obligatoria)' }}</span>
+        <input type="password" placeholder="Ingresa una contrasena" [(ngModel)]="form.password" />
+      </label>
+    </div>
+
+    <div class="role-selector">
+      <span class="field-label">Roles</span>
+
+      <div class="roles-options" *ngIf="rolesDisponibles.length > 0; else sinCatalogoRoles">
+        <label class="role-option" *ngFor="let role of rolesDisponibles; trackBy: trackByValue">
+          <input
+            type="checkbox"
+            [checked]="isFormRoleSelected(role)"
+            (change)="toggleFormRole(role, $any($event.target).checked)"
+          />
+          <span>{{ role }}</span>
+        </label>
+      </div>
+
+      <ng-template #sinCatalogoRoles>
+        <p class="hint">No se pudieron cargar los roles disponibles.</p>
+      </ng-template>
+    </div>
+
+    <label class="check-row">
+      <input type="checkbox" [(ngModel)]="form.isActive" />
+      <span>Usuario activo</span>
+    </label>
+
+    <p *ngIf="formSubmitted && !isFormValid()" class="feedback error compact">
+      Completa nombre, correo valido, contrasena al crear y selecciona al menos un rol.
+    </p>
+    <p *ngIf="modalError" class="feedback error compact">{{ modalError }}</p>
+
+    <div class="modal-acciones">
+      <button type="button" class="primary" (click)="guardar()" [disabled]="guardando">
+        {{ guardando ? 'Guardando...' : 'Guardar usuario' }}
+      </button>
+      <button type="button" class="ghost" (click)="cerrar()" [disabled]="guardando">Cancelar</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-backdrop" *ngIf="modalRoles">
+  <div class="modal">
+    <h3>Cambiar roles</h3>
+    <p class="modal-copy">
+      {{ usuarioRolesSeleccionado?.name }} - {{ usuarioRolesSeleccionado?.email }}
+    </p>
+
+    <div class="role-selector">
+      <span class="field-label">Roles asignados</span>
+
+      <div class="roles-options" *ngIf="rolesDisponibles.length > 0; else sinRolesEditor">
+        <label class="role-option" *ngFor="let role of rolesDisponibles; trackBy: trackByValue">
+          <input
+            type="checkbox"
+            [checked]="isDraftRoleSelected(role)"
+            (change)="toggleDraftRole(role, $any($event.target).checked)"
+          />
+          <span>{{ role }}</span>
+        </label>
+      </div>
+
+      <ng-template #sinRolesEditor>
+        <p class="hint">No hay roles disponibles para asignar.</p>
+      </ng-template>
+    </div>
+
+    <p *ngIf="modalError" class="feedback error compact">{{ modalError }}</p>
+
+    <div class="modal-acciones">
+      <button type="button" class="primary" (click)="guardarRoles()" [disabled]="guardando">
+        {{ guardando ? 'Guardando...' : 'Guardar roles' }}
+      </button>
+      <button type="button" class="ghost" (click)="cerrar()" [disabled]="guardando">Cancelar</button>
+    </div>
+  </div>
+</div>

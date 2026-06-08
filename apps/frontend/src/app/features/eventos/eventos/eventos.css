@@ -1,0 +1,132 @@
+.eventos {
+  padding: 40px 24px;
+}
+
+.eventos h1 {
+  text-align: center;
+  letter-spacing: 0.2em;
+}
+
+.sub {
+  text-align: center;
+  opacity: 0.85;
+  margin-bottom: 24px;
+}
+
+.error {
+  color: #ffb3b3;
+}
+
+.admin-box {
+  max-width: 900px;
+  margin: 0 auto 24px;
+  padding: 16px;
+  border: 1px solid rgba(241, 220, 201, 0.2);
+  border-radius: 12px;
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 10px;
+}
+
+.form-grid input,
+.form-grid select,
+textarea {
+  border: none;
+  border-radius: 8px;
+  padding: 9px;
+}
+
+textarea {
+  margin-top: 10px;
+  width: 100%;
+}
+
+.lista {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  max-width: 900px;
+  margin: auto;
+}
+
+.evento {
+  display: flex;
+  gap: 20px;
+  background: linear-gradient(160deg, #42313a, #2e2300);
+  border: 1px solid rgba(241, 220, 201, 0.2);
+  border-radius: 18px;
+  padding: 20px;
+}
+
+.fecha {
+  min-width: 64px;
+  text-align: center;
+  border-right: 1px solid rgba(241, 220, 201, 0.2);
+}
+
+.fecha span {
+  font-size: 1.8rem;
+  color: #db9501;
+}
+
+.fecha small {
+  text-transform: uppercase;
+  opacity: 0.8;
+}
+
+.info h3 {
+  margin: 0 0 8px;
+}
+
+.meta {
+  display: flex;
+  gap: 16px;
+  font-size: 0.85rem;
+  opacity: 0.85;
+  margin-bottom: 12px;
+}
+
+.tipo {
+  color: #db9501;
+}
+
+.btn {
+  display: inline-block;
+  padding: 8px 14px;
+  border-radius: 10px;
+  background: #6c2d2c;
+  border: 1px solid #db9501;
+  color: #f1dcc9;
+}
+
+.evento.proximo {
+  border-left: 6px solid #db9501;
+}
+
+.evento.pasado {
+  opacity: 0.55;
+  filter: grayscale(0.4);
+}
+
+.estado {
+  display: inline-block;
+  font-size: 0.85rem;
+  color: #c05805;
+  font-weight: 600;
+}
+
+.acciones {
+  display: flex;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+button {
+  border: none;
+  border-radius: 8px;
+  padding: 8px 12px;
+  cursor: pointer;
+}

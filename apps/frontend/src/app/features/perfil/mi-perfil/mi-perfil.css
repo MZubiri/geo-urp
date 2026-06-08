@@ -1,0 +1,122 @@
+.perfil-wrapper {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 24px 12px 36px;
+}
+
+.perfil-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 18px;
+}
+
+.perfil-card {
+  background: linear-gradient(155deg, rgba(15, 21, 32, 0.95), rgba(18, 27, 43, 0.92));
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 18px;
+  padding: 22px;
+  box-shadow: 0 22px 40px rgba(0, 0, 0, 0.28);
+}
+
+.perfil-card h1,
+.perfil-card h2 {
+  margin: 0;
+}
+
+.sub {
+  margin: 8px 0 16px;
+  color: #bac2d3;
+}
+
+.perfil-datos {
+  display: grid;
+  gap: 10px;
+  margin-bottom: 16px;
+}
+
+.dato {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 10px;
+  padding: 10px 12px;
+  background: rgba(10, 15, 24, 0.5);
+}
+
+.dato span {
+  color: #9fb0cc;
+}
+
+.dato strong {
+  text-align: right;
+}
+
+.perfil-card input {
+  width: 100%;
+  margin-bottom: 12px;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  background: rgba(12, 16, 26, 0.7);
+  color: #f3f5fa;
+  padding: 11px 12px;
+}
+
+.btn-primary,
+.btn-secondary {
+  width: 100%;
+  border-radius: 12px;
+  padding: 10px 12px;
+  cursor: pointer;
+}
+
+.btn-primary {
+  border: none;
+  color: #071a26;
+  background: linear-gradient(90deg, #4dc0ff, #8ef9d4);
+  font-weight: 700;
+}
+
+.btn-secondary {
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  background: transparent;
+  color: #f3f5fa;
+}
+
+.btn-primary:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+}
+
+.error {
+  margin-top: 12px;
+  color: #ff8f8f;
+}
+
+.toast-success {
+  position: fixed;
+  right: 16px;
+  bottom: 16px;
+  z-index: 1100;
+  background: #0f2f25;
+  color: #c9ffe9;
+  border: 1px solid #2f7f63;
+  border-radius: 10px;
+  padding: 10px 14px;
+  box-shadow: 0 12px 25px rgba(0, 0, 0, 0.25);
+}
+
+@media (max-width: 900px) {
+  .perfil-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .dato {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .dato strong {
+    text-align: left;
+  }
+}

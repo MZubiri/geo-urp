@@ -1,0 +1,23 @@
+﻿@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Manrope:wght@400;500;700&display=swap');
+
+:root {
+  color-scheme: dark;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: 'Manrope', sans-serif;
+  background:
+    radial-gradient(1300px 620px at 10% -10%, rgba(77, 192, 255, 0.18), transparent 55%),
+    radial-gradient(900px 520px at 100% 0%, rgba(142, 249, 212, 0.12), transparent 60%),
+    #0f131b;
+  color: #f3f5fa;
+}
+
+h1, h2, h3, .brand strong {
+  font-family: 'Space Grotesk', sans-serif;
+}

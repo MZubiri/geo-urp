@@ -1,0 +1,123 @@
+.citas-registradas {
+  max-width: 1100px;
+  margin: 2rem auto;
+  padding: 0 1rem;
+  color: #173650;
+}
+
+.sub {
+  color: #4f5f6f;
+}
+
+.barra-control {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 0.6rem;
+  margin: 1rem 0;
+}
+
+input,
+select,
+button {
+  border-radius: 10px;
+  font: inherit;
+}
+
+input,
+select {
+  border: 1px solid #c3cfdb;
+  padding: 0.62rem 0.7rem;
+  background: #fff;
+  color: #173650;
+}
+
+button {
+  border: none;
+  background: #0d4f87;
+  color: #fff;
+  padding: 0.62rem 1rem;
+  cursor: pointer;
+}
+
+button[disabled] {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.mensaje.error {
+  color: #b42318;
+  font-weight: 600;
+}
+
+.mensaje.ok {
+  color: #1f7a36;
+  font-weight: 600;
+}
+
+.tabla-wrapper {
+  background: #fff;
+  border: 1px solid #d7e0e8;
+  border-radius: 14px;
+  overflow: hidden;
+}
+
+.tabla {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.tabla th,
+.tabla td {
+  padding: 0.6rem;
+  border-bottom: 1px solid #e3ebf2;
+  text-align: left;
+  color: #173650;
+}
+
+.tabla th {
+  background: #f6f9fc;
+  font-weight: 700;
+}
+
+.tabla td {
+  background: #fff;
+}
+
+.tabla tbody tr.atendida td {
+  background: #f5f7fa;
+  color: #7b8794;
+}
+
+.acciones {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+button.whatsapp {
+  background: #16a34a;
+}
+
+button.danger {
+  background: #b42318;
+}
+
+button.attended {
+  background: #64748b;
+}
+
+.estado-badge {
+  display: inline-flex;
+  align-items: center;
+  border-radius: 999px;
+  padding: 0.28rem 0.65rem;
+  background: #e9f2ff;
+  color: #174067;
+  font-size: 0.84rem;
+  font-weight: 700;
+}
+
+.estado-badge.atendida {
+  background: #e5e7eb;
+  color: #6b7280;
+}

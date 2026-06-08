@@ -1,0 +1,146 @@
+﻿<section class="pedidos">
+  <h1>Pedidos de Documentos</h1>
+  <p class="sub">Gestion de solicitudes geotecnicas</p>
+
+  <div class="tabs">
+    <button class="tab" [class.activa]="vista === 'activos'" (click)="cambiarVista('activos')">Activos</button>
+    <button class="tab" [class.activa]="vista === 'historial'" (click)="cambiarVista('historial')">Historial</button>
+  </div>
+
+  <p class="state-line" *ngIf="cargando">Cargando solicitudes...</p>
+  <p class="state-line error" *ngIf="error">{{ error }}</p>
+
+  <table class="tabla desktop-only" *ngIf="vista === 'activos'">
+    <thead>
+      <tr>
+        <th>#</th>
+        <th>Documento</th>
+        <th>Solicitante</th>
+        <th>Fecha</th>
+        <th>Estado / Accion</th>
+      </tr>
+    </thead>
+
+    <tbody>
+      <tr *ngFor="let p of pedidosActivos">
+        <td>{{ p.id }}</td>
+        <td>{{ p.titulo }}</td>
+        <td>{{ p.solicitante }}</td>
+        <td>{{ p.fecha }}</td>
+        <td>
+          <ng-container *ngIf="puedeGestionarPedidos && p.estado === 'Pendiente'; else estadoFinal">
+            <button class="btn aprobar" (click)="abrirModal(p, 'aprobar')">Enviar</button>
+            <button class="btn rechazar" (click)="abrirModal(p, 'rechazar')">Denegar</button>
+          </ng-container>
+
+          <ng-template #estadoFinal>
+            <span class="estado" [class]="p.estado.toLowerCase()">{{ p.estado }}</span>
+          </ng-template>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <table class="tabla desktop-only" *ngIf="vista === 'historial'">
+    <thead>
+      <tr>
+        <th>#</th>
+        <th>Documento</th>
+        <th>Solicitante</th>
+        <th>Fecha</th>
+        <th>Estado</th>
+      </tr>
+    </thead>
+
+    <tbody>
+      <tr *ngFor="let p of historialPaginaActual">
+        <td>{{ p.id }}</td>
+        <td>{{ p.titulo }}</td>
+        <td>{{ p.solicitante }}</td>
+        <td>{{ p.fecha }}</td>
+        <td>
+          <span class="estado" [class]="p.estado.toLowerCase()">{{ p.estado }}</span>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="paginacion" *ngIf="vista === 'historial' && !cargando && !error && pedidosHistorial.length > 0">
+    <button class="btn" (click)="paginaAnteriorHistorial()" [disabled]="historialPagina <= 1">Anterior</button>
+    <span>Pagina {{ historialPagina }} de {{ historialTotalPaginas }}</span>
+    <button class="btn" (click)="paginaSiguienteHistorial()" [disabled]="historialPagina >= historialTotalPaginas">
+      Siguiente
+    </button>
+  </div>
+
+  <p class="sub" *ngIf="!cargando && !error && vista === 'activos' && pedidosActivos.length === 0">
+    No hay solicitudes activas.
+  </p>
+  <p class="sub" *ngIf="!cargando && !error && vista === 'historial' && pedidosHistorial.length === 0">
+    No hay historial de solicitudes.
+  </p>
+
+  <div class="mobile-only" *ngIf="vista === 'activos'">
+    <div class="pedido-card" *ngFor="let p of pedidosActivos">
+      <strong>{{ p.titulo }}</strong>
+      <span><b>Solicitante:</b> {{ p.solicitante }}</span>
+      <span><b>Fecha:</b> {{ p.fecha }}</span>
+
+      <div class="acciones">
+        <ng-container *ngIf="puedeGestionarPedidos && p.estado === 'Pendiente'; else estadoFinalMobile">
+          <button class="btn aprobar" (click)="abrirModal(p, 'aprobar')">Enviar</button>
+          <button class="btn rechazar" (click)="abrirModal(p, 'rechazar')">Denegar</button>
+        </ng-container>
+
+        <ng-template #estadoFinalMobile>
+          <span class="estado" [class]="p.estado.toLowerCase()">{{ p.estado }}</span>
+        </ng-template>
+      </div>
+    </div>
+  </div>
+
+  <div class="mobile-only" *ngIf="vista === 'historial'">
+    <div class="pedido-card" *ngFor="let p of historialPaginaActual">
+      <strong>{{ p.titulo }}</strong>
+      <span><b>Solicitante:</b> {{ p.solicitante }}</span>
+      <span><b>Fecha:</b> {{ p.fecha }}</span>
+      <div class="acciones">
+        <span class="estado" [class]="p.estado.toLowerCase()">{{ p.estado }}</span>
+      </div>
+    </div>
+
+    <div class="paginacion" *ngIf="!cargando && !error && pedidosHistorial.length > 0">
+      <button class="btn" (click)="paginaAnteriorHistorial()" [disabled]="historialPagina <= 1">Anterior</button>
+      <span>Pagina {{ historialPagina }} / {{ historialTotalPaginas }}</span>
+      <button class="btn" (click)="paginaSiguienteHistorial()" [disabled]="historialPagina >= historialTotalPaginas">
+        Siguiente
+      </button>
+    </div>
+  </div>
+</section>
+
+<div class="overlay" *ngIf="mostrarModal">
+  <div class="modal">
+    <h3>Confirmar accion</h3>
+
+    <p>
+      Deseas
+      <strong>{{ accion === 'aprobar' ? 'enviar el documento' : 'rechazar la solicitud' }}</strong>
+      <br /><br />
+      <em>{{ pedidoSeleccionado?.titulo }}</em>
+    </p>
+
+    <div class="acciones">
+      <button class="btn cancelar" (click)="cerrarModal()">Cancelar</button>
+
+      <button
+        class="btn confirmar"
+        [class.aprobar]="accion === 'aprobar'"
+        [class.rechazar]="accion === 'rechazar'"
+        (click)="confirmarAccion()"
+      >
+        Confirmar
+      </button>
+    </div>
+  </div>
+</div>

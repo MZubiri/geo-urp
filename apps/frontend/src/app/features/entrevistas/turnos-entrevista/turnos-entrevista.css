@@ -1,0 +1,98 @@
+.turnos-entrevista {
+  max-width: 980px;
+  margin: 2rem auto;
+  padding: 0 1rem;
+  color: #173650;
+}
+
+.sub {
+  color: #4f5f6f;
+}
+
+.card {
+  margin-top: 1rem;
+  background: #fff;
+  border: 1px solid #d7e0e8;
+  border-radius: 14px;
+  padding: 1rem;
+  box-shadow: 0 10px 24px rgba(32, 51, 72, 0.08);
+}
+
+.controles {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  margin-bottom: 0.8rem;
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 0.6rem;
+}
+
+input,
+button {
+  border-radius: 10px;
+  font: inherit;
+}
+
+input {
+  border: 1px solid #c3cfdb;
+  padding: 0.62rem 0.7rem;
+  background: #fff;
+  color: #173650;
+}
+
+button {
+  border: none;
+  background: #0d4f87;
+  color: #fff;
+  padding: 0.62rem 1rem;
+  cursor: pointer;
+}
+
+button[disabled] {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+button.danger {
+  background: #b42318;
+}
+
+.mensaje {
+  margin-top: 0.75rem;
+  font-weight: 600;
+}
+
+.mensaje.ok {
+  color: #1f7a36;
+}
+
+.mensaje.error {
+  color: #b42318;
+}
+
+.tabla {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 1rem;
+}
+
+.tabla th,
+.tabla td {
+  padding: 0.55rem;
+  border-bottom: 1px solid #e3ebf2;
+  text-align: left;
+  color: #173650;
+}
+
+.tabla th {
+  background: #f6f9fc;
+  font-weight: 700;
+}
+
+.tabla td {
+  background: #fff;
+}

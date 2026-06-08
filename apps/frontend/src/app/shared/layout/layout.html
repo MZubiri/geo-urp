@@ -1,0 +1,47 @@
+﻿<header class="topbar" *ngIf="mostrarTopbar">
+  <div class="topbar-inner">
+    <a class="brand" routerLink="/" (click)="cerrarMenuMovil()">
+      <strong>GEO-URP</strong>
+      <span>Investigacion · Ciencia · Comunidad</span>
+    </a>
+
+    <button
+      class="hamburger"
+      type="button"
+      (click)="toggleMenuMovil()"
+      [attr.aria-expanded]="menuMovilAbierto"
+      aria-label="Abrir menu"
+    >
+      <span></span>
+      <span></span>
+      <span></span>
+    </button>
+
+    <nav class="nav-links" [class.open]="menuMovilAbierto">
+      <a routerLink="/directorio" routerLinkActive="activo" (click)="cerrarMenuMovil()">Directorio</a>
+      <a routerLink="/eventos" routerLinkActive="activo" (click)="cerrarMenuMovil()">Eventos</a>
+      <a routerLink="/afiliacion/cita" routerLinkActive="activo" (click)="cerrarMenuMovil()" *ngIf="!authService.isAuthenticated()">Afiliacion</a>
+
+      <ng-container *ngIf="authService.isAuthenticated()">
+        <a routerLink="/biblioteca" routerLinkActive="activo" (click)="cerrarMenuMovil()">Biblioteca</a>
+        <a routerLink="/pedidos" routerLinkActive="activo" (click)="cerrarMenuMovil()" *ngIf="authService.canAccessOrders()">Pedidos</a>
+        <a routerLink="/miembros" routerLinkActive="activo" (click)="cerrarMenuMovil()" *ngIf="authService.canManageMembers()">Miembros</a>
+        <a routerLink="/admin/usuarios" routerLinkActive="activo" (click)="cerrarMenuMovil()" *ngIf="authService.canManageUsers()">Usuarios</a>
+        <a routerLink="/admin/entrevistas/turnos" routerLinkActive="activo" (click)="cerrarMenuMovil()" *ngIf="authService.isAdmin()">Turnos entrevista</a>
+        <a routerLink="/admin/entrevistas/citas" routerLinkActive="activo" (click)="cerrarMenuMovil()" *ngIf="authService.isAdmin()">Citas registradas</a>
+        <a routerLink="/mi-perfil" routerLinkActive="activo" (click)="cerrarMenuMovil()">Mi perfil</a>
+      </ng-container>
+
+      <a routerLink="/login" routerLinkActive="activo" *ngIf="!authService.isAuthenticated()" (click)="cerrarMenuMovil()">
+        Login
+      </a>
+      <button type="button" class="logout" (click)="cerrarSesion()" *ngIf="authService.isAuthenticated()">Salir</button>
+    </nav>
+  </div>
+
+  <div class="mobile-backdrop" *ngIf="menuMovilAbierto" (click)="cerrarMenuMovil()"></div>
+</header>
+
+<main class="main-content">
+  <router-outlet></router-outlet>
+</main>

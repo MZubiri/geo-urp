@@ -1,0 +1,172 @@
+﻿.pedidos {
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: 26px 18px 36px;
+}
+
+.pedidos h1 {
+  margin: 0;
+  text-align: center;
+  letter-spacing: 0.08em;
+}
+
+.sub {
+  text-align: center;
+  color: #bac2d3;
+  margin: 8px 0 18px;
+}
+
+.state-line {
+  text-align: center;
+  margin: 0 auto 14px;
+  padding: 10px 12px;
+  border-radius: 10px;
+  max-width: 760px;
+  background: rgba(77, 192, 255, 0.12);
+  color: #d9eeff;
+}
+
+.state-line.error {
+  background: rgba(255, 95, 95, 0.18);
+  color: #ffd0d0;
+}
+
+.tabs {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  margin: 0 0 14px;
+}
+
+.tab {
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  background: transparent;
+  color: #cfd7e7;
+  padding: 8px 14px;
+  cursor: pointer;
+}
+
+.tab.activa {
+  background: rgba(77, 192, 255, 0.2);
+  color: #f3f5fa;
+}
+
+.tabla {
+  width: 100%;
+  border-collapse: collapse;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 16px;
+  overflow: hidden;
+  background: linear-gradient(155deg, rgba(16, 22, 34, 0.82), rgba(13, 18, 29, 0.75));
+}
+
+th,
+td {
+  padding: 12px 14px;
+  text-align: left;
+}
+
+thead {
+  background: rgba(255, 255, 255, 0.06);
+}
+
+tbody tr:not(:last-child) {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.estado {
+  border-radius: 999px;
+  font-size: 0.82rem;
+  padding: 4px 10px;
+  display: inline-flex;
+}
+
+.estado.pendiente { background: rgba(255, 176, 32, 0.2); color: #ffd27a; }
+.estado.aprobado { background: rgba(142, 249, 212, 0.18); color: #8ef9d4; }
+.estado.rechazado { background: rgba(255, 112, 112, 0.2); color: #ffb3b3; }
+
+.btn {
+  border: none;
+  border-radius: 10px;
+  padding: 8px 11px;
+  cursor: pointer;
+}
+
+.btn.aprobar { background: linear-gradient(90deg, #4dc0ff, #8ef9d4); color: #06131d; font-weight: 700; }
+.btn.rechazar { background: rgba(255, 95, 95, 0.2); color: #ffd0d0; border: 1px solid rgba(255, 130, 130, 0.35); }
+
+.paginacion {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  margin: 14px 0 8px;
+  color: #bac2d3;
+}
+
+.paginacion .btn { background: rgba(255, 255, 255, 0.08); color: #f3f5fa; }
+
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.55);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1200;
+  padding: 14px;
+}
+
+.modal {
+  width: min(420px, 100%);
+  border-radius: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  background: linear-gradient(160deg, rgba(16, 22, 34, 0.95), rgba(13, 18, 29, 0.9));
+  padding: 18px;
+}
+
+.modal h3 { margin-top: 0; }
+.modal p { color: #bac2d3; }
+
+.acciones {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+.btn.cancelar {
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  background: transparent;
+  color: #f3f5fa;
+}
+
+.btn.confirmar.aprobar { background: linear-gradient(90deg, #4dc0ff, #8ef9d4); color: #06131d; font-weight: 700; }
+.btn.confirmar.rechazar { background: rgba(255, 95, 95, 0.2); color: #ffd0d0; border: 1px solid rgba(255, 130, 130, 0.35); }
+
+.desktop-only { display: table; }
+.mobile-only { display: none; }
+
+@media (max-width: 760px) {
+  .pedidos { padding: 18px 12px 26px; }
+
+  .desktop-only { display: none !important; }
+  .mobile-only { display: block; }
+
+  .pedido-card {
+    border-radius: 14px;
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    background: linear-gradient(155deg, rgba(16, 22, 34, 0.82), rgba(13, 18, 29, 0.75));
+    padding: 14px;
+    margin-bottom: 10px;
+  }
+
+  .pedido-card strong { display: block; margin-bottom: 8px; }
+  .pedido-card span { display: block; color: #bac2d3; margin-bottom: 4px; }
+
+  .pedido-card .acciones {
+    justify-content: flex-start;
+    margin-top: 10px;
+    flex-wrap: wrap;
+  }
+}

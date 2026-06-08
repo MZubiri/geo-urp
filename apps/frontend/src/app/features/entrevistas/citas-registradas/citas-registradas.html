@@ -1,0 +1,90 @@
+<section class="citas-registradas">
+  <h1>Citas registradas</h1>
+  <p class="sub">Listado de entrevistas de afiliacion agendadas.</p>
+
+  <div *ngIf="authService.isAdmin(); else noAccess">
+    <div class="barra-control">
+      <input type="date" [(ngModel)]="filtroFecha" />
+      <select [(ngModel)]="responsableSeleccionado">
+        <option *ngFor="let responsable of responsables" [value]="responsable.key">
+          {{ responsable.label }}
+        </option>
+      </select>
+      <input type="text" placeholder="Buscar por nombre, correo o telefono" [(ngModel)]="busqueda" />
+      <button type="button" (click)="cargarCitas()" [disabled]="cargando">
+        {{ cargando ? 'Cargando...' : 'Actualizar' }}
+      </button>
+    </div>
+
+    <p class="mensaje ok" *ngIf="mensaje">{{ mensaje }}</p>
+    <p class="mensaje error" *ngIf="error">{{ error }}</p>
+
+    <div class="tabla-wrapper" *ngIf="!cargando && !error">
+      <table class="tabla" *ngIf="citasFiltradas.length > 0; else vacio">
+        <thead>
+          <tr>
+            <th>Fecha</th>
+            <th>Horario</th>
+            <th>Nombre y apellidos</th>
+            <th>Telefono</th>
+            <th>Correo</th>
+            <th>Carrera</th>
+            <th>Ciclo</th>
+            <th>Estado</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let item of citasFiltradas" [class.atendida]="estaAtendida(item)">
+            <td>{{ item.slotDate || '-' }}</td>
+            <td>{{ item.slotStartTime || '-' }} - {{ item.slotEndTime || '-' }}</td>
+            <td>{{ item.fullName || '-' }}</td>
+            <td>{{ item.phone || '-' }}</td>
+            <td>{{ item.email || '-' }}</td>
+            <td>{{ item.major || '-' }}</td>
+            <td>{{ item.cycle || '-' }}</td>
+            <td>
+              <span class="estado-badge" [class.atendida]="estaAtendida(item)">
+                {{ item.status || 'Registrada' }}
+              </span>
+            </td>
+            <td class="acciones">
+              <button
+                type="button"
+                class="whatsapp"
+                (click)="enviarWhatsapp(item)"
+                [disabled]="!puedeEnviarWhatsapp(item) || procesandoId !== null"
+              >
+                Enviar Whatsapp
+              </button>
+              <button
+                type="button"
+                class="danger"
+                (click)="eliminarCita(item)"
+                [disabled]="procesandoId === item.id || procesandoId !== null || !item.id"
+              >
+                {{ procesandoId === item.id ? 'Eliminando...' : 'Eliminar' }}
+              </button>
+              <button
+                type="button"
+                class="attended"
+                (click)="marcarAtendida(item)"
+                [disabled]="procesandoId === item.id || procesandoId !== null || estaAtendida(item) || !item.id"
+              >
+                {{ procesandoId === item.id ? 'Guardando...' : 'Atendida' }}
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <ng-template #vacio>
+      <p class="sub">No hay citas registradas para los filtros seleccionados.</p>
+    </ng-template>
+  </div>
+
+  <ng-template #noAccess>
+    <p class="mensaje error">No tienes permisos para ver esta pantalla.</p>
+  </ng-template>
+</section>

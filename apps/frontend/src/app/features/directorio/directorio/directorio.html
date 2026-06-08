@@ -1,0 +1,23 @@
+﻿<section class="directorio">
+  <h1>Mesa Directiva</h1>
+
+  <p class="sub" *ngIf="cargando">Cargando directores...</p>
+  <p class="sub error" *ngIf="!cargando && error">{{ error }}</p>
+
+  <p class="sub" *ngIf="!cargando && !error && miembros.length === 0">
+    No hay directores para mostrar.
+  </p>
+
+  <div class="grid" *ngIf="!cargando && !error">
+    @for (m of miembros; track m.id ?? m.email ?? $index) {
+      <article class="card">
+        <img [src]="getPhotoSrc(m)" alt="Foto de {{ m.fullName || m.name }}" />
+
+        <h3>{{ m.fullName || m.name }}</h3>
+        <span class="cargo">{{ getDisplayPosition(m) }}</span>
+        <span class="area">{{ m.bio || m.specialty || '-' }}</span>
+        <a class="mail" href="mailto:{{ m.email }}">{{ m.email || 'Sin correo' }}</a>
+      </article>
+    }
+  </div>
+</section>

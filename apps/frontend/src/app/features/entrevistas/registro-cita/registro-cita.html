@@ -1,0 +1,86 @@
+<section class="registro-cita">
+  <div class="hero">
+    <div class="hero-copy">
+      <div class="hero-copy__text">
+        <span class="eyebrow">Afiliacion GEO-URP</span>
+        <h1>Da el primer paso para integrarte a la comunidad de geotecnia de la URP.</h1>
+        <p class="sub">Agenda tu entrevista de afiliacion en segundos y reserva el horario que mejor te acomode.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="card-form">
+    <div class="section-title">
+      <h2>Formulario de postulacion</h2>
+    </div>
+
+    <div class="grid">
+      <label class="field">
+        <span>Nombre y apellidos</span>
+        <input type="text" placeholder="Ingresa tus nombres completos" [(ngModel)]="form.fullName" />
+      </label>
+
+      <label class="field">
+        <span>Telefono</span>
+        <input type="text" placeholder="Numero de contacto" [(ngModel)]="form.phone" />
+      </label>
+
+      <label class="field">
+        <span>Correo</span>
+        <input type="email" placeholder="tuusuario@urp.edu.pe" [(ngModel)]="form.email" />
+      </label>
+
+      <label class="field">
+        <span>Carrera</span>
+        <select [(ngModel)]="form.major">
+          <option value="">Selecciona tu carrera</option>
+          <option *ngFor="let carrera of carreras; trackBy: trackByValue" [ngValue]="carrera">
+            {{ carrera }}
+          </option>
+        </select>
+      </label>
+
+      <label class="field">
+        <span>Ciclo</span>
+        <select [(ngModel)]="form.cycle">
+          <option value="">Selecciona tu ciclo</option>
+          <option *ngFor="let ciclo of ciclos; trackBy: trackByValue" [ngValue]="ciclo">
+            {{ ciclo }}
+          </option>
+        </select>
+      </label>
+
+      <label class="field">
+        <span>Fecha disponible</span>
+        <select [(ngModel)]="fecha" (ngModelChange)="onFechaChange()">
+          <option value="">Selecciona una fecha</option>
+          <option *ngFor="let item of fechasDisponibles" [ngValue]="item.value">
+            {{ item.label }}
+          </option>
+        </select>
+      </label>
+
+      <label class="field field-wide">
+        <span>Horario disponible</span>
+        <select [(ngModel)]="slotId" [disabled]="!fecha || cargandoTurnos || turnosDisponibles.length === 0">
+          <option [ngValue]="null">Selecciona un horario</option>
+          <option *ngFor="let slot of turnosDisponibles" [ngValue]="slot.id">
+            {{ descripcionTurno(slot) }}
+          </option>
+        </select>
+      </label>
+    </div>
+
+    <div class="acciones">
+      <button type="button" class="secondary" (click)="cargarTurnosDisponibles()" [disabled]="!fecha || cargandoTurnos">
+        {{ cargandoTurnos ? 'Cargando horarios...' : 'Ver horarios disponibles' }}
+      </button>
+      <button type="button" class="primary" (click)="registrarCita()" [disabled]="guardando || cargandoTurnos">
+        {{ guardando ? 'Registrando...' : 'Registrar cita' }}
+      </button>
+    </div>
+
+    <p class="mensaje ok" *ngIf="mensaje">{{ mensaje }}</p>
+    <p class="mensaje error" *ngIf="error">{{ error }}</p>
+  </div>
+</section>

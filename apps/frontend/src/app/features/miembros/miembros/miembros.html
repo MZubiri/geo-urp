@@ -1,0 +1,148 @@
+<section class="miembros">
+  <h1>Miembros GEO-URP</h1>
+  <p class="sub">Gestion de miembros y directores</p>
+
+  <div class="barra-control">
+    <input
+      type="text"
+      placeholder="Buscar por nombre, cargo, correo o codigo"
+      [(ngModel)]="busqueda"
+    />
+
+    <select [(ngModel)]="filtroTipo">
+      <option value="Todos">Todos</option>
+      <option value="Director">Directores</option>
+      <option value="Miembro">Miembros</option>
+    </select>
+
+    <select [(ngModel)]="filtroEstado">
+      <option value="Todos">Todos</option>
+      <option value="Activos">Activos</option>
+      <option value="Inactivos">Inactivos</option>
+    </select>
+
+    <button *ngIf="authService.canManageMembers()" class="btn aprobar" (click)="abrirCrear()">
+      Agregar miembro
+    </button>
+  </div>
+
+  <p *ngIf="cargando" class="sub">Cargando miembros...</p>
+  <p *ngIf="!cargando && error" class="sub">{{ error }}</p>
+
+  <div class="tabla-wrapper" *ngIf="!cargando && !error">
+    <table class="tabla">
+      <thead>
+        <tr>
+          <th>Nombre</th>
+          <th>Tipo</th>
+          <th>Cargo</th>
+          <th>Correo</th>
+          <th>Codigo</th>
+          <th>Cumpleanos</th>
+          <th>Estado</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        <tr *ngFor="let member of miembrosFiltrados">
+          <td>{{ member.fullName || member.name }}</td>
+          <td>
+            <span class="chip" [class.director]="isDirectorMember(member)">
+              {{ getDisplayType(member) }}
+            </span>
+          </td>
+          <td>{{ getDisplayPosition(member) }}</td>
+          <td>{{ member.email || '-' }}</td>
+          <td>{{ member.code || '-' }}</td>
+          <td>{{ member.birthday || '-' }}</td>
+          <td>
+            <span class="chip" [class.inactivo]="member.isActive === false">
+              {{ member.isActive === false ? 'Inactivo' : 'Activo' }}
+            </span>
+          </td>
+          <td class="acciones">
+            <button class="btn info" (click)="abrirEditar(member)" *ngIf="authService.canManageMembers()">Editar</button>
+            <button class="btn danger" (click)="abrirEliminar(member)" *ngIf="authService.canManageMembers()">Eliminar</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <p *ngIf="!cargando && !error && miembrosFiltrados.length === 0" class="vacio">
+    No se encontraron miembros.
+  </p>
+
+  <div class="modal-backdrop" *ngIf="modalForm">
+    <div class="modal">
+      <h3>{{ editandoId ? 'Editar miembro' : 'Crear miembro' }}</h3>
+
+      <div class="form-grid">
+        <input placeholder="Nombre completo" [(ngModel)]="form.fullName" />
+        <input placeholder="Cargo" [(ngModel)]="form.position" />
+        <input placeholder="Correo" type="email" [(ngModel)]="form.email" />
+        <input placeholder="Codigo" [(ngModel)]="form.code" />
+        <input placeholder="Cumpleanos (DD/MM)" [(ngModel)]="form.birthday" />
+        <input placeholder="Biografia" [(ngModel)]="form.bio" />
+
+        <label class="field-upload">
+          <input type="file" accept="image/*" (change)="onPhotoSelected($event)" />
+          <span *ngIf="subiendoFoto">Subiendo foto...</span>
+          <span *ngIf="!subiendoFoto && form.photoUrl">Foto cargada</span>
+        </label>
+
+        <label>
+          <input type="checkbox" [(ngModel)]="form.isActive" />
+          Activo
+        </label>
+
+        <label>
+          <input type="checkbox" [(ngModel)]="form.isDirector" />
+          Es director(a)
+        </label>
+      </div>
+
+      <p *ngIf="formSubmitted && !isFormValid()" class="sub">
+        Completa nombre, cargo, biografia, correo valido, foto y usa DD/MM si agregas cumpleanos.
+      </p>
+
+      <div class="modal-acciones">
+        <button class="btn aprobar" (click)="guardar()" [disabled]="guardando">
+          {{ guardando ? 'Guardando...' : 'Guardar' }}
+        </button>
+        <button class="btn" (click)="cerrarModales()" [disabled]="guardando">Cancelar</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-backdrop" *ngIf="modalEliminar">
+    <div class="modal">
+      <h3>Eliminar miembro</h3>
+      <p>Deseas eliminar a <b>{{ miembroSeleccionado?.fullName || miembroSeleccionado?.name }}</b>?</p>
+
+      <div class="modal-acciones">
+        <button class="btn danger" (click)="confirmarEliminar()" [disabled]="guardando">
+          {{ guardando ? 'Eliminando...' : 'Eliminar' }}
+        </button>
+        <button class="btn" (click)="cerrarModales()" [disabled]="guardando">Cancelar</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-backdrop" *ngIf="modalCredenciales">
+    <div class="modal">
+      <h3>Credenciales temporales</h3>
+      <p *ngIf="credencialMensaje">{{ credencialMensaje }}</p>
+
+      <div class="credencial-box" *ngIf="credencialTemporal">
+        <span>Contrasena temporal</span>
+        <strong>{{ credencialTemporal }}</strong>
+      </div>
+
+      <div class="modal-acciones">
+        <button class="btn aprobar" (click)="cerrarCredenciales()">Entendido</button>
+      </div>
+    </div>
+  </div>
+</section>

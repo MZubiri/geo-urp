@@ -1,0 +1,220 @@
+.miembros {
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: 26px 18px 40px;
+}
+
+.miembros h1 {
+  margin: 0;
+  text-align: center;
+  letter-spacing: 0.08em;
+}
+
+.sub {
+  text-align: center;
+  color: #bac2d3;
+  margin: 8px 0 16px;
+}
+
+.barra-control {
+  display: grid;
+  grid-template-columns: 1fr 180px 180px auto;
+  gap: 10px;
+  margin: 0 0 14px;
+}
+
+.barra-control input,
+.barra-control select,
+.form-grid input {
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  background: rgba(12, 16, 26, 0.65);
+  color: #f3f5fa;
+  padding: 10px 12px;
+}
+
+.barra-control input::placeholder,
+.form-grid input::placeholder {
+  color: #8d98af;
+}
+
+.btn {
+  border: none;
+  border-radius: 10px;
+  padding: 9px 12px;
+  cursor: pointer;
+}
+
+.btn.aprobar {
+  background: linear-gradient(90deg, #4dc0ff, #8ef9d4);
+  color: #06131d;
+  font-weight: 700;
+}
+
+.btn.info {
+  background: rgba(77, 192, 255, 0.2);
+  color: #d9eeff;
+  border: 1px solid rgba(77, 192, 255, 0.35);
+}
+
+.btn.danger {
+  background: rgba(255, 95, 95, 0.2);
+  border: 1px solid rgba(255, 130, 130, 0.35);
+  color: #ffd0d0;
+}
+
+.tabla-wrapper {
+  border-radius: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  overflow: auto;
+  background: linear-gradient(155deg, rgba(16, 22, 34, 0.82), rgba(13, 18, 29, 0.75));
+}
+
+.tabla {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 1060px;
+}
+
+.tabla th,
+.tabla td {
+  padding: 12px 14px;
+  text-align: left;
+}
+
+.tabla thead {
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.tabla tbody tr:not(:last-child) {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.chip {
+  display: inline-flex;
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 0.8rem;
+  background: rgba(77, 192, 255, 0.18);
+  color: #d9eeff;
+}
+
+.chip.director {
+  background: rgba(142, 249, 212, 0.18);
+  color: #8ef9d4;
+}
+
+.chip.inactivo {
+  background: rgba(255, 95, 95, 0.2);
+  color: #ffb7b7;
+}
+
+.acciones {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.vacio {
+  text-align: center;
+  color: #98a4bd;
+}
+
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.56);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1200;
+  padding: 14px;
+}
+
+.modal {
+  width: min(640px, 100%);
+  border-radius: 18px;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  background: linear-gradient(160deg, rgba(16, 22, 34, 0.95), rgba(13, 18, 29, 0.9));
+  padding: 18px;
+  max-height: calc(100vh - 30px);
+  overflow: auto;
+}
+
+.modal h3 {
+  margin-top: 0;
+}
+
+.credencial-box {
+  margin-top: 10px;
+  padding: 12px;
+  border: 1px dashed rgba(142, 249, 212, 0.45);
+  border-radius: 12px;
+  background: rgba(14, 39, 33, 0.35);
+  display: grid;
+  gap: 6px;
+}
+
+.credencial-box span {
+  color: #8ef9d4;
+  font-size: 0.86rem;
+}
+
+.credencial-box strong {
+  font-size: 1.06rem;
+  letter-spacing: 0.03em;
+  word-break: break-all;
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.form-grid label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #d2d9e7;
+  font-size: 0.92rem;
+}
+
+.field-upload {
+  min-height: 44px;
+}
+
+.modal-acciones {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+@media (max-width: 860px) {
+  .barra-control {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+@media (max-width: 640px) {
+  .miembros {
+    padding: 18px 12px 30px;
+  }
+
+  .barra-control {
+    grid-template-columns: 1fr;
+  }
+
+  .form-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .modal-acciones {
+    flex-direction: column;
+  }
+
+  .modal-acciones .btn {
+    width: 100%;
+  }
+}

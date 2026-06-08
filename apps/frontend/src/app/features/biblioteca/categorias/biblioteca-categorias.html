@@ -1,0 +1,99 @@
+﻿<section class="categorias">
+  <div class="head">
+    <h1>Categorias de Biblioteca</h1>
+    <a class="volver" routerLink="/biblioteca">Volver a Biblioteca</a>
+  </div>
+
+  <p class="sub" *ngIf="cargando">Cargando categorias...</p>
+  <p class="sub error" *ngIf="error">{{ error }}</p>
+
+  <nav class="tabs" *ngIf="authService.isAdmin()">
+    <button [class.activo]="seccionActiva === 'research'" (click)="seccionActiva = 'research'">Investigacion</button>
+    <button [class.activo]="seccionActiva === 'exam'" (click)="seccionActiva = 'exam'">Examen</button>
+    <button [class.activo]="seccionActiva === 'book'" (click)="seccionActiva = 'book'">Libro</button>
+  </nav>
+
+  <section *ngIf="seccionActiva === 'research' && authService.isAdmin()" class="panel">
+    <h3>Categorias de Investigacion</h3>
+    <div class="crear">
+      <input type="text" placeholder="Nueva categoria" [(ngModel)]="nuevaResearch" />
+      <button type="button" (click)="crearResearch()" [disabled]="guardando || !nuevaResearch.trim()">Crear</button>
+    </div>
+
+    <div class="lista">
+      <article class="item" *ngFor="let c of researchCategories">
+        <ng-container *ngIf="editResearchId !== c.id; else editResearchTpl">
+          <span>{{ c.name }}</span>
+          <div class="acciones">
+            <button type="button" (click)="iniciarEdicionResearch(c)">Editar</button>
+            <button type="button" class="danger" (click)="eliminarResearch(c)">Eliminar</button>
+          </div>
+        </ng-container>
+
+        <ng-template #editResearchTpl>
+          <input type="text" [(ngModel)]="editResearchName" />
+          <div class="acciones">
+            <button type="button" (click)="guardarEdicionResearch()" [disabled]="guardando || !editResearchName.trim()">Guardar</button>
+            <button type="button" (click)="cancelarEdicionResearch()">Cancelar</button>
+          </div>
+        </ng-template>
+      </article>
+    </div>
+  </section>
+
+  <section *ngIf="seccionActiva === 'exam' && authService.isAdmin()" class="panel">
+    <h3>Categorias de Examenes</h3>
+    <div class="crear">
+      <input type="text" placeholder="Nueva categoria" [(ngModel)]="nuevaExam" />
+      <button type="button" (click)="crearExam()" [disabled]="guardando || !nuevaExam.trim()">Crear</button>
+    </div>
+
+    <div class="lista">
+      <article class="item" *ngFor="let c of examCategories">
+        <ng-container *ngIf="editExamId !== c.id; else editExamTpl">
+          <span>{{ c.name }}</span>
+          <div class="acciones">
+            <button type="button" (click)="iniciarEdicionExam(c)">Editar</button>
+            <button type="button" class="danger" (click)="eliminarExam(c)">Eliminar</button>
+          </div>
+        </ng-container>
+
+        <ng-template #editExamTpl>
+          <input type="text" [(ngModel)]="editExamName" />
+          <div class="acciones">
+            <button type="button" (click)="guardarEdicionExam()" [disabled]="guardando || !editExamName.trim()">Guardar</button>
+            <button type="button" (click)="cancelarEdicionExam()">Cancelar</button>
+          </div>
+        </ng-template>
+      </article>
+    </div>
+  </section>
+
+  <section *ngIf="seccionActiva === 'book' && authService.isAdmin()" class="panel">
+    <h3>Categorias de Libros</h3>
+    <div class="crear">
+      <input type="text" placeholder="Nueva categoria" [(ngModel)]="nuevaBook" />
+      <button type="button" (click)="crearBook()" [disabled]="guardando || !nuevaBook.trim()">Crear</button>
+    </div>
+
+    <div class="lista">
+      <article class="item" *ngFor="let c of bookCategories">
+        <ng-container *ngIf="editBookId !== c.id; else editBookTpl">
+          <span>{{ c.name }}</span>
+          <div class="acciones">
+            <button type="button" (click)="iniciarEdicionBook(c)">Editar</button>
+            <button type="button" class="danger" (click)="eliminarBook(c)">Eliminar</button>
+          </div>
+        </ng-container>
+
+        <ng-template #editBookTpl>
+          <input type="text" [(ngModel)]="editBookName" />
+          <div class="acciones">
+            <button type="button" (click)="guardarEdicionBook()" [disabled]="guardando || !editBookName.trim()">Guardar</button>
+            <button type="button" (click)="cancelarEdicionBook()">Cancelar</button>
+          </div>
+        </ng-template>
+      </article>
+    </div>
+  </section>
+</section>

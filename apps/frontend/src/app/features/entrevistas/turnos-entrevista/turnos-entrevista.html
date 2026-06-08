@@ -1,0 +1,58 @@
+<section class="turnos-entrevista">
+  <h1>Gestion de turnos de entrevista</h1>
+  <p class="sub">Carga horarios y controla su disponibilidad por fecha.</p>
+
+  <div class="card" *ngIf="authService.isAdmin(); else noAccess">
+    <div class="controles">
+      <input type="date" [(ngModel)]="fecha" (change)="cargarTurnos()" />
+      <button type="button" (click)="cargarTurnos()" [disabled]="cargando">
+        {{ cargando ? 'Cargando...' : 'Actualizar lista' }}
+      </button>
+    </div>
+
+    <div class="form-grid">
+      <input type="time" [(ngModel)]="startTime" />
+      <input type="time" [(ngModel)]="endTime" />
+      <input type="number" min="1" [(ngModel)]="capacity" placeholder="Cupos" />
+      <button type="button" (click)="crearTurno()" [disabled]="guardando">
+        {{ guardando ? 'Guardando...' : 'Agregar turno' }}
+      </button>
+    </div>
+
+    <p class="mensaje ok" *ngIf="mensaje">{{ mensaje }}</p>
+    <p class="mensaje error" *ngIf="error">{{ error }}</p>
+
+    <table class="tabla" *ngIf="!cargando && turnos.length > 0">
+      <thead>
+        <tr>
+          <th>Inicio</th>
+          <th>Fin</th>
+          <th>Cupos</th>
+          <th>Reservas</th>
+          <th>Estado</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let slot of turnos">
+          <td>{{ slot.startTime || '-' }}</td>
+          <td>{{ slot.endTime || '-' }}</td>
+          <td>{{ slot.capacity ?? '-' }}</td>
+          <td>{{ slot.bookedCount ?? 0 }}</td>
+          <td>{{ disponibilidad(slot) }}</td>
+          <td>
+            <button type="button" class="danger" (click)="eliminarTurno(slot)" [disabled]="guardando || !slot.id">
+              Eliminar
+            </button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+    <p class="sub" *ngIf="!cargando && turnos.length === 0">No hay turnos cargados para esta fecha.</p>
+  </div>
+
+  <ng-template #noAccess>
+    <p class="mensaje error">No tienes permisos para ver esta pantalla.</p>
+  </ng-template>
+</section>
