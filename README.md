@@ -1,59 +1,60 @@
-# GeoUrpFrontend
+# GeoURP - Frontend Web Portal 📚
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 21.0.5.
+Portal web interactivo de la **Biblioteca Digital de Geotecnia (GeoURP)**, diseñado especialmente para las asociaciones estudiantiles de la **Universidad Ricardo Palma (URP)**.
 
-## Development server
+Esta aplicación web actúa como la interfaz de usuario para que alumnos y profesores exploren, busquen, descarguen y soliciten préstamos de recursos académicos (tesis, normativas, exámenes, libros y documentos técnicos) del área de geotecnia.
 
-To start a local development server, run:
+---
 
+## 🚀 Características Principales
+
+*   **Búsqueda y Filtros Dinámicos:** Exploración interactiva del catálogo de recursos por categorías, autores o palabras clave.
+*   **Visualizador y Descarga de Documentos:** Interfaz optimizada para leer resúmenes de investigaciones y descargar material digital autorizado.
+*   **Módulo de Préstamos:** Permite a los alumnos autenticados solicitar y gestionar el estado de préstamos físicos y digitales.
+*   **Perfil de Usuario & Roles:** Vistas personalizadas y paneles de administración de acuerdo a los roles de usuario (Estudiante, Administrador).
+*   **Panel de Administración:** Control total sobre la carga de nuevos documentos técnicos y gestión de usuarios.
+
+---
+
+## 🛠️ Stack Tecnológico
+
+*   **Framework:** Angular
+*   **Lenguajes:** TypeScript, HTML5, SCSS (CSS modular)
+*   **Servidor de Producción:** VPS Linux (Contabo) corriendo Nginx para servir el build estático optimizado.
+
+---
+
+## 🔗 Repositorio del Backend (API)
+
+Toda la persistencia de datos, lógica de negocio y seguridad está respaldada por:
+👉 **[GeoURPWebApi (Backend C# / .NET)](https://github.com/MZubiri/GeoURPWebApi)**
+
+---
+
+## 📦 Ejecución Local
+
+### Prerrequisitos
+*   Tener instalado **Node.js** (v18 o superior) y **npm**.
+
+### Pasos
+1.  Clona el repositorio:
+    ```bash
+    git clone https://github.com/MZubiri/geo-urp.git
+    cd geo-urp
+    ```
+2.  Instala las dependencias necesarias:
+    ```bash
+    npm install
+    ```
+3.  Inicia el servidor de desarrollo local:
+    ```bash
+    npm run start
+    ```
+    *(O abre tu navegador directamente en `http://localhost:4200/`)*
+
+### Construcción para Producción
+Para compilar y optimizar la aplicación de cara al despliegue:
 ```bash
-ng serve
+npm run build
 ```
-
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
-
-## Code scaffolding
-
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
-
-```bash
-ng generate component component-name
-```
-
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
-
-```bash
-ng generate --help
-```
-
-## Building
-
-To build the project run:
-
-```bash
-ng build
-```
-
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
-
-## Running unit tests
-
-To execute unit tests with the [Vitest](https://vitest.dev/) test runner, use the following command:
-
-```bash
-ng test
-```
-
-## Running end-to-end tests
-
-For end-to-end (e2e) testing, run:
-
-```bash
-ng e2e
-```
-
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
-
-## Additional Resources
-
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+Los archivos optimizados resultantes se guardarán en el directorio `dist/`.
