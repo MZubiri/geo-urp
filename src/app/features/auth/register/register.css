@@ -1,0 +1,186 @@
+.register-wrapper {
+  min-height: calc(100vh - 120px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px 0;
+}
+
+.register-card {
+  width: min(480px, calc(100vw - 24px));
+  background: linear-gradient(155deg, var(--bg-secondary), var(--bg-card));
+  border: 1px solid var(--border-color);
+  border-radius: 20px;
+  padding: 32px;
+  box-shadow: var(--shadow-soft);
+  box-sizing: border-box;
+}
+
+.titulo {
+  margin: 0;
+  font-size: 2.2rem;
+  letter-spacing: 0.08em;
+  text-align: center;
+  background: linear-gradient(90deg, var(--color-primary), var(--color-secondary));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  font-weight: 800;
+}
+
+.sub {
+  margin: 6px 0 24px;
+  color: var(--text-secondary);
+  text-align: center;
+  font-size: 1rem;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 16px;
+}
+
+.form-group label {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  margin-bottom: 6px;
+  font-weight: 500;
+}
+
+.form-row {
+  display: flex;
+  gap: 16px;
+}
+
+.form-row .form-group {
+  flex: 1;
+}
+
+.register-card input {
+  width: 100%;
+  border-radius: 12px;
+  border: 1px solid var(--border-color);
+  background: rgba(12, 16, 26, 0.02);
+  color: var(--text-primary);
+  padding: 11px 14px;
+  box-sizing: border-box;
+  font-size: 0.95rem;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+:root.dark-mode .register-card input {
+  background: rgba(12, 16, 26, 0.5);
+}
+
+.register-card input:focus {
+  outline: none;
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px rgba(111, 159, 58, 0.15);
+}
+
+.password-field {
+  position: relative;
+}
+
+.password-field input {
+  padding-right: 92px;
+}
+
+.password-toggle {
+  position: absolute;
+  top: 50%;
+  right: 8px;
+  transform: translateY(-50%);
+  border: none;
+  border-radius: 10px;
+  padding: 6px 10px;
+  background: rgba(15, 90, 54, 0.1);
+  color: var(--color-primary);
+  cursor: pointer;
+  font-size: 0.8rem;
+}
+
+:root.dark-mode .password-toggle {
+  background: rgba(111, 159, 58, 0.15);
+}
+
+.password-toggle:hover {
+  background: rgba(111, 159, 58, 0.25);
+}
+
+.btn-primary {
+  width: 100%;
+  border-radius: 12px;
+  padding: 12px;
+  cursor: pointer;
+  font-size: 1rem;
+}
+
+.btn-primary:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+/* Footer Link Actions */
+.register-footer-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 20px;
+}
+
+.btn-link {
+  background: transparent;
+  border: none;
+  color: var(--color-primary);
+  font-size: 0.92rem;
+  font-weight: 600;
+  cursor: pointer;
+  text-decoration: underline;
+  padding: 4px 8px;
+  transition: color 0.2s ease;
+}
+
+.btn-link:hover {
+  color: var(--color-secondary);
+}
+
+.success-card {
+  text-align: center;
+  padding: 20px 10px;
+  background: rgba(111, 159, 58, 0.08);
+  border: 1px solid rgba(111, 159, 58, 0.2);
+  border-radius: 16px;
+}
+
+.success-title {
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: var(--color-primary);
+  margin: 0 0 10px 0;
+}
+
+.success-text {
+  font-size: 0.95rem;
+  color: var(--text-secondary);
+  line-height: 1.5;
+  margin: 0 0 20px 0;
+}
+
+.btn-success-action {
+  max-width: 200px;
+  margin: 0 auto;
+}
+
+.error {
+  margin-top: 16px;
+  color: #ff8f8f;
+  background: rgba(255, 143, 143, 0.08);
+  border: 1px solid rgba(255, 143, 143, 0.15);
+  border-radius: 10px;
+  padding: 10px 14px;
+  font-size: 0.9rem;
+  text-align: center;
+}

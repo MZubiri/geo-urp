@@ -1,0 +1,139 @@
+<section class="perfil-wrapper">
+  <div class="perfil-grid">
+    <!-- Left Column: Personal Information & Photo -->
+    <article class="perfil-card">
+      <h1>Mi Perfil</h1>
+      <p class="sub">Actualiza tu información personal y de contacto.</p>
+
+      <div class="perfil-photo-section">
+        <div class="avatar-container">
+          <img [src]="photoUrl || '/assets/avatar-placeholder.png'" alt="Foto de perfil" class="avatar-img" *ngIf="photoUrl" />
+          <div class="avatar-initials" *ngIf="!photoUrl">
+            {{ (name ? name[0] : 'U') | uppercase }}
+          </div>
+          <div class="spinner-overlay" *ngIf="subiendoFoto">
+            <div class="spinner-small"></div>
+          </div>
+        </div>
+        
+        <div class="photo-actions">
+          <label class="btn-secondary photo-upload-btn">
+            {{ subiendoFoto ? 'Subiendo...' : 'Cambiar Foto' }}
+            <input type="file" (change)="onFileSelected($event)" accept="image/*" class="file-input" [disabled]="subiendoFoto" />
+          </label>
+          <span class="photo-tip">Recomendado: Imagen cuadrada, Máx 5 MB</span>
+        </div>
+      </div>
+
+      <div class="perfil-form" *ngIf="profileDetails; else sinPerfil">
+        <div class="form-group">
+          <label for="prof-email">Correo (No modificable)</label>
+          <input id="prof-email" type="email" [value]="profileDetails.email" disabled class="disabled-input" />
+        </div>
+
+        <div class="form-group">
+          <label for="prof-name">Nombre Completo</label>
+          <input id="prof-name" type="text" [(ngModel)]="name" />
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="prof-phone">Teléfono</label>
+            <input id="prof-phone" type="text" [(ngModel)]="phone" />
+          </div>
+
+          <div class="form-group">
+            <label for="prof-cycle">Ciclo Académico</label>
+            <input id="prof-cycle" type="text" [(ngModel)]="cycle" />
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="prof-major">Carrera Profesional</label>
+          <input id="prof-major" type="text" [(ngModel)]="major" />
+        </div>
+
+        <div class="form-group">
+          <label for="prof-birthday">Fecha de Nacimiento</label>
+          <input id="prof-birthday" type="date" [(ngModel)]="birthday" />
+        </div>
+
+        <div class="form-group">
+          <label for="prof-linkedin">Enlace de LinkedIn</label>
+          <input id="prof-linkedin" type="url" placeholder="https://www.linkedin.com/in/usuario" [(ngModel)]="linkedInUrl" />
+        </div>
+
+        <div class="form-group">
+          <label for="prof-bio">Biografía / Presentación</label>
+          <textarea id="prof-bio" rows="3" placeholder="Cuéntanos un poco sobre ti..." [(ngModel)]="bio"></textarea>
+        </div>
+
+        <button type="button" class="btn-primary" (click)="guardarPerfil()" [disabled]="guardandoPerfil">
+          {{ guardandoPerfil ? 'Guardando...' : 'Guardar Información' }}
+        </button>
+      </div>
+
+      <ng-template #sinPerfil>
+        <div class="loading-profile">
+          <div class="spinner"></div>
+          <p>Cargando detalles de tu cuenta...</p>
+        </div>
+      </ng-template>
+
+      <button type="button" class="btn-secondary back-btn" (click)="irInicio()">Volver al inicio</button>
+    </article>
+
+    <!-- Right Column: Password Change & Metadata -->
+    <div class="perfil-sidebar">
+      <article class="perfil-card">
+        <h2>Cambiar Contraseña</h2>
+        <p class="sub">Actualiza tu clave de acceso al sistema.</p>
+
+        <div class="form-group">
+          <label for="prof-new-password">Nueva Contraseña</label>
+          <input
+            id="prof-new-password"
+            type="password"
+            placeholder="Nueva contraseña"
+            [(ngModel)]="newPassword"
+            autocomplete="new-password"
+          />
+        </div>
+
+        <div class="form-group">
+          <label for="prof-confirm-password">Confirmar Contraseña</label>
+          <input
+            id="prof-confirm-password"
+            type="password"
+            placeholder="Confirmar contraseña"
+            [(ngModel)]="confirmPassword"
+            autocomplete="new-password"
+          />
+        </div>
+
+        <button type="button" class="btn-primary" (click)="guardarPassword()" [disabled]="guardandoPassword">
+          {{ guardandoPassword ? 'Guardando...' : 'Guardar Contraseña' }}
+        </button>
+      </article>
+
+      <article class="perfil-card info-sidebar-card" *ngIf="profileDetails">
+        <h2>Detalles de Cuenta</h2>
+        
+        <div class="sidebar-meta">
+          <div class="meta-row">
+            <span class="meta-label">Miembro desde:</span>
+            <span class="meta-value">{{ formatLoggedAt(profileDetails.createdAt) }}</span>
+          </div>
+          <div class="meta-row" *ngIf="profileDetails.isActive">
+            <span class="meta-label">Estado:</span>
+            <span class="meta-value status-active">Activo / Miembro</span>
+          </div>
+        </div>
+      </article>
+      
+      <p class="error" *ngIf="error">{{ error }}</p>
+    </div>
+  </div>
+
+  <div class="toast-success" *ngIf="toastMessage">{{ toastMessage }}</div>
+</section>

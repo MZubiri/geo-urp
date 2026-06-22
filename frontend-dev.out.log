@@ -1,0 +1,85 @@
+
+> geo-urp-frontend@0.0.0 start
+> ng serve --proxy-config proxy.conf.json
+
+[33m>[39m Building...
+[32m√[39m Building...
+[1mInitial chunk files[22m[2m | [22m[1mNames[22m                [2m | [22m [1mRaw size[22m
+[32mmain.js[39m            [2m | [22m[2mmain[22m                 [2m | [22m [36m29.11 kB[39m[2m | [22m
+[32mchunk-LJFJZT5Z.js[39m  [2m | [22m[2m-[22m                    [2m | [22m  [36m9.15 kB[39m[2m | [22m
+[32mchunk-CZJLB7T5.js[39m  [2m | [22m[2m-[22m                    [2m | [22m  [36m1.08 kB[39m[2m | [22m
+[32mstyles.css[39m         [2m | [22m[2mstyles[22m               [2m | [22m[36m681 bytes[39m[2m | [22m
+
+[1m [22m                  [2m | [22m[1mInitial total[22m        [2m | [22m [1m40.02 kB[22m
+
+[1mLazy chunk files[22m   [2m | [22m[1mNames[22m                [2m | [22m [1mRaw size[22m
+[32mchunk-HXCXYKSJ.js[39m  [2m | [22m[2mbiblioteca[22m           [2m | [22m [36m92.36 kB[39m[2m | [22m
+[32mchunk-BAHBCAHY.js[39m  [2m | [22m[2musuarios[22m             [2m | [22m [36m58.47 kB[39m[2m | [22m
+[32mchunk-I7Y4NXJG.js[39m  [2m | [22m[2mmiembros[22m             [2m | [22m [36m55.31 kB[39m[2m | [22m
+[32mchunk-ZHPIOMSG.js[39m  [2m | [22m[2mpedidos[22m              [2m | [22m [36m44.05 kB[39m[2m | [22m
+[32mchunk-WCAQH2VJ.js[39m  [2m | [22m[2mbiblioteca-categorias[22m[2m | [22m [36m42.73 kB[39m[2m | [22m
+[32mchunk-T444QHDB.js[39m  [2m | [22m[2meventos[22m              [2m | [22m [36m33.40 kB[39m[2m | [22m
+[32mchunk-LIJH4MZ5.js[39m  [2m | [22m[2mregistro-cita[22m        [2m | [22m [36m32.17 kB[39m[2m | [22m
+[32mchunk-HOFYCFHW.js[39m  [2m | [22m[2mcitas-registradas[22m    [2m | [22m [36m30.71 kB[39m[2m | [22m
+[32mchunk-YR34HZS7.js[39m  [2m | [22m[2mturnos-entrevista[22m    [2m | [22m [36m22.80 kB[39m[2m | [22m
+[32mchunk-IBOPNX2X.js[39m  [2m | [22m[2mlogin[22m                [2m | [22m [36m20.94 kB[39m[2m | [22m
+[32mchunk-X7HRLCLP.js[39m  [2m | [22m[2mmi-perfil[22m            [2m | [22m [36m20.36 kB[39m[2m | [22m
+[32mchunk-VEX7E5BX.js[39m  [2m | [22m[2mdirectorio[22m           [2m | [22m [36m18.33 kB[39m[2m | [22m
+[32mchunk-DPCS7QV7.js[39m  [2m | [22m[2m-[22m                    [2m | [22m [36m16.87 kB[39m[2m | [22m
+[32mchunk-AN6WSKJA.js[39m  [2m | [22m[2m-[22m                    [2m | [22m  [36m8.17 kB[39m[2m | [22m
+[32mchunk-LKEP2NOP.js[39m  [2m | [22m[2mhome[22m                 [2m | [22m  [36m5.51 kB[39m[2m | [22m
+[2m...and 2 more lazy chunks files. Use "--verbose" to show all the files.[22m
+
+Application bundle generation complete. [6.548 seconds] - 2026-04-06T20:02:35.152Z
+
+Watch mode enabled. Watching for file changes...
+NOTE: Raw file sizes do not reflect development server per-request transformations.
+  [32m➜[39m  [1mLocal[22m:   [36mhttp://localhost:[1m4200[22m/[39m
+[33m>[39m Changes detected. Rebuilding...
+[32m√[39m Changes detected. Rebuilding...
+[1mInitial chunk files[22m[2m | [22m[1mNames[22m                [2m | [22m[1mRaw size[22m
+[32mmain.js[39m            [2m | [22m[2mmain[22m                 [2m | [22m[36m29.85 kB[39m[2m | [22m
+[32mchunk-A4HSEJKI.js[39m  [2m | [22m[2m-[22m                    [2m | [22m [36m9.81 kB[39m[2m | [22m
+
+[1mLazy chunk files[22m   [2m | [22m[1mNames[22m                [2m | [22m[1mRaw size[22m
+[32mchunk-E3SPERVB.js[39m  [2m | [22m[2mbiblioteca[22m           [2m | [22m[36m92.36 kB[39m[2m | [22m
+[32mchunk-43MPLSPS.js[39m  [2m | [22m[2musuarios[22m             [2m | [22m[36m58.47 kB[39m[2m | [22m
+[32mchunk-2CO7XE5P.js[39m  [2m | [22m[2mmiembros[22m             [2m | [22m[36m55.30 kB[39m[2m | [22m
+[32mchunk-S4MQZVOK.js[39m  [2m | [22m[2mpedidos[22m              [2m | [22m[36m44.28 kB[39m[2m | [22m
+[32mchunk-CJPY2XLE.js[39m  [2m | [22m[2mbiblioteca-categorias[22m[2m | [22m[36m42.73 kB[39m[2m | [22m
+[32mchunk-PZMSNZW5.js[39m  [2m | [22m[2meventos[22m              [2m | [22m[36m33.40 kB[39m[2m | [22m
+[32mchunk-IV5I6V3Z.js[39m  [2m | [22m[2mregistro-cita[22m        [2m | [22m[36m32.17 kB[39m[2m | [22m
+[32mchunk-UI45FJ3W.js[39m  [2m | [22m[2mcitas-registradas[22m    [2m | [22m[36m30.71 kB[39m[2m | [22m
+[32mchunk-KGAZCNI5.js[39m  [2m | [22m[2mturnos-entrevista[22m    [2m | [22m[36m22.80 kB[39m[2m | [22m
+[32mchunk-MBVTWCLF.js[39m  [2m | [22m[2mlogin[22m                [2m | [22m[36m20.94 kB[39m[2m | [22m
+[32mchunk-FV6XGURW.js[39m  [2m | [22m[2mmi-perfil[22m            [2m | [22m[36m20.36 kB[39m[2m | [22m
+[32mchunk-P2KVMXFD.js[39m  [2m | [22m[2mdirectorio[22m           [2m | [22m[36m18.36 kB[39m[2m | [22m
+[32mchunk-J6ALEN2O.js[39m  [2m | [22m[2m-[22m                    [2m | [22m[36m16.87 kB[39m[2m | [22m
+[32mchunk-NWMDOIM2.js[39m  [2m | [22m[2m-[22m                    [2m | [22m [36m8.17 kB[39m[2m | [22m
+[32mchunk-D4UQRCLH.js[39m  [2m | [22m[2m-[22m                    [2m | [22m [36m2.51 kB[39m[2m | [22m
+
+Application bundle generation complete. [4.833 seconds] - 2026-04-06T21:03:13.867Z
+
+Page reload sent to client(s).
+[33m>[39m Changes detected. Rebuilding...
+[32m√[39m Changes detected. Rebuilding...
+[1mInitial chunk files[22m[2m | [22m[1mNames[22m   [2m | [22m[1mRaw size[22m
+[32mmain.js[39m            [2m | [22m[2mmain[22m    [2m | [22m[36m29.85 kB[39m[2m | [22m
+
+[1mLazy chunk files[22m   [2m | [22m[1mNames[22m   [2m | [22m[1mRaw size[22m
+[32mchunk-6ED4OQD2.js[39m  [2m | [22m[2mmiembros[22m[2m | [22m[36m55.44 kB[39m[2m | [22m
+
+Application bundle generation complete. [0.961 seconds] - 2026-04-06T21:25:41.684Z
+
+Page reload sent to client(s).
+[33m>[39m Changes detected. Rebuilding...
+[32m√[39m Changes detected. Rebuilding...
+[1mInitial chunk files[22m[2m | [22m[1mNames[22m   [2m | [22m[1mRaw size[22m
+[32mmain.js[39m            [2m | [22m[2mmain[22m    [2m | [22m[36m29.85 kB[39m[2m | [22m
+
+[1mLazy chunk files[22m   [2m | [22m[1mNames[22m   [2m | [22m[1mRaw size[22m
+[32mchunk-HM53CJDX.js[39m  [2m | [22m[2mmiembros[22m[2m | [22m[36m55.42 kB[39m[2m | [22m
+
+Application bundle generation complete. [0.806 seconds] - 2026-04-06T21:27:23.999Z
+
+Page reload sent to client(s).

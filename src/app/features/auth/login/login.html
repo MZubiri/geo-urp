@@ -5,16 +5,46 @@
 
     <input type="email" placeholder="Correo" [(ngModel)]="email" autocomplete="email" />
 
-    <input
-      type="password"
-      placeholder="Contraseña"
-      [(ngModel)]="password"
-      autocomplete="current-password"
-    />
+    <div class="password-field">
+      <input
+        [type]="mostrarPassword ? 'text' : 'password'"
+        placeholder="Contrasena"
+        [(ngModel)]="password"
+        autocomplete="current-password"
+      />
 
-    <button type="button" (click)="login()" [disabled]="cargando">
-      {{ cargando ? 'Ingresando…' : 'Ingresar' }}
+      <button type="button" class="password-toggle" (click)="togglePasswordVisibility()">
+        {{ mostrarPassword ? 'Ocultar' : 'Mostrar' }}
+      </button>
+    </div>
+
+    <button type="button" class="btn-primary" (click)="login()" [disabled]="cargando">
+      {{ cargando ? 'Ingresando...' : 'Ingresar' }}
     </button>
+
+    <button type="button" class="link-button" (click)="toggleRecovery()">
+      {{ mostrarRecuperacion ? 'Cancelar recuperacion' : 'Recuperar contrasena por correo' }}
+    </button>
+
+    <div class="recovery-card" *ngIf="mostrarRecuperacion">
+      <p class="recovery-copy">Te enviaremos una contrasena temporal al correo registrado.</p>
+
+      <input
+        type="email"
+        placeholder="Correo registrado"
+        [(ngModel)]="recoveryEmail"
+        autocomplete="email"
+      />
+
+      <button type="button" class="btn-secondary recovery-btn" (click)="recuperarPassword()" [disabled]="recovering">
+        {{ recovering ? 'Enviando...' : 'Enviar recuperacion' }}
+      </button>
+
+      <p class="success" *ngIf="recoveryMessage">{{ recoveryMessage }}</p>
+      <p class="error compact" *ngIf="recoveryError">{{ recoveryError }}</p>
+    </div>
+
+    <button type="button" class="btn-secondary" (click)="irInicio()">Ir a inicio</button>
 
     <p class="error" *ngIf="error">{{ error }}</p>
   </div>

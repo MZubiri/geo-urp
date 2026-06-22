@@ -1,107 +1,232 @@
 .directorio {
   padding: 40px 24px;
+  max-width: 1200px;
+  margin: 0 auto;
+  min-height: 100vh;
 }
 
-.directorio h1 {
+.header-section {
   text-align: center;
-  letter-spacing: 0.25em;
-  margin-bottom: 12px;
+  margin-bottom: 48px;
 }
 
-.sub {
+.header-section h1 {
+  font-size: 2.5rem;
+  font-weight: 800;
+  margin: 0 0 10px 0;
+  background: linear-gradient(90deg, var(--color-primary), var(--color-secondary));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.sub-desc {
+  color: var(--text-secondary);
+  font-size: 1.1rem;
+}
+
+.sub-status {
   text-align: center;
-  opacity: 0.85;
-  margin-bottom: 24px;
+  color: var(--text-light);
+  font-size: 1rem;
 }
 
-.error {
-  color: #ffb3b3;
+.sub-status.error {
+  color: #ff8f8f;
 }
 
-.admin-box {
-  max-width: 980px;
-  margin: 0 auto 24px;
+/* Organigram Tree Structure */
+.organigrama-tree {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+  width: 100%;
+}
+
+.tree-level {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  position: relative;
+}
+
+.tree-line.vertical-line {
+  width: 2px;
+  height: 48px;
+  background: linear-gradient(180deg, var(--color-primary), var(--color-secondary));
+  opacity: 0.5;
+  margin: 16px 0;
+}
+
+/* Member Nodes - Circles & Lines */
+.member-node {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  position: relative;
+  box-sizing: border-box;
   padding: 16px;
-  border: 1px solid rgba(241, 220, 201, 0.2);
-  border-radius: 12px;
+  max-width: 320px;
+  width: 100%;
+  transition: transform 0.2s ease;
 }
 
-.form-grid {
-  display: grid;
-  gap: 10px;
-  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-  margin-bottom: 12px;
+.member-node:hover {
+  transform: translateY(-4px);
 }
 
-.form-grid input {
-  padding: 9px;
-  border-radius: 8px;
-  border: none;
-}
-
-.grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-  gap: 28px;
-}
-
-.card {
-  background: linear-gradient(160deg, #42313a, #2e2300);
-  border: 1px solid rgba(241, 220, 201, 0.2);
-  border-radius: 18px;
-  padding: 22px;
-  text-align: center;
-  transition: transform 0.25s ease, box-shadow 0.25s ease;
-}
-
-.card:hover {
-  transform: translateY(-6px);
-  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.45);
-}
-
-.card img {
-  width: 96px;
-  height: 96px;
+.member-circle-wrapper {
+  position: relative;
+  padding: 8px;
   border-radius: 50%;
+  background: transparent;
+}
+
+.member-circle {
+  border-radius: 50%;
+  overflow: hidden;
+  box-shadow: var(--shadow-soft);
+  transition: box-shadow 0.2s ease, border-color 0.2s ease;
+  border: 4px solid var(--border-color);
+}
+
+.member-node:hover .member-circle {
+  box-shadow: var(--shadow-hover);
+}
+
+.member-circle img {
+  width: 100%;
+  height: 100%;
   object-fit: cover;
-  margin-bottom: 14px;
-  border: 2px solid #db9501;
-  background: #6c2d2c;
-}
-
-.card h3 {
-  margin: 8px 0 6px;
-}
-
-.cargo {
   display: block;
+}
+
+.circle-badge {
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 8px;
+}
+
+.member-info h3 {
+  margin: 12px 0 4px 0;
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  font-family: var(--font-title);
+}
+
+.member-info .cargo {
+  font-size: 0.88rem;
   font-weight: 600;
-  color: #db9501;
+  color: var(--color-primary);
+  display: block;
+  margin-bottom: 6px;
 }
 
-.area {
-  display: block;
-  font-size: 0.85rem;
-  opacity: 0.85;
-  margin-bottom: 10px;
+.member-info .area {
+  font-size: 0.82rem;
+  color: var(--text-secondary);
+  line-height: 1.4;
+  margin: 0 auto 12px;
+  max-width: 220px;
+}
+
+.node-footer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 4px;
 }
 
 .mail {
-  font-size: 0.85rem;
-  color: #f1dcc9;
-  opacity: 0.9;
+  font-size: 0.8rem;
+  color: var(--text-light);
+  text-decoration: none;
 }
 
-.acciones {
+.mail:hover {
+  color: var(--color-primary);
+  text-decoration: underline;
+}
+
+.linkedin-link {
+  color: var(--text-light);
+  transition: color 0.2s ease;
   display: flex;
-  gap: 8px;
-  justify-content: center;
-  margin-top: 10px;
+  align-items: center;
 }
 
-button {
-  border: none;
-  border-radius: 8px;
-  padding: 8px 12px;
-  cursor: pointer;
+.linkedin-link:hover {
+  color: #0077b5;
+}
+
+/* President Specifics (Large Circle) */
+.president-node .member-circle {
+  width: 130px;
+  height: 130px;
+  border-color: var(--color-primary);
+}
+
+.president-node .circle-badge {
+  background: var(--color-primary);
+  color: var(--bg-secondary);
+}
+
+.president-node h3 {
+  font-size: 1.35rem;
+}
+
+/* Vicepresident Specifics (Medium Circle) */
+.vp-node .member-circle {
+  width: 110px;
+  height: 110px;
+  border-color: var(--color-secondary);
+}
+
+.vp-node .circle-badge {
+  background: var(--color-secondary);
+  color: var(--bg-secondary);
+}
+
+/* Directors Specifics (Small Circle Grid) */
+.directores-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 32px;
+  width: 100%;
+  max-width: 1000px;
+  padding: 16px 0;
+}
+
+@media (max-width: 900px) {
+  .directores-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 600px) {
+  .directores-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.director-node {
+  max-width: 100%;
+}
+
+.director-node .member-circle {
+  width: 90px;
+  height: 90px;
+  border-color: var(--border-color);
+}
+
+.director-node:hover .member-circle {
+  border-color: var(--color-primary);
 }

@@ -1,8 +1,7 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
-import { API_BASE_URL } from '../config/api.config';
 import { AuthService } from '../auth/auth.service';
 
 export interface BoardMember {
@@ -11,32 +10,57 @@ export interface BoardMember {
   name?: string;
   roleName?: string;
   role?: string;
+  position?: string;
   specialty?: string;
+  bio?: string;
   email?: string;
+  code?: string | null;
+  birthday?: string | null;
   imageUrl?: string;
   photoUrl?: string;
+  sortOrder?: number;
+  order?: number;
+  isActive?: boolean;
+  linkedInUrl?: string;
 }
 
 @Injectable({ providedIn: 'root' })
 export class BoardMembersService {
-  private readonly publicUrl = `${API_BASE_URL}/api/v1/public/board-members`;
-  private readonly adminUrl = `${API_BASE_URL}/api/v1/admin/board-members`;
+  private readonly publicUrl = `/api/v1/public/board-members`;
+  private readonly adminUrl = `/api/v1/admin/board-members`;
 
   constructor(
     private http: HttpClient,
     private authService: AuthService,
   ) {}
 
-  getPublic(): Observable<BoardMember[]> {
-    return this.http.get<BoardMember[]>(this.publicUrl);
+  getPublic(): Observable<unknown> {
+    return this.http.get<unknown>(this.publicUrl, {
+      params: this.noCacheParams(),
+    });
   }
 
-  create(payload: BoardMember): Observable<BoardMember> {
-    return this.http.post<BoardMember>(this.adminUrl, payload, { headers: this.authHeaders() });
+  getAdmin(): Observable<unknown> {
+    return this.http.get<unknown>(this.adminUrl, {
+      headers: this.authHeaders(),
+      params: this.noCacheParams(),
+    });
   }
 
-  update(id: number, payload: BoardMember): Observable<BoardMember> {
-    return this.http.put<BoardMember>(`${this.adminUrl}/${id}`, payload, { headers: this.authHeaders() });
+  create(payload: BoardMember): Observable<unknown> {
+    return this.http.post<unknown>(this.adminUrl, payload, { headers: this.authHeaders() });
+  }
+
+  update(id: number, payload: BoardMember): Observable<unknown> {
+    return this.http.put<unknown>(`${this.adminUrl}/${id}`, payload, { headers: this.authHeaders() });
+  }
+
+  uploadPhoto(file: File): Observable<unknown> {
+    const formData = new FormData();
+    formData.append('file', file);
+    return this.http.post<unknown>(`${this.adminUrl}/upload-photo`, formData, {
+      headers: this.authHeaders(),
+    });
   }
 
   remove(id: number): Observable<void> {
@@ -46,5 +70,9 @@ export class BoardMembersService {
   private authHeaders(): HttpHeaders {
     const token = this.authService.getToken() ?? '';
     return new HttpHeaders({ Authorization: `Bearer ${token}` });
+  }
+
+  private noCacheParams(): HttpParams {
+    return new HttpParams().set('_ts', Date.now().toString());
   }
 }

@@ -1,0 +1,90 @@
+<div class="aprobaciones-container">
+  <div class="header-section">
+    <h1 class="page-title">Aprobaciones de Registro</h1>
+    <p class="page-desc">Revisa y gestiona los nuevos registros del sistema. Los miembros aprobados podrán iniciar sesión y descargar archivos directamente.</p>
+  </div>
+
+  <!-- Messages -->
+  <div class="alert alert-success" *ngIf="mensaje">
+    <span class="alert-icon">✓</span>
+    <p>{{ mensaje }}</p>
+  </div>
+
+  <div class="alert alert-danger" *ngIf="error">
+    <span class="alert-icon">⚠</span>
+    <p>{{ error }}</p>
+  </div>
+
+  <!-- Unauthorized State -->
+  <div class="unauthorized-card" *ngIf="!permitido">
+    <div class="icon-wrapper">🔒</div>
+    <h2>Acceso Restringido</h2>
+    <p>Solo el Directorio de RRHH, el Presidente o el Vicepresidente tienen permisos para gestionar las aprobaciones de registro.</p>
+  </div>
+
+  <!-- Authorized State -->
+  <ng-container *ngIf="permitido">
+    <!-- Loading spinner -->
+    <div class="loading-state" *ngIf="cargando">
+      <div class="spinner"></div>
+      <p>Cargando postulaciones pendientes...</p>
+    </div>
+
+    <!-- Empty state -->
+    <div class="empty-state" *ngIf="!cargando && pendingUsers.length === 0">
+      <div class="empty-icon">🎉</div>
+      <h2>No hay registros pendientes</h2>
+      <p>Todos los registros de usuarios han sido procesados. ¡Buen trabajo!</p>
+    </div>
+
+    <!-- Pending users grid -->
+    <div class="pending-grid" *ngIf="!cargando && pendingUsers.length > 0">
+      <div class="pending-card" *ngFor="let user of pendingUsers">
+        <div class="card-header">
+          <div class="avatar-placeholder">
+            {{ (user.name ? user.name[0] : 'U') | uppercase }}
+          </div>
+          <div class="user-meta">
+            <h3>{{ user.name }}</h3>
+            <span class="major-badge">{{ user.major }}</span>
+          </div>
+        </div>
+
+        <div class="card-body">
+          <div class="info-row">
+            <span class="label">Correo:</span>
+            <span class="value">{{ user.email }}</span>
+          </div>
+          <div class="info-row">
+            <span class="label">Teléfono:</span>
+            <span class="value">{{ user.phone || 'No especificado' }}</span>
+          </div>
+          <div class="info-row">
+            <span class="label">Ciclo:</span>
+            <span class="value">{{ user.cycle }}° Ciclo</span>
+          </div>
+        </div>
+
+        <div class="card-actions">
+          <button
+            type="button"
+            class="btn-approve"
+            (click)="aprobar(user)"
+            [disabled]="procesandoId !== null"
+          >
+            <span class="btn-text" *ngIf="procesandoId !== user.id">Aprobar</span>
+            <span class="spinner-small" *ngIf="procesandoId === user.id"></span>
+          </button>
+          <button
+            type="button"
+            class="btn-reject"
+            (click)="rechazar(user)"
+            [disabled]="procesandoId !== null"
+          >
+            Rechazar
+          </button>
+        </div>
+      </div>
+    </div>
+  </ng-container>
+</div>

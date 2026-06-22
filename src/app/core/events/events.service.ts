@@ -2,7 +2,6 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
-import { API_BASE_URL } from '../config/api.config';
 import { AuthService } from '../auth/auth.service';
 
 export interface EventItem {
@@ -12,14 +11,17 @@ export interface EventItem {
   description?: string;
   startDate?: string;
   endDate?: string;
+  startAt?: string;
+  endAt?: string;
   location?: string;
   modality?: string;
+  isPublic?: boolean;
 }
 
 @Injectable({ providedIn: 'root' })
 export class EventsService {
-  private readonly publicUrl = `${API_BASE_URL}/api/v1/public/events`;
-  private readonly adminUrl = `${API_BASE_URL}/api/v1/admin/events`;
+  private readonly publicUrl = `/api/v1/public/events`;
+  private readonly adminUrl = `/api/v1/admin/events`;
 
   constructor(
     private http: HttpClient,
