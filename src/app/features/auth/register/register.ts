@@ -102,7 +102,7 @@ export class Register {
       phone: this.phone.trim(),
       password: this.password,
       major: this.major.trim(),
-      cycle: this.cycle,
+      cycle: this.cycle !== null ? String(this.cycle) : '',
     };
 
     this.authService
