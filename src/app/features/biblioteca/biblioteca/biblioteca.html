@@ -80,7 +80,7 @@
         <input type="number" placeholder="Anio" [(ngModel)]="formResearch.anio" />
         <input
           type="file"
-          accept=".pdf,.zip,application/pdf,application/zip,application/x-zip-compressed"
+          accept=".pdf,.zip,.rar,.doc,.docx,application/pdf,application/zip,application/x-zip-compressed,application/x-rar-compressed,application/vnd.rar,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
           (change)="onResearchFileSelected($event)"
           [disabled]="guardando || subiendoResearchArchivo"
         />
@@ -88,7 +88,7 @@
           <option [ngValue]="null" disabled>Categoria</option>
           <option *ngFor="let c of researchCategories" [ngValue]="c.id">{{ c.name }}</option>
         </select>
-        <p class="upload-hint full-span">Selecciona un archivo PDF o ZIP.</p>
+        <p class="upload-hint full-span">Selecciona un archivo PDF, DOC, DOCX, RAR o ZIP.</p>
         <p class="upload-state full-span" *ngIf="subiendoResearchArchivo">Subiendo archivo...</p>
         <p class="upload-state ok full-span" *ngIf="!subiendoResearchArchivo && researchArchivoNombre">
           Archivo cargado: {{ researchArchivoNombre }}
@@ -151,12 +151,12 @@
 
         <input
           type="file"
-          accept=".pdf,.zip,application/pdf,application/zip,application/x-zip-compressed"
+          accept=".pdf,.zip,.rar,.doc,.docx,application/pdf,application/zip,application/x-zip-compressed,application/x-rar-compressed,application/vnd.rar,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
           (change)="onExamFileSelected($event)"
           [disabled]="guardando || subiendoExamArchivo"
         />
         
-        <p class="upload-hint full-span">Selecciona un archivo PDF o ZIP.</p>
+        <p class="upload-hint full-span">Selecciona un archivo PDF, DOC, DOCX, RAR o ZIP.</p>
         <p class="upload-state full-span" *ngIf="subiendoExamArchivo">Subiendo archivo...</p>
         <p class="upload-state ok full-span" *ngIf="!subiendoExamArchivo && examArchivoNombre">
           Archivo cargado: {{ examArchivoNombre }}
@@ -210,12 +210,12 @@
 
         <input
           type="file"
-          accept=".pdf,.zip,application/pdf,application/zip,application/x-zip-compressed"
+          accept=".pdf,.zip,.rar,.doc,.docx,application/pdf,application/zip,application/x-zip-compressed,application/x-rar-compressed,application/vnd.rar,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
           (change)="onBookFileSelected($event)"
           [disabled]="guardando || subiendoBookArchivo"
         />
 
-        <p class="upload-hint full-span">Selecciona un archivo PDF o ZIP.</p>
+        <p class="upload-hint full-span">Selecciona un archivo PDF, DOC, DOCX, RAR o ZIP.</p>
         <p class="upload-state full-span" *ngIf="subiendoBookArchivo">Subiendo archivo...</p>
         <p class="upload-state ok full-span" *ngIf="!subiendoBookArchivo && bookArchivoNombre">
           Archivo cargado: {{ bookArchivoNombre }}

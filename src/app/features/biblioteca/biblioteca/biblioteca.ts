@@ -864,14 +864,22 @@ export class Biblioteca implements OnInit {
 
   private isAllowedDocument(file: File): boolean {
     const ext = file.name.split('.').pop()?.toLowerCase() ?? '';
-    if (ext === 'pdf' || ext === 'zip') {
+    const allowedExts = ['pdf', 'zip', 'rar', 'doc', 'docx'];
+    if (allowedExts.includes(ext)) {
       return true;
     }
 
     const type = file.type.toLowerCase();
-    return type === 'application/pdf'
-      || type === 'application/zip'
-      || type === 'application/x-zip-compressed';
+    const allowedTypes = [
+      'application/pdf',
+      'application/zip',
+      'application/x-zip-compressed',
+      'application/x-rar-compressed',
+      'application/vnd.rar',
+      'application/msword',
+      'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
+    ];
+    return allowedTypes.includes(type);
   }
 
   private extractUploadedPath(response: unknown): string {
