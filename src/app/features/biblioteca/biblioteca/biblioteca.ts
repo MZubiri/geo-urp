@@ -22,12 +22,14 @@ export interface Investigacion {
 
 export interface Examen {
   id?: number;
+  ciclo: string;
   curso: string;
-  tipo: 'Parcial' | 'Final' | 'Practica';
-  anio: number;
+  tipo: string;
+  periodo: string;
+  docente: string;
+  resuelto: boolean;
+  nota?: number;
   archivo: string;
-  descripcion?: string;
-  fecha?: string;
   categoryId?: number;
 }
 
@@ -72,9 +74,13 @@ export class Biblioteca implements OnInit {
 
   editandoExamId: number | null = null;
   formExam = {
+    ciclo: '',
     curso: '',
-    descripcion: '',
-    anio: new Date().getFullYear(),
+    tipo: 'Parcial',
+    periodo: '',
+    docente: '',
+    resuelto: false,
+    nota: null as number | null,
     archivo: '',
     categoryId: null as number | null,
   };
@@ -90,6 +96,8 @@ export class Biblioteca implements OnInit {
     archivo: '',
     categoryId: null as number | null,
   };
+  subiendoBookArchivo = false;
+  bookArchivoNombre = '';
 
   areas: string[] = [];
   anios: number[] = [];
@@ -98,9 +106,12 @@ export class Biblioteca implements OnInit {
   busqueda = '';
 
   busquedaExamen = '';
-  filtroTipoExamen: 'Todos' | 'Parcial' | 'Final' | 'Practica' = 'Todos';
-  filtroAnioExamen: number | 'Todos' = 'Todos';
-  aniosExamenes: number[] = [];
+  filtroCicloExamen = 'Todos';
+  filtroTipoExamen = 'Todos';
+  filtroPeriodoExamen = 'Todos';
+  filtroResueltoExamen = 'Todos';
+  ciclosExamenes: string[] = [];
+  periodosExamenes: string[] = [];
 
   busquedaLibro = '';
   filtroAreaLibro = 'Todas';
@@ -265,17 +276,16 @@ export class Biblioteca implements OnInit {
   }
 
   private mapExam(e: Exam): Examen {
-    const year = e.date ? new Date(e.date).getFullYear() : new Date().getFullYear();
-    const tipo = this.extractExamType(`${e.title ?? ''} ${e.description ?? ''}`);
-
     return {
       id: e.id,
-      curso: e.title ?? '',
-      tipo,
-      anio: year,
+      ciclo: e.ciclo ?? '',
+      curso: e.curso ?? '',
+      tipo: e.tipo ?? '',
+      periodo: e.periodo ?? '',
+      docente: e.docente ?? '',
+      resuelto: !!e.resuelto,
+      nota: e.nota,
       archivo: e.fileUrl ?? '',
-      descripcion: e.description ?? '',
-      fecha: e.date,
       categoryId: e.categoryId,
     };
   }
@@ -312,7 +322,8 @@ export class Biblioteca implements OnInit {
   }
 
   private actualizarFiltrosExamenes(): void {
-    this.aniosExamenes = Array.from(new Set(this.examenes.map((e) => e.anio))).sort((a, b) => b - a);
+    this.ciclosExamenes = Array.from(new Set(this.examenes.map((e) => e.ciclo).filter(Boolean))).sort();
+    this.periodosExamenes = Array.from(new Set(this.examenes.map((e) => e.periodo).filter(Boolean))).sort((a, b) => b.localeCompare(a));
   }
 
   private actualizarFiltrosLibros(): void {
@@ -456,9 +467,13 @@ export class Biblioteca implements OnInit {
   editarExam(e: Examen): void {
     this.editandoExamId = e.id ?? null;
     this.formExam = {
+      ciclo: e.ciclo,
       curso: e.curso,
-      descripcion: e.descripcion ?? '',
-      anio: e.anio,
+      tipo: e.tipo,
+      periodo: e.periodo,
+      docente: e.docente,
+      resuelto: e.resuelto,
+      nota: e.nota ?? null,
       archivo: e.archivo,
       categoryId: e.categoryId ?? this.firstCategoryId(this.examCategories),
     };
@@ -521,10 +536,14 @@ export class Biblioteca implements OnInit {
     }
 
     const payload: Exam = {
-      title: this.formExam.curso,
-      description: this.formExam.descripcion,
+      ciclo: this.formExam.ciclo,
+      curso: this.formExam.curso,
+      tipo: this.formExam.tipo,
+      periodo: this.formExam.periodo,
+      docente: this.formExam.docente,
+      resuelto: this.formExam.resuelto,
+      nota: this.formExam.nota ?? undefined,
       fileUrl: this.formExam.archivo,
-      date: new Date(this.formExam.anio, 0, 1).toISOString(),
       categoryId,
     };
 
@@ -579,9 +598,13 @@ export class Biblioteca implements OnInit {
     this.subiendoExamArchivo = false;
     this.examArchivoNombre = '';
     this.formExam = {
+      ciclo: '',
       curso: '',
-      descripcion: '',
-      anio: new Date().getFullYear(),
+      tipo: 'Parcial',
+      periodo: '',
+      docente: '',
+      resuelto: false,
+      nota: null as number | null,
       archivo: '',
       categoryId: this.firstCategoryId(this.examCategories),
     };
@@ -597,6 +620,49 @@ export class Biblioteca implements OnInit {
       archivo: l.archivo ?? '',
       categoryId: l.categoryId ?? this.firstCategoryId(this.bookCategories),
     };
+    this.bookArchivoNombre = this.extractFileName(l.archivo);
+  }
+
+  onBookFileSelected(event: Event): void {
+    const input = event.target as HTMLInputElement | null;
+    const file = input?.files?.[0];
+    if (!file) {
+      return;
+    }
+
+    if (!this.isAllowedDocument(file)) {
+      this.error = 'Solo se permiten archivos PDF o ZIP.';
+      input.value = '';
+      return;
+    }
+
+    this.error = '';
+    this.subiendoBookArchivo = true;
+    this.bookArchivoNombre = '';
+
+    this.libraryService
+      .uploadBookFile(file)
+      .pipe(
+        finalize(() => {
+          this.subiendoBookArchivo = false;
+          this.cdr.detectChanges();
+        }),
+      )
+      .subscribe({
+        next: (response) => {
+          const uploadedPath = this.extractUploadedPath(response);
+          if (!uploadedPath) {
+            this.error = 'No se pudo obtener la URL del archivo cargado.';
+            return;
+          }
+
+          this.formBook.archivo = uploadedPath;
+          this.bookArchivoNombre = file.name;
+        },
+        error: (error: HttpErrorResponse) => {
+          this.error = this.getErrorMessage(error);
+        },
+      });
   }
 
   guardarBook(): void {
@@ -605,6 +671,10 @@ export class Biblioteca implements OnInit {
     const categoryId = this.formBook.categoryId ?? this.firstCategoryId(this.bookCategories);
     if (categoryId === null) {
       this.error = 'Selecciona una categoria de libro.';
+      return;
+    }
+    if (!this.formBook.archivo.trim()) {
+      this.error = 'Sube un archivo PDF o ZIP antes de guardar.';
       return;
     }
 
@@ -665,6 +735,8 @@ export class Biblioteca implements OnInit {
 
   cancelarEdicionBook(): void {
     this.editandoBookId = null;
+    this.subiendoBookArchivo = false;
+    this.bookArchivoNombre = '';
     this.formBook = {
       titulo: '',
       autor: '',
@@ -687,11 +759,16 @@ export class Biblioteca implements OnInit {
 
   get examenesFiltrados(): Examen[] {
     return this.examenes.filter((e) => {
-      const porTexto = e.curso.toLowerCase().includes(this.busquedaExamen.toLowerCase());
+      const porTexto = e.curso.toLowerCase().includes(this.busquedaExamen.toLowerCase())
+        || e.docente.toLowerCase().includes(this.busquedaExamen.toLowerCase());
+      const porCiclo = this.filtroCicloExamen === 'Todos' || e.ciclo === this.filtroCicloExamen;
       const porTipo = this.filtroTipoExamen === 'Todos' || e.tipo === this.filtroTipoExamen;
-      const porAnio = this.filtroAnioExamen === 'Todos' || e.anio === this.filtroAnioExamen;
+      const porPeriodo = this.filtroPeriodoExamen === 'Todos' || e.periodo === this.filtroPeriodoExamen;
+      const porResuelto = this.filtroResueltoExamen === 'Todos'
+        || (this.filtroResueltoExamen === 'Si' && e.resuelto)
+        || (this.filtroResueltoExamen === 'No' && !e.resuelto);
 
-      return porTexto && porTipo && porAnio;
+      return porTexto && porCiclo && porTipo && porPeriodo && porResuelto;
     });
   }
 

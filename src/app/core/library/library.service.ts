@@ -17,9 +17,13 @@ export interface Research {
 
 export interface Exam {
   id?: number;
-  title?: string;
-  description?: string;
-  date?: string;
+  ciclo?: string;
+  curso?: string;
+  tipo?: string;
+  periodo?: string;
+  docente?: string;
+  resuelto?: boolean;
+  nota?: number;
   fileUrl?: string;
   categoryId?: number;
   isActive?: boolean;
@@ -234,6 +238,14 @@ export class LibraryService {
       `${this.baseUrl}/admin/exams/upload-file`,
       `${this.baseUrl}/admin/exams/upload-document`,
       `${this.baseUrl}/admin/exams/upload`,
+    ]);
+  }
+
+  uploadBookFile(file: File): Observable<unknown> {
+    return this.uploadWithFallback(file, [
+      `${this.baseUrl}/admin/books/upload-file`,
+      `${this.baseUrl}/admin/books/upload-document`,
+      `${this.baseUrl}/admin/books/upload`,
     ]);
   }
 

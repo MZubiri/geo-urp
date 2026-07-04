@@ -30,7 +30,12 @@
     </div>
 
     <div class="filtros" *ngIf="seccionActiva === 'examenes'">
-      <input type="text" placeholder="Buscar curso..." [(ngModel)]="busquedaExamen" />
+      <input type="text" placeholder="Buscar curso o docente..." [(ngModel)]="busquedaExamen" />
+
+      <select [(ngModel)]="filtroCicloExamen">
+        <option value="Todos">Ciclo</option>
+        <option *ngFor="let c of ciclosExamenes" [value]="c">{{ c }}</option>
+      </select>
 
       <select [(ngModel)]="filtroTipoExamen">
         <option value="Todos">Tipo</option>
@@ -39,9 +44,15 @@
         <option value="Practica">Practica</option>
       </select>
 
-      <select [(ngModel)]="filtroAnioExamen">
-        <option value="Todos">Anio</option>
-        <option *ngFor="let y of aniosExamenes" [ngValue]="y">{{ y }}</option>
+      <select [(ngModel)]="filtroPeriodoExamen">
+        <option value="Todos">Periodo</option>
+        <option *ngFor="let p of periodosExamenes" [value]="p">{{ p }}</option>
+      </select>
+
+      <select [(ngModel)]="filtroResueltoExamen">
+        <option value="Todos">Resuelto</option>
+        <option value="Si">Sí</option>
+        <option value="No">No</option>
       </select>
       <a class="gear-btn" routerLink="/biblioteca/categorias" *ngIf="authService.isAdmin()" title="Gestionar categorias">
         &#9881;
@@ -117,19 +128,34 @@
     <div class="admin-box" *ngIf="authService.isAdmin()">
       <h3>{{ editandoExamId ? 'Editar examen' : 'Nuevo examen' }}</h3>
       <div class="form-grid">
-        <input type="text" placeholder="Titulo" [(ngModel)]="formExam.curso" />
-        <input type="text" placeholder="Descripcion" [(ngModel)]="formExam.descripcion" />
-        <input type="number" placeholder="Anio" [(ngModel)]="formExam.anio" />
+        <input type="text" placeholder="Curso" [(ngModel)]="formExam.curso" />
+        <input type="text" placeholder="Ciclo (ej. I, II, III)" [(ngModel)]="formExam.ciclo" />
+        <select [(ngModel)]="formExam.tipo">
+          <option value="Parcial">Parcial</option>
+          <option value="Final">Final</option>
+          <option value="Practica">Practica</option>
+        </select>
+        <input type="text" placeholder="Periodo (ej. 2026-I)" [(ngModel)]="formExam.periodo" />
+        <input type="text" placeholder="Docente" [(ngModel)]="formExam.docente" />
+        <input type="number" step="0.1" min="0" max="20" placeholder="Nota (opcional)" [(ngModel)]="formExam.nota" />
+        
+        <div style="display: flex; align-items: center; gap: 8px;">
+          <input type="checkbox" id="examResuelto" [(ngModel)]="formExam.resuelto" />
+          <label for="examResuelto" style="color: #bac2d3; font-size: 0.9rem; cursor: pointer;">¿Resuelto?</label>
+        </div>
+
+        <select [(ngModel)]="formExam.categoryId">
+          <option [ngValue]="null" disabled>Categoria</option>
+          <option *ngFor="let c of examCategories" [ngValue]="c.id">{{ c.name }}</option>
+        </select>
+
         <input
           type="file"
           accept=".pdf,.zip,application/pdf,application/zip,application/x-zip-compressed"
           (change)="onExamFileSelected($event)"
           [disabled]="guardando || subiendoExamArchivo"
         />
-        <select [(ngModel)]="formExam.categoryId">
-          <option [ngValue]="null" disabled>Categoria</option>
-          <option *ngFor="let c of examCategories" [ngValue]="c.id">{{ c.name }}</option>
-        </select>
+        
         <p class="upload-hint full-span">Selecciona un archivo PDF o ZIP.</p>
         <p class="upload-state full-span" *ngIf="subiendoExamArchivo">Subiendo archivo...</p>
         <p class="upload-state ok full-span" *ngIf="!subiendoExamArchivo && examArchivoNombre">
@@ -148,7 +174,13 @@
       <article class="paper" *ngFor="let e of examenesFiltrados">
         <div class="info">
           <h3>{{ e.curso }}</h3>
-          <p class="autores">{{ e.tipo }} Â· {{ e.anio }}</p>
+          <p class="autores">
+            Ciclo {{ e.ciclo }} &middot; {{ e.tipo }} &middot; Periodo {{ e.periodo }} &middot; Docente: {{ e.docente }}
+          </p>
+          <p class="autores">
+            Resuelto: {{ e.resuelto ? 'Sí' : 'No' }}
+            <span *ngIf="e.nota !== null && e.nota !== undefined"> &middot; Nota: {{ e.nota }}</span>
+          </p>
         </div>
 
         <div class="acciones-item">
@@ -170,15 +202,28 @@
         <input type="text" placeholder="Autor" [(ngModel)]="formBook.autor" />
         <input type="text" placeholder="Editorial" [(ngModel)]="formBook.editorial" />
         <input type="number" placeholder="Anio" [(ngModel)]="formBook.anio" />
-        <input type="text" placeholder="URL del archivo" [(ngModel)]="formBook.archivo" />
+        
         <select [(ngModel)]="formBook.categoryId">
           <option [ngValue]="null" disabled>Categoria</option>
           <option *ngFor="let c of bookCategories" [ngValue]="c.id">{{ c.name }}</option>
         </select>
+
+        <input
+          type="file"
+          accept=".pdf,.zip,application/pdf,application/zip,application/x-zip-compressed"
+          (change)="onBookFileSelected($event)"
+          [disabled]="guardando || subiendoBookArchivo"
+        />
+
+        <p class="upload-hint full-span">Selecciona un archivo PDF o ZIP.</p>
+        <p class="upload-state full-span" *ngIf="subiendoBookArchivo">Subiendo archivo...</p>
+        <p class="upload-state ok full-span" *ngIf="!subiendoBookArchivo && bookArchivoNombre">
+          Archivo cargado: {{ bookArchivoNombre }}
+        </p>
       </div>
       <div class="acciones">
-        <button type="button" (click)="guardarBook()" [disabled]="guardando">
-          {{ guardando ? 'Guardando...' : (editandoBookId ? 'Actualizar' : 'Crear') }}
+        <button type="button" (click)="guardarBook()" [disabled]="guardando || subiendoBookArchivo">
+          {{ subiendoBookArchivo ? 'Subiendo archivo...' : (guardando ? 'Guardando...' : (editandoBookId ? 'Actualizar' : 'Crear')) }}
         </button>
         <button type="button" (click)="cancelarEdicionBook()" *ngIf="editandoBookId">Cancelar</button>
       </div>
