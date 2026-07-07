@@ -1,20 +1,24 @@
 <section class="hero">
   <div class="hero-inner">
-
+    <div class="strata-overlay"></div>
+    
+    <p class="eyebrow">Grupo Estudiantil de Geotecnia</p>
     <h1>GEO-URP</h1>
 
     <p class="subtitle">
-      Grupo de Estudio e Investigación<br />
+      Investigación, Ciencia y Exploración del Suelo<br />
       <span>Universidad Ricardo Palma</span>
     </p>
 
-    <div class="divider"></div>
-
     <p class="descripcion">
-      Espacio académico dedicado al análisis, investigación y divulgación
-      de las ciencias de la Tierra, fomentando el pensamiento crítico,
-      la colaboración y el desarrollo científico.
+      Plataforma académica dedicada a compartir investigaciones, exámenes de ingeniería civil,
+      proyectos de geotecnia y eventos comunitarios.
     </p>
 
+    <div class="hero-actions">
+      <a routerLink="/directorio" class="btn-primary hero-btn">Mesa Directiva</a>
+      <a routerLink="/biblioteca" class="btn-secondary hero-btn" *ngIf="authService.isAuthenticated()">Biblioteca</a>
+      <a routerLink="/register" class="btn-secondary hero-btn" *ngIf="!authService.isAuthenticated()">Registrarse</a>
+    </div>
   </div>
 </section>

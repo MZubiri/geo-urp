@@ -1,167 +1,251 @@
 <section class="biblioteca">
   <h1>Biblioteca GEO-URP</h1>
-  <p class="sub">
-    Recursos académicos del Departamento de Investigación
-  </p>
+  <p class="sub">Recursos academicos del Departamento de Investigacion</p>
+  <p class="state-line ok" *ngIf="solicitudMensaje">{{ solicitudMensaje }}</p>
+  <p class="state-line error" *ngIf="error">{{ error }}</p>
 
-  <!-- 🧭 BARRA DE CONTROL -->
   <div class="barra-control">
-
-    <!-- TABS -->
     <nav class="tabs">
-      <button
-        [class.activo]="seccionActiva === 'investigaciones'"
-        (click)="seccionActiva = 'investigaciones'">
+      <button [class.activo]="seccionActiva === 'investigaciones'" (click)="seccionActiva = 'investigaciones'">
         Investigaciones
       </button>
-
-      <button
-        [class.activo]="seccionActiva === 'examenes'"
-        (click)="seccionActiva = 'examenes'">
-        Exámenes
-      </button>
-
-      <button
-        [class.activo]="seccionActiva === 'libros'"
-        (click)="seccionActiva = 'libros'">
-        Libros
-      </button>
+      <button [class.activo]="seccionActiva === 'examenes'" (click)="seccionActiva = 'examenes'">Examenes</button>
+      <button [class.activo]="seccionActiva === 'libros'" (click)="seccionActiva = 'libros'">Libros</button>
     </nav>
 
-    <!-- 🔍 FILTROS INVESTIGACIONES -->
     <div class="filtros" *ngIf="seccionActiva === 'investigaciones'">
-      <input
-        type="text"
-        placeholder="Buscar por título…"
-        [(ngModel)]="busqueda"
-      />
+      <input type="text" placeholder="Buscar por titulo..." [(ngModel)]="busqueda" />
 
       <select [(ngModel)]="filtroArea">
-        <option *ngFor="let a of areas" [value]="a">
-          {{ a }}
-        </option>
+        <option *ngFor="let a of areas" [value]="a">{{ a }}</option>
       </select>
 
       <select [(ngModel)]="filtroAnio">
-        <option value="Todos">Año</option>
-        <option *ngFor="let y of anios" [ngValue]="y">
-          {{ y }}
-        </option>
+        <option value="Todos">Anio</option>
+        <option *ngFor="let y of anios" [ngValue]="y">{{ y }}</option>
       </select>
+      <a class="gear-btn" routerLink="/biblioteca/categorias" *ngIf="authService.isAdmin()" title="Gestionar categorias">
+        &#9881;
+      </a>
     </div>
 
-    <!-- 🔍 FILTROS EXÁMENES -->
     <div class="filtros" *ngIf="seccionActiva === 'examenes'">
-      <input
-        type="text"
-        placeholder="Buscar curso…"
-        [(ngModel)]="busquedaExamen"
-      />
+      <input type="text" placeholder="Buscar curso o docente..." [(ngModel)]="busquedaExamen" />
+
+      <select [(ngModel)]="filtroCicloExamen">
+        <option value="Todos">Ciclo</option>
+        <option *ngFor="let c of ciclosExamenes" [value]="c">{{ c }}</option>
+      </select>
 
       <select [(ngModel)]="filtroTipoExamen">
         <option value="Todos">Tipo</option>
         <option value="Parcial">Parcial</option>
         <option value="Final">Final</option>
-        <option value="Práctica">Práctica</option>
+        <option value="Practica">Practica</option>
       </select>
 
-      <select [(ngModel)]="filtroAnioExamen">
-        <option value="Todos">Año</option>
-        <option *ngFor="let y of anios" [ngValue]="y">
-          {{ y }}
-        </option>
+      <select [(ngModel)]="filtroPeriodoExamen">
+        <option value="Todos">Periodo</option>
+        <option *ngFor="let p of periodosExamenes" [value]="p">{{ p }}</option>
       </select>
+
+      <select [(ngModel)]="filtroResueltoExamen">
+        <option value="Todos">Resuelto</option>
+        <option value="Si">Sí</option>
+        <option value="No">No</option>
+      </select>
+      <a class="gear-btn" routerLink="/biblioteca/categorias" *ngIf="authService.isAdmin()" title="Gestionar categorias">
+        &#9881;
+      </a>
     </div>
 
-    <!-- 🔍 FILTROS LIBROS -->
     <div class="filtros" *ngIf="seccionActiva === 'libros'">
-      <input
-        type="text"
-        placeholder="Buscar libro o autor…"
-        [(ngModel)]="busquedaLibro"
-      />
+      <input type="text" placeholder="Buscar libro o autor..." [(ngModel)]="busquedaLibro" />
 
       <select [(ngModel)]="filtroAreaLibro">
-        <option *ngFor="let a of areasLibros" [value]="a">
-          {{ a }}
-        </option>
+        <option *ngFor="let a of areasLibros" [value]="a">{{ a }}</option>
       </select>
+      <a class="gear-btn" routerLink="/biblioteca/categorias" *ngIf="authService.isAdmin()" title="Gestionar categorias">
+        &#9881;
+      </a>
     </div>
-
   </div>
 
-  <!-- ======================= -->
-  <!-- 🧪 INVESTIGACIONES -->
-  <!-- ======================= -->
   <section *ngIf="seccionActiva === 'investigaciones'">
+    <div class="admin-box" *ngIf="authService.isAdmin()">
+      <h3>{{ editandoResearchId ? 'Editar investigacion' : 'Nueva investigacion' }}</h3>
+      <div class="form-grid">
+        <input type="text" placeholder="Titulo" [(ngModel)]="formResearch.titulo" />
+        <input type="text" placeholder="Resumen / Autores" [(ngModel)]="formResearch.autores" />
+        <input type="number" placeholder="Anio" [(ngModel)]="formResearch.anio" />
+        <input
+          type="file"
+          accept=".pdf,.zip,.rar,.doc,.docx,application/pdf,application/zip,application/x-zip-compressed,application/x-rar-compressed,application/vnd.rar,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+          (change)="onResearchFileSelected($event)"
+          [disabled]="guardando || subiendoResearchArchivo"
+        />
+        <select [(ngModel)]="formResearch.categoryId">
+          <option [ngValue]="null" disabled>Categoria</option>
+          <option *ngFor="let c of researchCategories" [ngValue]="c.id">{{ c.name }}</option>
+        </select>
+        <p class="upload-hint full-span">Selecciona un archivo PDF, DOC, DOCX, RAR o ZIP.</p>
+        <p class="upload-state full-span" *ngIf="subiendoResearchArchivo">Subiendo archivo...</p>
+        <p class="upload-state ok full-span" *ngIf="!subiendoResearchArchivo && researchArchivoNombre">
+          Archivo cargado: {{ researchArchivoNombre }}
+        </p>
+      </div>
+      <div class="acciones">
+        <button type="button" (click)="guardarResearch()" [disabled]="guardando || subiendoResearchArchivo">
+          {{ subiendoResearchArchivo ? 'Subiendo archivo...' : (guardando ? 'Guardando...' : (editandoResearchId ? 'Actualizar' : 'Crear')) }}
+        </button>
+        <button type="button" (click)="cancelarEdicionResearch()" *ngIf="editandoResearchId">Cancelar</button>
+      </div>
+    </div>
 
     <div class="lista">
       <article class="paper" *ngFor="let i of investigacionesFiltradas">
         <div class="info">
           <h3>{{ i.titulo }}</h3>
           <p class="autores">{{ i.autores }}</p>
-
           <div class="meta">
             <span>{{ i.area }}</span>
             <span>{{ i.anio }}</span>
           </div>
         </div>
 
-        <a class="btn" [href]="i.archivo" target="_blank">
-          Ver PDF
-        </a>
+        <div class="acciones-item">
+          <a class="btn" [href]="resolveDownloadUrl(i.archivo)" target="_blank">Ver PDF</a>
+          <button type="button" class="btn" (click)="editarResearch(i)" *ngIf="authService.isAdmin()">Editar</button>
+          <button type="button" class="btn danger" (click)="eliminarResearch(i)" *ngIf="authService.isAdmin()">Eliminar</button>
+        </div>
       </article>
     </div>
 
-    <p *ngIf="investigacionesFiltradas.length === 0" class="vacio">
-      No se encontraron investigaciones con esos criterios.
-    </p>
+    <p *ngIf="investigacionesFiltradas.length === 0" class="vacio">No se encontraron investigaciones con esos criterios.</p>
   </section>
 
-  <!-- ======================= -->
-  <!-- 📝 EXÁMENES -->
-  <!-- ======================= -->
   <section *ngIf="seccionActiva === 'examenes'">
+    <div class="admin-box" *ngIf="authService.isAdmin()">
+      <h3>{{ editandoExamId ? 'Editar examen' : 'Nuevo examen' }}</h3>
+      <div class="form-grid">
+        <input type="text" placeholder="Curso" [(ngModel)]="formExam.curso" />
+        <input type="text" placeholder="Ciclo (ej. I, II, III)" [(ngModel)]="formExam.ciclo" />
+        <select [(ngModel)]="formExam.tipo">
+          <option value="Parcial">Parcial</option>
+          <option value="Final">Final</option>
+          <option value="Practica">Practica</option>
+        </select>
+        <input type="text" placeholder="Periodo (ej. 2026-I)" [(ngModel)]="formExam.periodo" />
+        <input type="text" placeholder="Docente" [(ngModel)]="formExam.docente" />
+        <input type="number" step="0.1" min="0" max="20" placeholder="Nota (opcional)" [(ngModel)]="formExam.nota" />
+        
+        <div style="display: flex; align-items: center; gap: 8px;">
+          <input type="checkbox" id="examResuelto" [(ngModel)]="formExam.resuelto" />
+          <label for="examResuelto" style="color: #bac2d3; font-size: 0.9rem; cursor: pointer;">¿Resuelto?</label>
+        </div>
+
+        <select [(ngModel)]="formExam.categoryId">
+          <option [ngValue]="null" disabled>Categoria</option>
+          <option *ngFor="let c of examCategories" [ngValue]="c.id">{{ c.name }}</option>
+        </select>
+
+        <input
+          type="file"
+          accept=".pdf,.zip,.rar,.doc,.docx,application/pdf,application/zip,application/x-zip-compressed,application/x-rar-compressed,application/vnd.rar,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+          (change)="onExamFileSelected($event)"
+          [disabled]="guardando || subiendoExamArchivo"
+        />
+        
+        <p class="upload-hint full-span">Selecciona un archivo PDF, DOC, DOCX, RAR o ZIP.</p>
+        <p class="upload-state full-span" *ngIf="subiendoExamArchivo">Subiendo archivo...</p>
+        <p class="upload-state ok full-span" *ngIf="!subiendoExamArchivo && examArchivoNombre">
+          Archivo cargado: {{ examArchivoNombre }}
+        </p>
+      </div>
+      <div class="acciones">
+        <button type="button" (click)="guardarExam()" [disabled]="guardando || subiendoExamArchivo">
+          {{ subiendoExamArchivo ? 'Subiendo archivo...' : (guardando ? 'Guardando...' : (editandoExamId ? 'Actualizar' : 'Crear')) }}
+        </button>
+        <button type="button" (click)="cancelarEdicionExam()" *ngIf="editandoExamId">Cancelar</button>
+      </div>
+    </div>
 
     <div class="lista">
       <article class="paper" *ngFor="let e of examenesFiltrados">
         <div class="info">
           <h3>{{ e.curso }}</h3>
-          <p class="autores">{{ e.tipo }} · {{ e.anio }}</p>
+          <p class="autores">
+            Ciclo {{ e.ciclo }} &middot; {{ e.tipo }} &middot; Periodo {{ e.periodo }} &middot; Docente: {{ e.docente }}
+          </p>
+          <p class="autores">
+            Resuelto: {{ e.resuelto ? 'Sí' : 'No' }}
+            <span *ngIf="e.nota !== null && e.nota !== undefined"> &middot; Nota: {{ e.nota }}</span>
+          </p>
         </div>
 
-        <a class="btn" [href]="e.archivo" target="_blank">
-          Ver examen
-        </a>
+        <div class="acciones-item">
+          <a class="btn" [href]="resolveDownloadUrl(e.archivo)" target="_blank">Ver examen</a>
+          <button type="button" class="btn" (click)="editarExam(e)" *ngIf="authService.isAdmin()">Editar</button>
+          <button type="button" class="btn danger" (click)="eliminarExam(e)" *ngIf="authService.isAdmin()">Eliminar</button>
+        </div>
       </article>
     </div>
 
-    <p *ngIf="examenesFiltrados.length === 0" class="vacio">
-      No se encontraron exámenes con esos criterios.
-    </p>
+    <p *ngIf="examenesFiltrados.length === 0" class="vacio">No se encontraron examenes con esos criterios.</p>
   </section>
 
-  <!-- ======================= -->
-  <!-- 📦 LIBROS -->
-  <!-- ======================= -->
   <section *ngIf="seccionActiva === 'libros'">
+    <div class="admin-box" *ngIf="authService.isAdmin()">
+      <h3>{{ editandoBookId ? 'Editar libro' : 'Nuevo libro' }}</h3>
+      <div class="form-grid">
+        <input type="text" placeholder="Titulo" [(ngModel)]="formBook.titulo" />
+        <input type="text" placeholder="Autor" [(ngModel)]="formBook.autor" />
+        <input type="text" placeholder="Editorial" [(ngModel)]="formBook.editorial" />
+        <input type="number" placeholder="Anio" [(ngModel)]="formBook.anio" />
+        
+        <select [(ngModel)]="formBook.categoryId">
+          <option [ngValue]="null" disabled>Categoria</option>
+          <option *ngFor="let c of bookCategories" [ngValue]="c.id">{{ c.name }}</option>
+        </select>
+
+        <input
+          type="file"
+          accept=".pdf,.zip,.rar,.doc,.docx,application/pdf,application/zip,application/x-zip-compressed,application/x-rar-compressed,application/vnd.rar,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+          (change)="onBookFileSelected($event)"
+          [disabled]="guardando || subiendoBookArchivo"
+        />
+
+        <p class="upload-hint full-span">Selecciona un archivo PDF, DOC, DOCX, RAR o ZIP.</p>
+        <p class="upload-state full-span" *ngIf="subiendoBookArchivo">Subiendo archivo...</p>
+        <p class="upload-state ok full-span" *ngIf="!subiendoBookArchivo && bookArchivoNombre">
+          Archivo cargado: {{ bookArchivoNombre }}
+        </p>
+      </div>
+      <div class="acciones">
+        <button type="button" (click)="guardarBook()" [disabled]="guardando || subiendoBookArchivo">
+          {{ subiendoBookArchivo ? 'Subiendo archivo...' : (guardando ? 'Guardando...' : (editandoBookId ? 'Actualizar' : 'Crear')) }}
+        </button>
+        <button type="button" (click)="cancelarEdicionBook()" *ngIf="editandoBookId">Cancelar</button>
+      </div>
+    </div>
 
     <div class="lista">
       <article class="paper" *ngFor="let l of librosFiltrados">
         <div class="info">
           <h3>{{ l.titulo }}</h3>
-          <p class="autores">{{ l.autor }} · {{ l.area }}</p>
+          <p class="autores">{{ l.autor }} Â· {{ l.area }}</p>
+          <p class="autores" *ngIf="l.editorial">{{ l.editorial }} ({{ l.anio }})</p>
         </div>
 
-        <button class="btn aprobar" (click)="solicitarLibro(l)">
-          Solicitar PDF
-        </button>
+        <div class="acciones-item">
+          <a class="btn aprobar" [href]="resolveDownloadUrl(l.archivo)" target="_blank" *ngIf="l.archivo">Descargar PDF</a>
+          <button type="button" class="btn" disabled *ngIf="!l.archivo">No disponible</button>
+          <button type="button" class="btn" (click)="editarBook(l)" *ngIf="authService.isAdmin()">Editar</button>
+          <button type="button" class="btn danger" (click)="eliminarBook(l)" *ngIf="authService.isAdmin()">Eliminar</button>
+        </div>
       </article>
     </div>
 
-    <p *ngIf="librosFiltrados.length === 0" class="vacio">
-      No se encontraron libros con esos criterios.
-    </p>
+    <p *ngIf="librosFiltrados.length === 0" class="vacio">No se encontraron libros con esos criterios.</p>
   </section>
-
 </section>

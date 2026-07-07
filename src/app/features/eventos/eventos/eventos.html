@@ -1,41 +1,63 @@
 <section class="eventos">
-  <h1>Eventos Próximos</h1>
+  <h1>Eventos</h1>
   <p class="sub">Actividades académicas y de investigación</p>
 
-   <div class="lista">
-    <article
-      class="evento"
-      *ngFor="let e of eventos"
-      [class.pasado]="isPast(e)"
-      [class.proximo]="isUpcoming(e)"
-    >
+  <p class="sub" *ngIf="cargando">Cargando eventos...</p>
+  <p class="sub error" *ngIf="error">{{ error }}</p>
+  <div class="acciones" *ngIf="error">
+    <button type="button" (click)="cargarEventos()">Reintentar</button>
+  </div>
+
+  <p class="sub" *ngIf="!cargando && !error && eventos.length === 0">No hay eventos para mostrar.</p>
+
+  <div class="admin-box" *ngIf="authService.isAdmin()">
+    <h3>{{ editandoId ? 'Editar evento' : 'Nuevo evento' }}</h3>
+
+    <div class="form-grid">
+      <input type="text" placeholder="Título" [(ngModel)]="form.title" />
+      <input type="text" placeholder="Ubicación" [(ngModel)]="form.location" />
+      <input type="datetime-local" placeholder="Inicio" [(ngModel)]="form.startDate" />
+      <input type="datetime-local" placeholder="Fin" [(ngModel)]="form.endDate" />
+      <select [(ngModel)]="form.modality">
+        <option value="Presencial">Presencial</option>
+        <option value="Virtual">Virtual</option>
+      </select>
+    </div>
+
+    <textarea rows="3" placeholder="Descripción" [(ngModel)]="form.description"></textarea>
+
+    <div class="acciones">
+      <button type="button" (click)="guardar()" [disabled]="guardando">
+        {{ guardando ? 'Guardando...' : (editandoId ? 'Actualizar' : 'Crear') }}
+      </button>
+      <button type="button" (click)="cancelarEdicion()" *ngIf="editandoId">Cancelar</button>
+    </div>
+  </div>
+
+  <div class="lista">
+    <article class="evento" *ngFor="let e of eventos" [class.pasado]="isPast(e)" [class.proximo]="!isPast(e)">
       <div class="fecha">
-        <span>{{ e.fechaInicio | date:'dd' }}</span>
-        <small>{{ e.fechaInicio | date:'MMM' }}</small>
+        <span>{{ startDate(e) | date:'dd' }}</span>
+        <small>{{ startDate(e) | date:'MMM' }}</small>
       </div>
 
       <div class="info">
-        <h3>{{ e.titulo }}</h3>
-        <p>{{ e.descripcion }}</p>
+        <h3>{{ e.title || e.name }}</h3>
+        <p>{{ e.description }}</p>
 
         <div class="meta">
-          <span>{{ e.lugar }}</span>
-          <span class="tipo">{{ e.tipo }}</span>
+          <span>{{ e.location }}</span>
+          <span class="tipo">{{ e.modality }}</span>
         </div>
 
-        <!-- SOLO si es próximo -->
-        <a
-          *ngIf="isUpcoming(e)"
-          class="btn"
-          [href]="googleCalendarLink(e)"
-          target="_blank">
-          Agregar a calendario
-        </a>
+        <a *ngIf="!isPast(e)" class="btn" [href]="googleCalendarLink(e)" target="_blank">Agregar a calendario</a>
 
-        <!-- SOLO si ya pasó -->
-        <span *ngIf="isPast(e)" class="estado">
-          Evento finalizado
-        </span>
+        <span *ngIf="isPast(e)" class="estado">Evento finalizado</span>
+
+        <div class="acciones" *ngIf="authService.isAdmin()">
+          <button type="button" (click)="editar(e)">Editar</button>
+          <button type="button" (click)="eliminar(e)">Eliminar</button>
+        </div>
       </div>
     </article>
   </div>

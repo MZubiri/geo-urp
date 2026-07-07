@@ -1,21 +1,47 @@
 <header class="topbar" *ngIf="mostrarTopbar">
   <div class="topbar-inner">
+    <a class="brand" routerLink="/" (click)="cerrarMenuMovil()">
+      <strong>GEO-URP</strong>
+      <span>Investigacion · Ciencia · Comunidad</span>
+    </a>
 
-<div class="brand" routerLink="/" tabindex="0">
-  <strong>GEO-URP</strong>
-  <span>Investigación · Ciencia · Comunidad</span>
-</div>
+    <button
+      class="hamburger"
+      type="button"
+      (click)="toggleMenuMovil()"
+      [attr.aria-expanded]="menuMovilAbierto"
+      aria-label="Abrir menu"
+    >
+      <span></span>
+      <span></span>
+      <span></span>
+    </button>
 
-    <nav class="nav-links">
-      <a routerLink="/directorio" routerLinkActive="activo">Directorio</a>
-      <a routerLink="/eventos" routerLinkActive="activo">Eventos</a>
-      <a routerLink="/biblioteca" routerLinkActive="activo">Biblioteca</a>
-      <a routerLink="/pedidos" routerLinkActive="activo">Pedidos</a>
-      <a routerLink="/miembros" routerLinkActive="activo">Miembros</a>
-      <a routerLink="/usuarios" routerLinkActive="activo">Usuarios</a>
+    <nav class="nav-links" [class.open]="menuMovilAbierto">
+      <a routerLink="/directorio" routerLinkActive="activo" (click)="cerrarMenuMovil()">Directorio</a>
+      <a routerLink="/eventos" routerLinkActive="activo" (click)="cerrarMenuMovil()">Eventos</a>
+      <a routerLink="/register" routerLinkActive="activo" (click)="cerrarMenuMovil()" *ngIf="!authService.isAuthenticated()">Registrarse</a>
+
+      <ng-container *ngIf="authService.isAuthenticated()">
+        <a routerLink="/biblioteca" routerLinkActive="activo" (click)="cerrarMenuMovil()">Biblioteca</a>
+        <a routerLink="/admin/usuarios" routerLinkActive="activo" (click)="cerrarMenuMovil()" *ngIf="authService.canManageUsers()">Miembros</a>
+        <a routerLink="/admin/aprobaciones" routerLinkActive="activo" (click)="cerrarMenuMovil()" *ngIf="authService.canApproveRegistrations()">Aprobaciones</a>
+        <a routerLink="/mi-perfil" routerLinkActive="activo" (click)="cerrarMenuMovil()">Mi perfil</a>
+      </ng-container>
+
+      <button type="button" class="theme-toggle" (click)="toggleTema()" [title]="temaOscuro ? 'Cambiar a modo claro' : 'Cambiar a modo oscuro'">
+        <svg *ngIf="temaOscuro" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg>
+        <svg *ngIf="!temaOscuro" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg>
+      </button>
+
+      <a routerLink="/login" routerLinkActive="activo" *ngIf="!authService.isAuthenticated()" (click)="cerrarMenuMovil()">
+        Login
+      </a>
+      <button type="button" class="logout" (click)="cerrarSesion()" *ngIf="authService.isAuthenticated()">Salir</button>
     </nav>
-
   </div>
+
+  <div class="mobile-backdrop" *ngIf="menuMovilAbierto" (click)="cerrarMenuMovil()"></div>
 </header>
 
 <main class="main-content">

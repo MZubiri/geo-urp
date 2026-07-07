@@ -1,0 +1,111 @@
+<section class="register-wrapper">
+  <div class="register-card">
+    <h1 class="titulo">GEO-URP</h1>
+    <p class="sub">Crear una cuenta nueva</p>
+
+    <!-- Success Message -->
+    <div class="success-card" *ngIf="successMessage">
+      <p class="success-title">¡Registro Recibido!</p>
+      <p class="success-text">{{ successMessage }}</p>
+      <button type="button" class="btn-primary btn-success-action" (click)="irLogin()">Ir al Login</button>
+    </div>
+
+    <!-- Register Form -->
+    <ng-container *ngIf="!successMessage">
+      <div class="form-group">
+        <label for="reg-name">Nombre Completo</label>
+        <input
+          id="reg-name"
+          type="text"
+          placeholder="Nombre y Apellidos"
+          [(ngModel)]="name"
+          autocomplete="name"
+        />
+      </div>
+
+      <div class="form-group">
+        <label for="reg-email">Correo Institucional</label>
+        <input
+          id="reg-email"
+          type="email"
+          placeholder="ejemplo@urp.edu.pe"
+          [(ngModel)]="email"
+          autocomplete="email"
+        />
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label for="reg-phone">Teléfono</label>
+          <input
+            id="reg-phone"
+            type="tel"
+            placeholder="987654321"
+            [(ngModel)]="phone"
+            autocomplete="tel"
+          />
+        </div>
+
+        <div class="form-group">
+          <label for="reg-cycle">Ciclo</label>
+          <input
+            id="reg-cycle"
+            type="number"
+            min="1"
+            max="12"
+            placeholder="Ciclo (1-12)"
+            [(ngModel)]="cycle"
+          />
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="reg-major">Carrera Profesional</label>
+        <input
+          id="reg-major"
+          type="text"
+          placeholder="Ej: Ingeniería Civil"
+          [(ngModel)]="major"
+        />
+      </div>
+
+      <div class="form-group">
+        <label for="reg-password">Contraseña</label>
+        <div class="password-field">
+          <input
+            id="reg-password"
+            [type]="mostrarPassword ? 'text' : 'password'"
+            placeholder="Mínimo 6 caracteres"
+            [(ngModel)]="password"
+            autocomplete="new-password"
+          />
+          <button type="button" class="password-toggle" (click)="togglePasswordVisibility()">
+            {{ mostrarPassword ? 'Ocultar' : 'Mostrar' }}
+          </button>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="reg-confirm-password">Confirmar Contraseña</label>
+        <input
+          id="reg-confirm-password"
+          [type]="mostrarPassword ? 'text' : 'password'"
+          placeholder="Repite tu contraseña"
+          [(ngModel)]="confirmPassword"
+          autocomplete="new-password"
+        />
+      </div>
+
+      <button type="button" class="btn-primary" (click)="register()" [disabled]="cargando">
+        {{ cargando ? 'Registrando...' : 'Registrarse' }}
+      </button>
+
+      <div class="register-footer-actions">
+        <button type="button" class="btn-link" (click)="irInicio()">← Volver a inicio</button>
+        <button type="button" class="btn-link" (click)="irLogin()">Iniciar Sesión</button>
+      </div>
+
+      <p class="error" *ngIf="error">{{ error }}</p>
+    </ng-container>
+  </div>
+</section>
