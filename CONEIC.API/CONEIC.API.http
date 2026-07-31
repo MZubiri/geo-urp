@@ -1,0 +1,6 @@
+@CONEIC.API_HostAddress = http://localhost:5244
+
+GET {{CONEIC.API_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

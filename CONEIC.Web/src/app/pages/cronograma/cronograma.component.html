@@ -1,0 +1,238 @@
+<div class="cronograma-page">
+  <!-- Event Visual Hero Header -->
+  <div class="hero-banner glass-panel">
+    <div class="banner-grid">
+      <div class="banner-text">
+        <div class="banner-top">
+          <span class="event-edition">CONEIC CUSCO 2026</span>
+        </div>
+        
+        <h1 class="hero-title">Cronograma de Actividades</h1>
+        <p class="hero-subtitle">Plataforma de gestión Oficial de GEO URP</p>
+
+        <!-- Search Box (Full Width) -->
+        <div class="filters-row">
+          <div class="search-box">
+            <svg class="search-icon" width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+            <input type="text" [(ngModel)]="searchTerm" (ngModelChange)="onFilterChange()" placeholder="Buscar por concurso, taller o lugar..." class="search-input" />
+          </div>
+        </div>
+      </div>
+
+      <div class="banner-image-container">
+        <img src="assets/images/coneic_banner.png" alt="CONEIC Cusco 2026 Banner" class="banner-image" />
+      </div>
+    </div>
+  </div>
+
+  <!-- Category Nav Tabs & View Switcher Bar -->
+  <div class="nav-bar-row">
+    <div class="categories-nav">
+      <button 
+        [class.active]="selectedApartadoId === 0"
+        (click)="selectApartado(0)"
+        class="cat-tab">
+        <span class="cat-name">Todas las Categorías</span>
+        <span class="cat-count">{{ getTotalActividadesCount() }}</span>
+      </button>
+      <button 
+        *ngFor="let ap of apartados" 
+        [class.active]="selectedApartadoId === ap.id"
+        (click)="selectApartado(ap.id)"
+        class="cat-tab">
+        <span class="cat-name">{{ ap.nombre }}</span>
+        <span class="cat-count">{{ ap.actividades.length }}</span>
+      </button>
+    </div>
+
+    <div class="view-toggle glass-panel">
+      <button 
+        [class.active]="viewMode === 'cards'" 
+        (click)="setViewMode('cards')" 
+        class="toggle-btn"
+        title="Vista por columnas de días">
+        <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16"></path></svg>
+        <span>Vista por Días</span>
+      </button>
+      <button 
+        [class.active]="viewMode === 'gcal'" 
+        (click)="setViewMode('gcal')" 
+        class="toggle-btn"
+        title="Vista Calendario horaria">
+        <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+        <span>Vista Calendario</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Leyenda Informativa y Controles de Zoom + Desplazamiento -->
+  <div class="calendar-controls-row" *ngIf="viewMode === 'gcal'">
+    <div class="calendar-legend-bar left-aligned">
+      <span class="legend-item">💚 Participación URP</span>
+      <span class="legend-item">⭐ Agendado en tu calendario</span>
+      <span *ngIf="searchTerm.trim()" class="search-active-indicator">
+        🔍 Buscando "{{ searchTerm }}" en todas las categorías
+      </span>
+    </div>
+
+    <div class="calendar-action-controls">
+      <!-- Zoom Controls -->
+      <div class="zoom-controls" title="Ajustar tamaño del calendario">
+        <span class="zoom-label">Zoom</span>
+        <button class="btn-zoom-action" (click)="zoomOut()" [disabled]="zoomLevel <= minZoom" title="Alejar (-)">
+          <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M20 12H4"></path></svg>
+        </button>
+        <button class="zoom-value-btn" (click)="resetZoom()" title="Restablecer zoom a 100%">
+          {{ Math.round(zoomLevel * 100) }}%
+        </button>
+        <button class="btn-zoom-action" (click)="zoomIn()" [disabled]="zoomLevel >= maxZoom" title="Acercar (+)">
+          <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"></path></svg>
+        </button>
+      </div>
+
+      <!-- Horizontal Scroll Buttons -->
+      <div class="scroll-controls">
+        <button class="btn-scroll-arrow" (click)="scrollGCal('left')" title="Desplazar a la izquierda">
+          <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg>
+        </button>
+        <span class="scroll-hint">Días</span>
+        <button class="btn-scroll-arrow" (click)="scrollGCal('right')" title="Desplazar a la derecha">
+          <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Calendar Content Area -->
+  <div class="calendar-content">
+    <div *ngIf="isLoading" class="loading-box glass-panel">
+      <div class="spinner"></div>
+      <p>Cargando cronograma general...</p>
+    </div>
+
+    <div *ngIf="!isLoading && getFilteredDays().length === 0" class="empty-box glass-panel">
+      <h3>No se encontraron actividades</h3>
+      <p>Intenta cambiar los términos de búsqueda seleccionados.</p>
+    </div>
+
+    <!-- VIEW MODE 1: CARDS BY DAY -->
+    <div *ngIf="!isLoading && getFilteredDays().length > 0 && viewMode === 'cards'" class="days-grid">
+      <div class="day-card glass-panel" *ngFor="let day of getFilteredDays()">
+        <div class="day-card-header">
+          <span class="day-title">{{ day.dayName }}</span>
+          <span class="day-date-tag">{{ day.dateLabel }}</span>
+        </div>
+
+        <div class="activities-list">
+          <div 
+            *ngFor="let act of day.actividades" 
+            (click)="openModal(act)"
+            [class.card-urp]="act.urpParticipa"
+            [class.card-saved]="isSaved(act.id)"
+            class="event-item">
+            
+            <div class="event-item-top">
+              <span class="time-badge">{{ formatTime(act.horaInicio) }} - {{ formatTime(act.horaFin) }}</span>
+              <div class="badge-group">
+                <span *ngIf="act.urpParticipa" class="urp-badge-sm">💚 URP</span>
+                <span *ngIf="isSaved(act.id)" class="saved-badge-sm">Agendado</span>
+              </div>
+            </div>
+
+            <h4 class="event-name">{{ act.nombre }}</h4>
+            <p class="event-desc" *ngIf="act.descripcion">{{ act.descripcion | slice:0:75 }}{{ act.descripcion.length > 75 ? '...' : '' }}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- VIEW MODE 2: UNIFIED SINGLE MATRIX CALENDAR VIEW -->
+    <div 
+      *ngIf="!isLoading && getGCalColumns().length > 0 && viewMode === 'gcal'" 
+      #gcalScrollContainer 
+      class="gcal-scroll-container glass-panel"
+      (touchstart)="onTouchStart($event)"
+      (touchmove)="onTouchMove($event)"
+      (touchend)="onTouchEnd($event)">
+      <div class="gcal-grid-matrix" [style.grid-template-columns]="getGCalGridColumnsStyle()">
+        
+        <!-- Header Row Cells (Row 1) -->
+        <div class="gcal-corner-cell">HORA</div>
+        <div class="gcal-header-cell" *ngFor="let col of getGCalColumns()">
+          <span class="day-name">{{ col.dayName }}</span>
+          <span class="day-date">{{ col.dateLabel }}</span>
+        </div>
+
+        <!-- Body Row: Time Axis Column (Row 2, Col 1) -->
+        <div class="gcal-time-col">
+          <div 
+            *ngFor="let hour of hoursList" 
+            class="gcal-time-cell" 
+            [style.height.px]="hourRowHeight">
+            <span>{{ formatHourLabel(hour) }}</span>
+          </div>
+        </div>
+
+        <!-- Body Row: Day Columns (Row 2, Cols 2..N+1) -->
+        <div 
+          *ngFor="let col of getGCalColumns()" 
+          class="gcal-day-col" 
+          [style.height.px]="hoursList.length * hourRowHeight">
+          
+          <!-- Background Grid Lines -->
+          <div class="gcal-col-grid-lines">
+            <div 
+              *ngFor="let hour of hoursList" 
+              class="gcal-grid-line" 
+              [style.height.px]="hourRowHeight">
+            </div>
+          </div>
+
+          <!-- Event Blocks -->
+          <div 
+            *ngFor="let ev of col.events" 
+            (click)="openModal(ev.actividad)"
+            [style.top.px]="ev.topPx"
+            [style.height.px]="ev.heightPx"
+            [style.left.%]="ev.leftPercent"
+            [style.width.%]="ev.widthPercent"
+            [class.gcal-urp]="ev.actividad.urpParticipa"
+            [class.gcal-saved]="isSaved(ev.actividad.id)"
+            class="gcal-event-block"
+            [title]="ev.actividad.nombre">
+            
+            <div class="gcal-event-inner">
+              <!-- Top Time: Start Time + Saved Icon -->
+              <div class="gcal-event-top">
+                <span class="gcal-event-time-start">{{ formatTime(ev.actividad.horaInicio) }}</span>
+                <div class="gcal-top-icons">
+                  <span *ngIf="isSaved(ev.actividad.id)" class="gcal-saved-icon" title="Agendado en tu calendario">⭐</span>
+                </div>
+              </div>
+
+              <div class="gcal-event-title">{{ ev.actividad.nombre }}</div>
+
+              <!-- Bottom Meta: URP Badge & End Time at bottom -->
+              <div class="gcal-event-bottom">
+                <span *ngIf="ev.actividad.urpParticipa" class="gcal-badge-urp">💚 URP</span>
+                <span class="gcal-event-time-end">{{ formatTime(ev.actividad.horaFin) }}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal Detalle -->
+  <app-actividad-modal
+    *ngIf="selectedActividad"
+    [actividad]="selectedActividad"
+    [isSaved]="isSaved(selectedActividad.id)"
+    (close)="closeModal()"
+    (saveToAgenda)="onSaveToAgenda($event)"
+    (removeFromAgenda)="onRemoveFromAgenda($event)"
+    (requestLogin)="onRequestLogin()">
+  </app-actividad-modal>
+</div>

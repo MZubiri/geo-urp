@@ -1,0 +1,197 @@
+<div class="agenda-page">
+  <div class="hero-section text-center">
+    <h1 class="hero-title">Mi Agenda <span class="highlight">Personal</span></h1>
+    <p class="hero-subtitle">Plataforma de gestión Oficial de GEO URP</p>
+    
+    <div class="hero-controls" *ngIf="misActividades.length > 0">
+      <div class="view-toggle glass-panel">
+        <button 
+          [class.active]="viewMode === 'gcal'" 
+          (click)="setViewMode('gcal')" 
+          class="toggle-btn">
+          <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+          <span>Vista Calendario</span>
+        </button>
+        <button 
+          [class.active]="viewMode === 'list'" 
+          (click)="setViewMode('list')" 
+          class="toggle-btn">
+          <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16"></path></svg>
+          <span>Vista Lista</span>
+        </button>
+      </div>
+
+      <button (click)="exportAllIcs()" class="btn btn-gold">
+        <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
+        <span>Exportar a calendario</span>
+      </button>
+    </div>
+
+    <!-- Leyenda Informativa y Controles de Zoom + Desplazamiento -->
+    <div class="calendar-controls-row" *ngIf="misActividades.length > 0">
+      <div class="calendar-legend-bar left-aligned">
+        <span class="legend-item">💚 Participación URP</span>
+        <span class="legend-item">⚠️ Cruce de horario simultáneo</span>
+      </div>
+
+      <div class="calendar-action-controls" *ngIf="viewMode === 'gcal'">
+        <!-- Zoom Controls -->
+        <div class="zoom-controls" title="Ajustar tamaño del calendario">
+          <span class="zoom-label">Zoom</span>
+          <button class="btn-zoom-action" (click)="zoomOut()" [disabled]="zoomLevel <= minZoom" title="Alejar (-)">
+            <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M20 12H4"></path></svg>
+          </button>
+          <button class="zoom-value-btn" (click)="resetZoom()" title="Restablecer zoom a 100%">
+            {{ Math.round(zoomLevel * 100) }}%
+          </button>
+          <button class="btn-zoom-action" (click)="zoomIn()" [disabled]="zoomLevel >= maxZoom" title="Acercar (+)">
+            <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"></path></svg>
+          </button>
+        </div>
+
+        <!-- Horizontal Scroll Buttons -->
+        <div class="scroll-controls">
+          <button class="btn-scroll-arrow" (click)="scrollGCal('left')" title="Desplazar a la izquierda">
+            <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg>
+          </button>
+          <span class="scroll-hint">Días</span>
+          <button class="btn-scroll-arrow" (click)="scrollGCal('right')" title="Desplazar a la derecha">
+            <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="agenda-container">
+    <div *ngIf="isLoading" class="loading-state glass-panel text-center">
+      <div class="spinner"></div>
+      <p>Cargando tu agenda personal...</p>
+    </div>
+
+    <div *ngIf="!isLoading && misActividades.length === 0" class="empty-state glass-panel text-center">
+      <svg width="48" height="48" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+      <h3>Aún no has agregado actividades a tu agenda</h3>
+      <p>Explora el cronograma general y haz clic en "Agregar a Mi Calendario".</p>
+      <a routerLink="/" class="btn btn-primary mt-4">Ver Cronograma General</a>
+    </div>
+
+    <!-- UNIFIED SINGLE GRID CALENDAR VIEW -->
+    <div 
+      *ngIf="!isLoading && misActividades.length > 0 && viewMode === 'gcal'" 
+      #gcalScrollContainer 
+      class="gcal-scroll-container glass-panel"
+      (touchstart)="onTouchStart($event)"
+      (touchmove)="onTouchMove($event)"
+      (touchend)="onTouchEnd($event)">
+      <div class="gcal-grid-matrix" [style.grid-template-columns]="getGCalGridColumnsStyle()">
+        
+        <!-- Header Row Cells (Row 1) -->
+        <div class="gcal-corner-cell">HORA</div>
+        <div class="gcal-header-cell" *ngFor="let col of getGCalColumns()">
+          <span class="day-name">{{ col.dayName }}</span>
+          <span class="day-date">{{ col.dateLabel }}</span>
+        </div>
+
+        <!-- Body Row: Time Axis Column (Row 2, Col 1) -->
+        <div class="gcal-time-col">
+          <div 
+            *ngFor="let hour of hoursList" 
+            class="gcal-time-cell" 
+            [style.height.px]="hourRowHeight">
+            <span>{{ formatHourLabel(hour) }}</span>
+          </div>
+        </div>
+
+        <!-- Body Row: Day Columns (Row 2, Cols 2..N+1) -->
+        <div 
+          *ngFor="let col of getGCalColumns()" 
+          class="gcal-day-col" 
+          [style.height.px]="hoursList.length * hourRowHeight">
+          
+          <!-- Background Grid Lines -->
+          <div class="gcal-col-grid-lines">
+            <div 
+              *ngFor="let hour of hoursList" 
+              class="gcal-grid-line" 
+              [style.height.px]="hourRowHeight">
+            </div>
+          </div>
+
+          <!-- Event Blocks -->
+          <div 
+            *ngFor="let ev of col.events" 
+            (click)="openModal(ev.actividad)"
+            [style.top.px]="ev.topPx"
+            [style.height.px]="ev.heightPx"
+            [style.left.%]="ev.leftPercent"
+            [style.width.%]="ev.widthPercent"
+            [class.gcal-conflict]="ev.hasConflict"
+            [class.gcal-urp]="ev.actividad.urpParticipa"
+            class="gcal-event-block"
+            [title]="ev.hasConflict ? ev.actividad.nombre + ' — ⚠️ Cruce de horario simultáneo con otra actividad de tu agenda' : ev.actividad.nombre">
+            
+            <div class="gcal-event-inner">
+              <div class="gcal-event-top">
+                <span class="gcal-event-time-start">{{ formatTime(ev.actividad.horaInicio) }}</span>
+                <span *ngIf="ev.hasConflict" class="gcal-warning-badge" title="Cruce de horario simultáneo con otra actividad de tu agenda">⚠️</span>
+              </div>
+
+              <div class="gcal-event-title">{{ ev.actividad.nombre }}</div>
+
+              <div class="gcal-event-bottom">
+                <span *ngIf="ev.actividad.urpParticipa" class="gcal-badge-urp">💚 URP</span>
+                <span class="gcal-event-time-end">{{ formatTime(ev.actividad.horaFin) }}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- LIST VIEW -->
+    <div *ngIf="!isLoading && misActividades.length > 0 && viewMode === 'list'" class="agenda-list">
+      <div 
+        *ngFor="let act of misActividades" 
+        [class.overlap-card]="hasOverlap(act)"
+        class="agenda-card glass-panel">
+        
+        <div class="overlap-badge" *ngIf="hasOverlap(act)" title="Esta actividad coincide en fecha y hora con otra actividad en tu agenda personal">
+          ⚠️ Cruce de horario simultáneo con otra actividad agendada
+        </div>
+
+        <div class="agenda-card-body">
+          <div class="card-main-info">
+            <span class="category-badge">{{ act.apartadoNombre }}</span>
+            <h3 class="activity-title" (click)="openModal(act)">{{ act.nombre }}</h3>
+            <div class="time-info">
+              <span class="date">{{ formatDate(act.horaInicio) }}</span>
+              <span class="hours">{{ formatTime(act.horaInicio) }} - {{ formatTime(act.horaFin) }}</span>
+            </div>
+          </div>
+
+          <div class="card-actions">
+            <button (click)="exportIcs(act)" class="btn btn-outline btn-sm" title="Exportar a calendario">
+              <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
+              <span>Exportar</span>
+            </button>
+            
+            <button (click)="quitar(act)" class="btn btn-danger btn-sm" title="Quitar de mi agenda">
+              <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+              <span>Quitar</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <app-actividad-modal
+    *ngIf="selectedActividad"
+    [actividad]="selectedActividad"
+    [isSaved]="true"
+    (close)="closeModal()"
+    (removeFromAgenda)="quitar($event)">
+  </app-actividad-modal>
+</div>

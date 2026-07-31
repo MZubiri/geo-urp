@@ -1,0 +1,60 @@
+services:
+  coneic-db:
+    image: mysql:8.0
+    container_name: coneic-db
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: coneic_root_pass_2026
+      MYSQL_DATABASE: coneic_db
+    volumes:
+      - coneic_mysql_data:/var/lib/mysql
+      - ./scripts/seed_data.sql:/docker-entrypoint-initdb.d/seed_data.sql
+    networks:
+      - coneic-net
+
+  coneic-api:
+    build:
+      context: ./CONEIC.API
+      dockerfile: Dockerfile
+    container_name: coneic-api
+    restart: always
+    environment:
+      ConnectionStrings__DefaultConnection: "Server=coneic-db;Database=coneic_db;User=root;Password=coneic_root_pass_2026;CharSet=utf8mb4;"
+      Jwt__Key: "CONEIC_Super_Secret_Jwt_Key_2026_Cusco_GeoURP_URP_Event_Key!"
+      Jwt__Issuer: "geourp.org"
+      Jwt__Audience: "geourp.org"
+    depends_on:
+      - coneic-db
+    networks:
+      - coneic-net
+
+  coneic-web:
+    build:
+      context: ./CONEIC.Web
+      dockerfile: Dockerfile
+    container_name: coneic-web
+    restart: always
+    depends_on:
+      - coneic-api
+    networks:
+      - coneic-net
+      - coolify
+    labels:
+      - "traefik.enable=true"
+      - "traefik.docker.network=coolify"
+      - "traefik.http.routers.coneic-web.rule=Host(`geourp.org`) && PathPrefix(`/coneic`)"
+      - "traefik.http.routers.coneic-web.entrypoints=http,https"
+      - "traefik.http.routers.coneic-web.tls.certresolver=letsencrypt"
+      - "traefik.http.services.coneic-web.loadbalancer.server.port=80"
+      - "coolify.managed=true"
+      - "coolify.projectName=geourp"
+      - "coolify.name=coneic"
+
+networks:
+  coneic-net:
+    driver: bridge
+  coolify:
+    external: true
+
+volumes:
+  coneic_mysql_data:

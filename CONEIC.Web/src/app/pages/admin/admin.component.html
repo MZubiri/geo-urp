@@ -1,0 +1,330 @@
+<div class="admin-page container">
+  
+  <!-- CABECERA PRINCIPAL -->
+  <div class="admin-header-row">
+    <div class="admin-header-text">
+      <h2>⚙️ Panel de Administración - GeoURP</h2>
+      <p>Administra las categorías, actividades del cronograma y la lista de usuarios mediante modales interactivos.</p>
+    </div>
+
+    <!-- BOTONES PRINCIPALES DE ACCIÓN RÁPIDA -->
+    <div class="admin-quick-actions">
+      <button *ngIf="activeTab === 'ACTIVIDADES'" (click)="openNuevaActividadModal()" class="btn btn-primary">
+        ➕ Nueva Actividad
+      </button>
+      <button *ngIf="activeTab === 'ACTIVIDADES'" (click)="openNuevoApartadoModal()" class="btn btn-secondary">
+        📂 Nueva Categoría
+      </button>
+      <button *ngIf="activeTab === 'USUARIOS'" (click)="openNuevoUsuarioModal()" class="btn btn-primary">
+        👤 Nuevo Usuario
+      </button>
+    </div>
+  </div>
+
+  <!-- PESTAÑAS DE NAVEGACIÓN -->
+  <div class="admin-tabs-nav">
+    <button 
+      class="tab-nav-btn" 
+      [class.active]="activeTab === 'ACTIVIDADES'"
+      (click)="activeTab = 'ACTIVIDADES'">
+      📅 Actividades y Categorías
+    </button>
+    <button 
+      class="tab-nav-btn" 
+      [class.active]="activeTab === 'USUARIOS'"
+      (click)="activeTab = 'USUARIOS'">
+      👥 Gestión de Usuarios ({{ usuarios.length }})
+    </button>
+  </div>
+
+  <!-- ALERTAS DE NOTIFICACIÓN -->
+  <div *ngIf="messageSuccess" class="alert alert-success">
+    <span>✅ {{ messageSuccess }}</span>
+    <button (click)="messageSuccess = ''" class="alert-close">✕</button>
+  </div>
+  <div *ngIf="messageError" class="alert alert-error">
+    <span>⚠️ {{ messageError }}</span>
+    <button (click)="messageError = ''" class="alert-close">✕</button>
+  </div>
+
+  <!-- SECCIÓN 1: ACTIVIDADES Y CATEGORÍAS -->
+  <div *ngIf="activeTab === 'ACTIVIDADES'">
+    
+    <div *ngIf="isLoading" class="loading-box">
+      <div class="spinner"></div>
+      <p>Cargando información del cronograma...</p>
+    </div>
+
+    <div *ngIf="!isLoading" class="card list-card">
+      <div class="card-header-flex">
+        <h3>📋 Categorías y Actividades Registradas</h3>
+        <div class="header-buttons">
+          <button (click)="openNuevaActividadModal()" class="btn btn-primary btn-sm">
+            + Actividad
+          </button>
+          <button (click)="openNuevoApartadoModal()" class="btn btn-secondary btn-sm">
+            + Categoría
+          </button>
+        </div>
+      </div>
+
+      <div *ngFor="let ap of apartados" class="apartado-block">
+        <div class="apartado-header-row">
+          <h4 class="apartado-title">{{ ap.nombre }} ({{ ap.actividades.length }})</h4>
+          <button (click)="openConfirmDeleteModal('APARTADO', ap.id, ap.nombre)" class="btn-action delete-cat" title="Eliminar Categoría">
+            🗑️ Eliminar Categoría
+          </button>
+        </div>
+        
+        <div class="table-responsive">
+          <table class="admin-table">
+            <thead>
+              <tr>
+                <th>Horario</th>
+                <th>Nombre de la Actividad</th>
+                <th>GeoURP</th>
+                <th>Acciones</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let act of ap.actividades">
+                <td class="nowrap font-sm font-bold text-green">
+                  {{ act.horaInicio | date:'dd/MM HH:mm' }} - {{ act.horaFin | date:'HH:mm' }}
+                </td>
+                <td>
+                  <strong>{{ act.nombre }}</strong>
+                  <div *ngIf="act.descripcion" class="font-sm text-muted">{{ act.descripcion }}</div>
+                </td>
+                <td>
+                  <span *ngIf="act.urpParticipa" class="urp-badge-sm">GeoURP ⭐</span>
+                </td>
+                <td class="actions-cell">
+                  <button (click)="openEditarActividadModal(act)" class="btn-action edit" title="Editar Actividad">✏️ Editar</button>
+                  <button (click)="openConfirmDeleteModal('ACTIVIDAD', act.id, act.nombre)" class="btn-action delete" title="Eliminar Actividad">🗑️</button>
+                </td>
+              </tr>
+              <tr *ngIf="ap.actividades.length === 0">
+                <td colspan="4" class="text-center p-3 text-muted">
+                  No hay actividades asignadas a esta categoría.
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SECCIÓN 2: GESTIÓN DE USUARIOS -->
+  <div *ngIf="activeTab === 'USUARIOS'">
+    <div class="card list-card">
+      <div class="card-header-flex">
+        <h3>👥 Tabla General de Usuarios</h3>
+        
+        <div class="user-search-wrapper">
+          <input 
+            type="text" 
+            [(ngModel)]="userSearchTerm" 
+            class="form-control search-input" 
+            placeholder="🔍 Escribe nombre, correo o rol...">
+          <button (click)="openNuevoUsuarioModal()" class="btn btn-primary btn-sm">
+            ➕ Crear Usuario
+          </button>
+        </div>
+      </div>
+
+      <div class="table-responsive">
+        <table class="admin-table">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Nombre Completo</th>
+              <th>Correo Electrónico</th>
+              <th>Rol</th>
+              <th>Fecha de Registro</th>
+              <th>Acciones</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let u of filteredUsuarios">
+              <td class="font-sm font-bold">#{{ u.id }}</td>
+              <td><strong>{{ u.nombre }}</strong></td>
+              <td class="font-sm">{{ u.correo }}</td>
+              <td>
+                <span [class]="u.rol === 'ADMIN' ? 'role-badge admin' : 'role-badge user'">
+                  {{ u.rol }}
+                </span>
+              </td>
+              <td class="font-sm text-muted">
+                {{ u.fechaRegistro | date:'dd/MM/yyyy HH:mm' }}
+              </td>
+              <td class="actions-cell">
+                <button (click)="openEditarUsuarioModal(u)" class="btn-action edit" title="Editar Usuario">✏️ Editar</button>
+                <button (click)="openConfirmDeleteModal('USUARIO', u.id, u.nombre + ' (' + u.correo + ')')" class="btn-action delete" title="Eliminar Usuario">🗑️</button>
+              </td>
+            </tr>
+            <tr *ngIf="filteredUsuarios.length === 0">
+              <td colspan="6" class="text-center p-4 text-muted">
+                No se encontraron usuarios coincidentes.
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== MODALES INTERACTIVOS ==================== -->
+
+  <!-- MODAL 1: CREAR / EDITAR ACTIVIDAD -->
+  <div *ngIf="showActividadModal" class="modal-backdrop" (click)="closeActividadModal()">
+    <div class="modal-dialog" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <h4>{{ editingActividadId ? '✏️ Editar Actividad' : '➕ Nueva Actividad' }}</h4>
+        <button (click)="closeActividadModal()" class="modal-close-btn">✕</button>
+      </div>
+
+      <div class="modal-body">
+        <div class="form-group">
+          <label>Categoría / Apartado *</label>
+          <select [(ngModel)]="actApartadoId" class="form-control">
+            <option *ngFor="let ap of apartados" [value]="ap.id">{{ ap.nombre }}</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label>Nombre de la Actividad *</label>
+          <input type="text" [(ngModel)]="actNombre" class="form-control" placeholder="Ej: Amauta Calculista">
+        </div>
+
+        <div class="form-group">
+          <label>Descripción</label>
+          <textarea [(ngModel)]="actDescripcion" class="form-control" rows="2" placeholder="Detalles de la ponencia o evento..."></textarea>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group flex-1">
+            <label>Hora Inicio *</label>
+            <input type="datetime-local" [(ngModel)]="actHoraInicio" class="form-control">
+          </div>
+          <div class="form-group flex-1">
+            <label>Hora Fin *</label>
+            <input type="datetime-local" [(ngModel)]="actHoraFin" class="form-control">
+          </div>
+        </div>
+
+        <div class="form-group checkbox-group">
+          <label>
+            <input type="checkbox" [(ngModel)]="actUrpParticipa">
+            <strong>Participación Destacada GeoURP ⭐</strong>
+          </label>
+        </div>
+
+        <div class="form-group">
+          <label>Campos Extra (JSON)</label>
+          <input type="text" [(ngModel)]="actCamposExtraJson" class="form-control" placeholder='{"modalidad":"Presencial"}'>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button (click)="closeActividadModal()" class="btn btn-secondary">Cancelar</button>
+        <button (click)="guardarActividadModal()" class="btn btn-primary">
+          {{ editingActividadId ? 'Guardar Cambios' : 'Crear Actividad' }}
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL 2: CREAR CATEGORÍA -->
+  <div *ngIf="showApartadoModal" class="modal-backdrop" (click)="closeApartadoModal()">
+    <div class="modal-dialog modal-sm" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <h4>📂 Nueva Categoría / Apartado</h4>
+        <button (click)="closeApartadoModal()" class="modal-close-btn">✕</button>
+      </div>
+
+      <div class="modal-body">
+        <div class="form-group">
+          <label>Nombre de la Categoría *</label>
+          <input type="text" [(ngModel)]="nuevoApartadoNombre" class="form-control" placeholder="Ej: Concursos Académicos">
+        </div>
+
+        <div class="form-group">
+          <label>Orden de Despliegue</label>
+          <input type="number" [(ngModel)]="nuevoApartadoOrden" class="form-control">
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button (click)="closeApartadoModal()" class="btn btn-secondary">Cancelar</button>
+        <button (click)="guardarApartadoModal()" class="btn btn-primary">Guardar Categoría</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL 3: CREAR / EDITAR USUARIO -->
+  <div *ngIf="showUsuarioModal" class="modal-backdrop" (click)="closeUsuarioModal()">
+    <div class="modal-dialog" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <h4>{{ editingUserId ? '✏️ Editar Usuario' : '👤 Crear Nuevo Usuario' }}</h4>
+        <button (click)="closeUsuarioModal()" class="modal-close-btn">✕</button>
+      </div>
+
+      <div class="modal-body">
+        <div class="form-group">
+          <label>Nombre Completo *</label>
+          <input type="text" [(ngModel)]="userNombre" class="form-control" placeholder="Ej: Juan Pérez">
+        </div>
+
+        <div class="form-group">
+          <label>Correo Electrónico *</label>
+          <input type="email" [(ngModel)]="userCorreo" class="form-control" placeholder="usuario@correo.com">
+        </div>
+
+        <div class="form-group">
+          <label>Rol de Usuario *</label>
+          <select [(ngModel)]="userRol" class="form-control">
+            <option value="USER">Usuario Normal (USER)</option>
+            <option value="ADMIN">Administrador (ADMIN)</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label>{{ editingUserId ? 'Nueva Contraseña (dejar en blanco para no cambiar)' : 'Contraseña *' }}</label>
+          <input type="password" [(ngModel)]="userPassword" class="form-control" placeholder="••••••••">
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button (click)="closeUsuarioModal()" class="btn btn-secondary">Cancelar</button>
+        <button (click)="guardarUsuarioModal()" class="btn btn-primary">
+          {{ editingUserId ? 'Guardar Cambios' : 'Crear Usuario' }}
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL 4: CONFIRMAR ELIMINACIÓN -->
+  <div *ngIf="showConfirmDeleteModal" class="modal-backdrop" (click)="closeConfirmDeleteModal()">
+    <div class="modal-dialog modal-sm" (click)="$event.stopPropagation()">
+      <div class="modal-header danger-header">
+        <h4>⚠️ Confirmar Eliminación</h4>
+        <button (click)="closeConfirmDeleteModal()" class="modal-close-btn">✕</button>
+      </div>
+
+      <div class="modal-body">
+        <p class="font-bold mb-2">¿Estás seguro de eliminar el siguiente elemento?</p>
+        <div class="delete-target-box">
+          {{ deleteTargetName }}
+        </div>
+        <p class="font-sm text-danger mt-2">Esta acción no se puede deshacer.</p>
+      </div>
+
+      <div class="modal-footer">
+        <button (click)="closeConfirmDeleteModal()" class="btn btn-secondary">Cancelar</button>
+        <button (click)="confirmDelete()" class="btn btn-danger">Sí, Eliminar</button>
+      </div>
+    </div>
+  </div>
+
+</div>
