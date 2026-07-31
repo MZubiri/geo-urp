@@ -42,8 +42,8 @@ export class MiCalendarioComponent implements OnInit {
   Math = Math;
 
   zoomLevel: number = 1.0;
-  minZoom: number = 0.5;
-  maxZoom: number = 10.0;
+  minZoom: number = 0.1;
+  maxZoom: number = 2.0;
   baseHourRowHeight: number = 60;
 
   private touchStartDist: number = 0;
@@ -52,7 +52,7 @@ export class MiCalendarioComponent implements OnInit {
   hoursList: number[] = [6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22];
 
   get hourRowHeight(): number {
-    return Math.round(this.baseHourRowHeight * this.zoomLevel);
+    return Math.max(16, Math.round(this.baseHourRowHeight * this.zoomLevel));
   }
 
   constructor(
@@ -92,16 +92,14 @@ export class MiCalendarioComponent implements OnInit {
 
   zoomIn(): void {
     if (this.zoomLevel < this.maxZoom) {
-      const step = this.zoomLevel >= 3 ? 1.0 : this.zoomLevel >= 1.5 ? 0.5 : 0.25;
-      this.zoomLevel = Math.min(this.maxZoom, Math.round((this.zoomLevel + step) * 100) / 100);
+      this.zoomLevel = Math.min(this.maxZoom, Math.round((this.zoomLevel + 0.10) * 100) / 100);
       this.cdr.detectChanges();
     }
   }
 
   zoomOut(): void {
     if (this.zoomLevel > this.minZoom) {
-      const step = this.zoomLevel > 3 ? 1.0 : this.zoomLevel > 1.5 ? 0.5 : 0.25;
-      this.zoomLevel = Math.max(this.minZoom, Math.round((this.zoomLevel - step) * 100) / 100);
+      this.zoomLevel = Math.max(this.minZoom, Math.round((this.zoomLevel - 0.10) * 100) / 100);
       this.cdr.detectChanges();
     }
   }
@@ -226,7 +224,7 @@ export class MiCalendarioComponent implements OnInit {
       });
 
       const baseMinWidth = Math.max(160, numCols * 135);
-      const colMinWidthPx = Math.round(baseMinWidth * this.zoomLevel);
+      const colMinWidthPx = Math.max(50, Math.round(baseMinWidth * this.zoomLevel));
 
       return {
         dateKey: fd.key,
