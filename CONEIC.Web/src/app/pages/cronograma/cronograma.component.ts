@@ -53,7 +53,7 @@ export class CronogramaComponent implements OnInit {
   isLoading: boolean = true;
   Math = Math;
 
-  hoursList: number[] = [6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22];
+  hoursList: number[] = [6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24];
 
   zoomLevel: number = 1.0;
   minZoom: number = 0.1;
@@ -424,6 +424,7 @@ export class CronogramaComponent implements OnInit {
   }
 
   formatHourLabel(hour: number): string {
+    if (hour === 24 || hour === 0) return '12:00 AM';
     const period = hour >= 12 ? 'PM' : 'AM';
     const h12 = hour % 12 === 0 ? 12 : hour % 12;
     return `${h12.toString().padStart(2, '0')}:00 ${period}`;

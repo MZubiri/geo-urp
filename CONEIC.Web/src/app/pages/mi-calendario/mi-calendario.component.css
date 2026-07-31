@@ -428,6 +428,24 @@
   font-size: 0.75rem;
 }
 
+.gcal-badge-urp {
+  font-size: 0.6rem;
+  font-weight: 800;
+  color: #0F5A36;
+  background: #E8F5E9;
+  border: 1px solid #A5D6A7;
+  padding: 1px 4px;
+  border-radius: 3px;
+  line-height: 1;
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  white-space: nowrap;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
 .gcal-event-title {
   font-size: 0.8rem;
   font-weight: 700;

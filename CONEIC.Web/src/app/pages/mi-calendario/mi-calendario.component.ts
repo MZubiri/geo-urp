@@ -49,7 +49,7 @@ export class MiCalendarioComponent implements OnInit {
   private touchStartDist: number = 0;
   private initialZoomOnTouch: number = 1.0;
 
-  hoursList: number[] = [6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22];
+  hoursList: number[] = [6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24];
 
   get hourRowHeight(): number {
     return Math.max(16, Math.round(this.baseHourRowHeight * this.zoomLevel));
@@ -298,6 +298,7 @@ export class MiCalendarioComponent implements OnInit {
   }
 
   formatHourLabel(hour: number): string {
+    if (hour === 24 || hour === 0) return '12:00 AM';
     const period = hour >= 12 ? 'PM' : 'AM';
     const h12 = hour % 12 === 0 ? 12 : hour % 12;
     return `${h12.toString().padStart(2, '0')}:00 ${period}`;

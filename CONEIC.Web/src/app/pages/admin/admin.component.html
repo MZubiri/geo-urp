@@ -185,6 +185,10 @@
       </div>
 
       <div class="modal-body">
+        <div *ngIf="modalError" class="alert alert-error mb-3">
+          <span>⚠️ {{ modalError }}</span>
+        </div>
+
         <div class="form-group">
           <label>Categoría / Apartado *</label>
           <select [(ngModel)]="actApartadoId" class="form-control">

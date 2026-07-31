@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -55,11 +55,13 @@ export class AdminComponent implements OnInit {
 
   messageSuccess = '';
   messageError = '';
+  modalError = '';
 
   constructor(
     private apiService: ApiService,
     public authService: AuthService,
-    private router: Router
+    private router: Router,
+    private cdr: ChangeDetectorRef
   ) {}
 
   ngOnInit(): void {
@@ -144,7 +146,62 @@ export class AdminComponent implements OnInit {
 
   closeActividadModal(): void {
     this.showActividadModal = false;
+    this.modalError = '';
     this.resetActividadForm();
+    this.cdr.detectChanges();
+  }
+
+  guardarActividadModal(): void {
+    this.modalError = '';
+    if (!this.actNombre || !this.actHoraInicio || !this.actHoraFin) {
+      this.modalError = 'Completa los campos obligatorios de la actividad.';
+      return;
+    }
+
+    const horaInicioFormatted = this.actHoraInicio.length === 16 ? this.actHoraInicio + ':00' : this.actHoraInicio;
+    const horaFinFormatted = this.actHoraFin.length === 16 ? this.actHoraFin + ':00' : this.actHoraFin;
+
+    const payload: Partial<Actividad> = {
+      apartadoId: Number(this.actApartadoId),
+      nombre: this.actNombre.trim(),
+      descripcion: this.actDescripcion ? this.actDescripcion.trim() : '',
+      horaInicio: horaInicioFormatted,
+      horaFin: horaFinFormatted,
+      urpParticipa: this.actUrpParticipa,
+      camposExtra: this.actCamposExtraJson
+    };
+
+    if (this.editingActividadId) {
+      this.apiService.actualizarActividad(this.editingActividadId, payload).subscribe({
+        next: () => {
+          this.messageSuccess = `Actividad "${this.actNombre}" actualizada con éxito.`;
+          this.messageError = '';
+          this.closeActividadModal();
+          this.loadData();
+          this.cdr.detectChanges();
+        },
+        error: (err) => {
+          console.error('Error al actualizar actividad:', err);
+          this.modalError = err.error?.message || 'Error al actualizar actividad. Revisa los datos.';
+          this.cdr.detectChanges();
+        }
+      });
+    } else {
+      this.apiService.crearActividad(payload).subscribe({
+        next: () => {
+          this.messageSuccess = `Actividad "${this.actNombre}" creada exitosamente.`;
+          this.messageError = '';
+          this.closeActividadModal();
+          this.loadData();
+          this.cdr.detectChanges();
+        },
+        error: (err) => {
+          console.error('Error al crear actividad:', err);
+          this.modalError = err.error?.message || 'Error al crear actividad. Revisa los datos.';
+          this.cdr.detectChanges();
+        }
+      });
+    }
   }
 
   // --- MODAL CONTROLS FOR APARTADO ---
@@ -253,46 +310,6 @@ export class AdminComponent implements OnInit {
       },
       error: () => this.messageError = 'Error al crear la categoría.'
     });
-  }
-
-  guardarActividadModal(): void {
-    if (!this.actNombre || !this.actHoraInicio || !this.actHoraFin) {
-      this.messageError = 'Completa los campos obligatorios de la actividad.';
-      return;
-    }
-
-    const horaInicioFormatted = this.actHoraInicio.length === 16 ? this.actHoraInicio + ':00' : this.actHoraInicio;
-    const horaFinFormatted = this.actHoraFin.length === 16 ? this.actHoraFin + ':00' : this.actHoraFin;
-
-    const payload: Partial<Actividad> = {
-      apartadoId: this.actApartadoId,
-      nombre: this.actNombre,
-      descripcion: this.actDescripcion,
-      horaInicio: horaInicioFormatted,
-      horaFin: horaFinFormatted,
-      urpParticipa: this.actUrpParticipa,
-      camposExtra: this.actCamposExtraJson
-    };
-
-    if (this.editingActividadId) {
-      this.apiService.actualizarActividad(this.editingActividadId, payload).subscribe({
-        next: () => {
-          this.messageSuccess = `Actividad "${this.actNombre}" actualizada.`;
-          this.closeActividadModal();
-          this.loadData();
-        },
-        error: () => this.messageError = 'Error al actualizar actividad.'
-      });
-    } else {
-      this.apiService.crearActividad(payload).subscribe({
-        next: () => {
-          this.messageSuccess = `Actividad "${this.actNombre}" creada con éxito.`;
-          this.closeActividadModal();
-          this.loadData();
-        },
-        error: () => this.messageError = 'Error al crear actividad.'
-      });
-    }
   }
 
   guardarUsuarioModal(): void {
