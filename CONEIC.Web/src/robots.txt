@@ -1,0 +1,7 @@
+# robots.txt for GEO URP CONEIC 2026 Platform
+User-agent: *
+Allow: /
+Allow: /coneic/
+
+# Sitemaps
+Sitemap: https://geourp.org/coneic/sitemap.xml
