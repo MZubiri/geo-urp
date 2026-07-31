@@ -125,11 +125,21 @@ export class AdminComponent implements OnInit {
     this.actApartadoId = act.apartadoId;
     this.actNombre = act.nombre;
     this.actDescripcion = act.descripcion || '';
-    this.actHoraInicio = new Date(act.horaInicio).toISOString().slice(0, 16);
-    this.actHoraFin = new Date(act.horaFin).toISOString().slice(0, 16);
+    this.actHoraInicio = this.toLocalDatetimeString(act.horaInicio);
+    this.actHoraFin = this.toLocalDatetimeString(act.horaFin);
     this.actUrpParticipa = act.urpParticipa;
     this.actCamposExtraJson = act.camposExtra || '{}';
     this.showActividadModal = true;
+  }
+
+  private toLocalDatetimeString(dateStr: string): string {
+    if (!dateStr) return '';
+    if (dateStr.includes('T')) {
+      return dateStr.slice(0, 16);
+    }
+    const d = new Date(dateStr);
+    const pad = (n: number) => n.toString().padStart(2, '0');
+    return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`;
   }
 
   closeActividadModal(): void {
@@ -251,12 +261,15 @@ export class AdminComponent implements OnInit {
       return;
     }
 
+    const horaInicioFormatted = this.actHoraInicio.length === 16 ? this.actHoraInicio + ':00' : this.actHoraInicio;
+    const horaFinFormatted = this.actHoraFin.length === 16 ? this.actHoraFin + ':00' : this.actHoraFin;
+
     const payload: Partial<Actividad> = {
       apartadoId: this.actApartadoId,
       nombre: this.actNombre,
       descripcion: this.actDescripcion,
-      horaInicio: new Date(this.actHoraInicio).toISOString(),
-      horaFin: new Date(this.actHoraFin).toISOString(),
+      horaInicio: horaInicioFormatted,
+      horaFin: horaFinFormatted,
       urpParticipa: this.actUrpParticipa,
       camposExtra: this.actCamposExtraJson
     };
