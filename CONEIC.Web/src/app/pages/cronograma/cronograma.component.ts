@@ -361,6 +361,12 @@ export class CronogramaComponent implements OnInit {
     return `80px ${colTracks}`;
   }
 
+  getCardsGridColumnsStyle(): string {
+    const numDays = this.getFilteredDays().length;
+    if (numDays === 0) return '1fr';
+    return `repeat(${numDays}, minmax(0, 1fr))`;
+  }
+
   openModal(actividad: Actividad): void {
     this.selectedActividad = actividad;
     this.cdr.detectChanges();

@@ -116,7 +116,7 @@
     </div>
 
     <!-- VIEW MODE 1: CARDS BY DAY -->
-    <div *ngIf="!isLoading && getFilteredDays().length > 0 && viewMode === 'cards'" class="days-grid">
+    <div *ngIf="!isLoading && getFilteredDays().length > 0 && viewMode === 'cards'" class="days-grid" [style.grid-template-columns]="getCardsGridColumnsStyle()">
       <div class="day-card glass-panel" *ngFor="let day of getFilteredDays()">
         <div class="day-card-header">
           <span class="day-title">{{ day.dayName }}</span>
