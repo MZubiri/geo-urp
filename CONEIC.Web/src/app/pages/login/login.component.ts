@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
+import { ApiService } from '../../services/api.service';
 
 @Component({
   selector: 'app-login',
@@ -20,20 +21,43 @@ import { AuthService } from '../../services/auth.service';
         <div *ngIf="errorMessage" class="error-banner">
           {{ errorMessage }}
         </div>
+        <div *ngIf="successMessage" class="success-banner">
+          {{ successMessage }}
+        </div>
 
-        <form (ngSubmit)="onSubmit()" class="auth-form">
+        <form *ngIf="!showRecoveryForm" (ngSubmit)="onSubmit()" class="auth-form">
           <div class="form-group">
             <label>Correo Electrónico</label>
             <input type="email" [(ngModel)]="correo" name="correo" required placeholder="tu@correo.com" class="form-input" />
           </div>
 
           <div class="form-group">
-            <label>Contraseña</label>
+            <div class="label-flex">
+              <label>Contraseña</label>
+              <a href="javascript:void(0)" (click)="showRecoveryForm = true; errorMessage = ''; successMessage = ''" class="forgot-link">¿Olvidaste tu contraseña?</a>
+            </div>
             <input type="password" [(ngModel)]="password" name="password" required placeholder="••••••••" class="form-input" />
           </div>
 
           <button type="submit" [disabled]="isLoading" class="btn btn-primary btn-block mt-4">
             {{ isLoading ? 'Ingresando...' : 'Iniciar Sesión' }}
+          </button>
+        </form>
+
+        <!-- RECOVERY FORM -->
+        <form *ngIf="showRecoveryForm" (ngSubmit)="onRecoverSubmit()" class="auth-form">
+          <p class="text-sm mb-3 text-muted">Ingresa tu correo registrado para enviarte una contraseña temporal de acceso.</p>
+          <div class="form-group">
+            <label>Correo Electrónico Registrado</label>
+            <input type="email" [(ngModel)]="recoveryCorreo" name="recoveryCorreo" required placeholder="tu@correo.com" class="form-input" />
+          </div>
+
+          <button type="submit" [disabled]="isLoading" class="btn btn-primary btn-block mt-4">
+            {{ isLoading ? 'Enviando...' : 'Restablecer Mi Contraseña' }}
+          </button>
+
+          <button type="button" (click)="showRecoveryForm = false; errorMessage = ''; successMessage = ''" class="btn btn-secondary btn-block mt-2">
+            Volver a Iniciar Sesión
           </button>
         </form>
 
@@ -90,16 +114,34 @@ import { AuthService } from '../../services/auth.service';
     .auth-footer { margin-top: 24px; font-size: 0.9rem; }
     .auth-footer a { color: var(--accent-gold); text-decoration: none; font-weight: 600; }
     .btn-block { width: 100%; padding: 12px; }
-    .mt-4 { margin-top: 16px; }
+    .label-flex { display: flex; justify-content: space-between; align-items: center; }
+    .forgot-link { font-size: 0.78rem; color: #0F5A36; font-weight: 700; text-decoration: underline; }
+    .success-banner {
+      background: rgba(16, 185, 129, 0.15);
+      border: 1px solid rgba(16, 185, 129, 0.3);
+      color: #10B981;
+      padding: 10px;
+      border-radius: var(--radius-sm);
+      font-size: 0.85rem;
+      margin-bottom: 16px;
+    }
+    .mt-2 { margin-top: 8px; }
   `]
 })
 export class LoginComponent {
   correo = '';
   password = '';
+  recoveryCorreo = '';
+  showRecoveryForm = false;
   errorMessage = '';
+  successMessage = '';
   isLoading = false;
 
-  constructor(private authService: AuthService, private router: Router) {}
+  constructor(
+    private authService: AuthService,
+    private apiService: ApiService,
+    private router: Router
+  ) {}
 
   onSubmit(): void {
     if (!this.correo || !this.password) {
@@ -109,6 +151,7 @@ export class LoginComponent {
 
     this.isLoading = true;
     this.errorMessage = '';
+    this.successMessage = '';
 
     this.authService.login({ correo: this.correo, password: this.password }).subscribe({
       next: () => {
@@ -118,6 +161,32 @@ export class LoginComponent {
       error: (err) => {
         this.isLoading = false;
         this.errorMessage = err.error?.message || 'Error al iniciar sesión. Revisa tus datos.';
+      }
+    });
+  }
+
+  onRecoverSubmit(): void {
+    if (!this.recoveryCorreo) {
+      this.errorMessage = 'Ingresa tu correo electrónico registrado.';
+      return;
+    }
+
+    this.isLoading = true;
+    this.errorMessage = '';
+    this.successMessage = '';
+
+    this.apiService.recuperarPassword(this.recoveryCorreo).subscribe({
+      next: (res) => {
+        this.isLoading = false;
+        this.successMessage = res.message;
+        if (res.tempPassword) {
+          this.correo = this.recoveryCorreo;
+          this.password = res.tempPassword;
+        }
+      },
+      error: (err) => {
+        this.isLoading = false;
+        this.errorMessage = err.error?.message || 'Error al procesar la solicitud de recuperación.';
       }
     });
   }

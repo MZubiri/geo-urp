@@ -303,4 +303,38 @@ export class MiCalendarioComponent implements OnInit {
     const h12 = hour % 12 === 0 ? 12 : hour % 12;
     return `${h12.toString().padStart(2, '0')}:00 ${period}`;
   }
+
+  descargarPdfHorizontal(): void {
+    const element = document.getElementById('gcalScrollContainer') || document.querySelector('.calendar-content');
+    if (!element) return;
+
+    const opt = {
+      margin: [6, 6, 6, 6],
+      filename: 'Mi_Agenda_CONEIC_2026_GeoURP.pdf',
+      image: { type: 'jpeg', quality: 0.98 },
+      html2canvas: { scale: 2, useCORS: true, logging: false },
+      jsPDF: { unit: 'mm', format: 'a4', orientation: 'landscape' }
+    };
+
+    if ((window as any).html2pdf) {
+      (window as any).html2pdf().set(opt).from(element).save();
+    } else {
+      window.print();
+    }
+  }
+
+  sincronizarAppleCalendar(): void {
+    const token = this.authService.getToken();
+    const path = '/coneic/api/agenda/export/ics';
+    const webcalUrl = `webcal://${window.location.host}${path}?token=${encodeURIComponent(token || '')}`;
+    window.location.href = webcalUrl;
+  }
+
+  sincronizarGoogleCalendar(): void {
+    const token = this.authService.getToken();
+    const origin = window.location.origin;
+    const icsUrl = `${origin}/coneic/api/agenda/export/ics?token=${encodeURIComponent(token || '')}`;
+    const gcalUrl = `https://calendar.google.com/calendar/render?cid=${encodeURIComponent(icsUrl)}`;
+    window.open(gcalUrl, '_blank');
+  }
 }

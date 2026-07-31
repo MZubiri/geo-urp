@@ -21,9 +21,16 @@
         </button>
       </div>
 
-      <button (click)="exportAllIcs()" class="btn btn-gold">
-        <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
-        <span>Exportar a calendario</span>
+      <button (click)="descargarPdfHorizontal()" class="btn btn-primary" title="Descargar agenda en PDF horizontal (A4 landscape)">
+        📄 PDF Horizontal
+      </button>
+
+      <button (click)="sincronizarAppleCalendar()" class="btn btn-secondary" title="Sincronizar directamente con Apple Calendar en iPhone/iOS">
+        🍏 iPhone / Apple
+      </button>
+
+      <button (click)="sincronizarGoogleCalendar()" class="btn btn-gold" title="Sincronizar directamente con Google Calendar">
+        🔵 Google Calendar
       </button>
     </div>
 

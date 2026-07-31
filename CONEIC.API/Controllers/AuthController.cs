@@ -90,5 +90,63 @@ namespace CONEIC.API.Controllers
                 Token = token
             });
         }
+
+        [Microsoft.AspNetCore.Authorization.Authorize]
+        [HttpPost("cambiar-password")]
+        public async Task<IActionResult> CambiarPassword([FromBody] CambiarPasswordDto dto)
+        {
+            if (string.IsNullOrWhiteSpace(dto.PasswordActual) || string.IsNullOrWhiteSpace(dto.PasswordNueva))
+            {
+                return BadRequest(new { message = "Debes ingresar tu contraseña actual y la nueva contraseña." });
+            }
+
+            if (dto.PasswordNueva.Length < 6)
+            {
+                return BadRequest(new { message = "La nueva contraseña debe tener al menos 6 caracteres." });
+            }
+
+            var currentUserIdStr = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+            if (!int.TryParse(currentUserIdStr, out var userId))
+            {
+                return Unauthorized();
+            }
+
+            var usuario = await _context.Usuarios.FindAsync(userId);
+            if (usuario == null) return NotFound(new { message = "Usuario no encontrado." });
+
+            if (!_authService.VerifyPassword(dto.PasswordActual, usuario.PasswordHash))
+            {
+                return BadRequest(new { message = "La contraseña actual ingresada es incorrecta." });
+            }
+
+            usuario.PasswordHash = _authService.HashPassword(dto.PasswordNueva);
+            await _context.SaveChangesAsync();
+
+            return Ok(new { message = "Tu contraseña ha sido actualizada con éxito." });
+        }
+
+        [HttpPost("recuperar-password")]
+        public async Task<IActionResult> RecuperarPassword([FromBody] RecuperarPasswordDto dto)
+        {
+            if (string.IsNullOrWhiteSpace(dto.Correo))
+            {
+                return BadRequest(new { message = "Por favor ingresa tu correo electrónico." });
+            }
+
+            var correoLower = dto.Correo.Trim().ToLower();
+            var usuario = await _context.Usuarios.FirstOrDefaultAsync(u => u.Correo == correoLower);
+
+            if (usuario == null)
+            {
+                return Ok(new { message = "Si el correo ingresado está registrado, se han enviado las instrucciones de restablecimiento." });
+            }
+
+            // Generar clave temporal de 8 caracteres
+            var tempPassword = System.Guid.NewGuid().ToString("N").Substring(0, 8);
+            usuario.PasswordHash = _authService.HashPassword(tempPassword);
+            await _context.SaveChangesAsync();
+
+            return Ok(new { message = $"Se ha restablecido tu contraseña temporal a: {tempPassword}. Inicia sesión con ella y cámbiala inmediatamente.", tempPassword });
+        }
     }
 }

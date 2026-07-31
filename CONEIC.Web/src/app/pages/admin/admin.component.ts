@@ -249,6 +249,7 @@ export class AdminComponent implements OnInit {
     this.deleteType = null;
     this.deleteId = null;
     this.deleteTargetName = '';
+    this.cdr.detectChanges();
   }
 
   confirmDelete(): void {
@@ -260,10 +261,13 @@ export class AdminComponent implements OnInit {
           this.messageSuccess = `Actividad "${this.deleteTargetName}" eliminada con éxito.`;
           this.closeConfirmDeleteModal();
           this.loadData();
+          this.cdr.detectChanges();
         },
-        error: () => {
+        error: (err) => {
+          console.error(err);
           this.messageError = 'Error al eliminar actividad.';
           this.closeConfirmDeleteModal();
+          this.cdr.detectChanges();
         }
       });
     } else if (this.deleteType === 'APARTADO') {
@@ -272,10 +276,13 @@ export class AdminComponent implements OnInit {
           this.messageSuccess = `Categoría "${this.deleteTargetName}" eliminada con éxito.`;
           this.closeConfirmDeleteModal();
           this.loadData();
+          this.cdr.detectChanges();
         },
-        error: () => {
+        error: (err) => {
+          console.error(err);
           this.messageError = 'Error al eliminar categoría.';
           this.closeConfirmDeleteModal();
+          this.cdr.detectChanges();
         }
       });
     } else if (this.deleteType === 'USUARIO') {
@@ -284,10 +291,13 @@ export class AdminComponent implements OnInit {
           this.messageSuccess = `Usuario "${this.deleteTargetName}" eliminado con éxito.`;
           this.closeConfirmDeleteModal();
           this.loadUsuarios();
+          this.cdr.detectChanges();
         },
         error: (err) => {
+          console.error(err);
           this.messageError = err.error?.message || 'Error al eliminar usuario.';
           this.closeConfirmDeleteModal();
+          this.cdr.detectChanges();
         }
       });
     }

@@ -156,6 +156,21 @@
   border-color: #DC2626;
 }
 
+.btn-change-pass {
+  background: rgba(15, 90, 54, 0.08);
+  border: 1px solid rgba(15, 90, 54, 0.2);
+  cursor: pointer;
+  padding: 4px 8px;
+  border-radius: 999px;
+  font-size: 0.85rem;
+  transition: transform 0.15s ease-in-out, background 0.15s;
+}
+
+.btn-change-pass:hover {
+  transform: scale(1.1);
+  background: rgba(15, 90, 54, 0.18);
+}
+
 @media (max-width: 640px) {
   .header-container {
     padding: 8px 12px;

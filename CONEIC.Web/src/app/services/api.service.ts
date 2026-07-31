@@ -79,4 +79,13 @@ export class ApiService {
   eliminarUsuario(id: number): Observable<any> {
     return this.http.delete(`${this.baseUrl}/admin/usuarios/${id}`, { headers: this.getAuthHeaders() });
   }
+
+  // Password Reset & Change Operations
+  cambiarPassword(data: { passwordActual: string; passwordNueva: string }): Observable<any> {
+    return this.http.post(`${this.baseUrl}/auth/cambiar-password`, data, { headers: this.getAuthHeaders() });
+  }
+
+  recuperarPassword(correo: string): Observable<any> {
+    return this.http.post(`${this.baseUrl}/auth/recuperar-password`, { correo });
+  }
 }

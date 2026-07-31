@@ -141,5 +141,75 @@ namespace CONEIC.API.Controllers
 
             return Ok(new { message = "Actividad eliminada de tu calendario." });
         }
+
+        [AllowAnonymous]
+        [HttpGet("export/ics")]
+        public async Task<IActionResult> ExportIcs([FromQuery] string? token, [FromQuery] int? userId)
+        {
+            int targetUserId = 0;
+            if (!string.IsNullOrWhiteSpace(token))
+            {
+                try
+                {
+                    var handler = new System.IdentityModel.Tokens.Jwt.JwtSecurityTokenHandler();
+                    var jsonToken = handler.ReadJwtToken(token);
+                    var claim = jsonToken?.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier || c.Type == "nameid" || c.Type == "sub")?.Value;
+                    int.TryParse(claim, out targetUserId);
+                }
+                catch { }
+            }
+
+            if (targetUserId == 0 && userId.HasValue)
+            {
+                targetUserId = userId.Value;
+            }
+
+            if (targetUserId == 0)
+            {
+                targetUserId = GetUserId();
+            }
+
+            var actividades = await _context.AgendaUsuarios
+                .Where(a => a.UsuarioId == targetUserId)
+                .Include(a => a.Actividad)
+                .ThenInclude(act => act!.Apartado)
+                .Select(a => a.Actividad)
+                .Where(act => act != null)
+                .OrderBy(act => act!.HoraInicio)
+                .ToListAsync();
+
+            var sb = new System.Text.StringBuilder();
+            sb.AppendLine("BEGIN:VCALENDAR");
+            sb.AppendLine("VERSION:2.0");
+            sb.AppendLine("PRODID:-//GEO URP//CONEIC 2026 Cusco//ES");
+            sb.AppendLine("CALSCALE:GREGORIAN");
+            sb.AppendLine("METHOD:PUBLISH");
+            sb.AppendLine("X-WR-CALNAME:Mi Agenda CONEIC 2026 - GEO URP");
+            sb.AppendLine("X-WR-TIMEZONE:America/Lima");
+
+            foreach (var act in actividades)
+            {
+                if (act == null) continue;
+                sb.AppendLine("BEGIN:VEVENT");
+                sb.AppendLine($"UID:coneic-act-{act.Id}@geourp.org");
+                sb.AppendLine($"DTSTAMP:{System.DateTime.UtcNow:yyyyMMddTHHmmssZ}");
+                sb.AppendLine($"DTSTART:{act.HoraInicio:yyyyMMddTHHmmss}");
+                sb.AppendLine($"DTEND:{act.HoraFin:yyyyMMddTHHmmss}");
+                sb.AppendLine($"SUMMARY:{EscapeIcsText(act.Nombre)}");
+                sb.AppendLine($"DESCRIPTION:{EscapeIcsText(act.Descripcion ?? "")}");
+                sb.AppendLine("LOCATION:Cusco\\, Perú");
+                sb.AppendLine("END:VEVENT");
+            }
+
+            sb.AppendLine("END:VCALENDAR");
+
+            return Content(sb.ToString(), "text/calendar", System.Text.Encoding.UTF8);
+        }
+
+        private static string EscapeIcsText(string text)
+        {
+            if (string.IsNullOrEmpty(text)) return "";
+            return text.Replace("\\", "\\\\").Replace(";", "\\;").Replace(",", "\\,").Replace("\n", "\\n").Replace("\r", "");
+        }
     }
 }
