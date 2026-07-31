@@ -174,3 +174,26 @@ h1, h2, h3, h4, .brand-title {
   align-items: center;
   gap: 4px;
 }
+
+/* Print / PDF Export Layout Rules */
+@media print {
+  @page {
+    size: A4 landscape;
+    margin: 8mm;
+  }
+  body * {
+    visibility: hidden;
+  }
+  .agenda-page, .agenda-page * {
+    visibility: visible;
+  }
+  .agenda-page {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+  }
+  .header-container, footer, .hero-controls, .btn, .nav-bar-row, .modal-backdrop {
+    display: none !important;
+  }
+}

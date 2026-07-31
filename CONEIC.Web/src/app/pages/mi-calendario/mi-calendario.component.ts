@@ -305,8 +305,11 @@ export class MiCalendarioComponent implements OnInit {
   }
 
   descargarPdfHorizontal(): void {
-    const element = document.getElementById('gcalScrollContainer') || document.querySelector('.calendar-content');
-    if (!element) return;
+    const element = document.getElementById('gcalScrollContainer') || document.querySelector('.calendar-content') || document.querySelector('.agenda-page');
+    if (!element) {
+      window.print();
+      return;
+    }
 
     const opt = {
       margin: [6, 6, 6, 6],
@@ -317,7 +320,15 @@ export class MiCalendarioComponent implements OnInit {
     };
 
     if ((window as any).html2pdf) {
-      (window as any).html2pdf().set(opt).from(element).save();
+      try {
+        (window as any).html2pdf().set(opt).from(element).save().catch((err: any) => {
+          console.warn('html2pdf error, invocando impresión nativa:', err);
+          window.print();
+        });
+      } catch (e) {
+        console.warn('html2pdf exception, invocando impresión nativa:', e);
+        window.print();
+      }
     } else {
       window.print();
     }
