@@ -58,50 +58,50 @@
       </div>
     </div>
   </div>
+</header>
 
-  <!-- MODAL CAMBIAR CONTRASEÑA (ULTRA PREMIUM GLASSMORPHISM) -->
-  <div *ngIf="showChangePasswordModal" class="modal-backdrop" (click)="closeChangePasswordModal()">
-    <div class="modal-dialog modal-sm pass-modal-card" (click)="$event.stopPropagation()">
-      <div class="modal-header-custom">
-        <div class="icon-avatar">🔒</div>
-        <div class="header-titles">
-          <h4>Cambiar Contraseña</h4>
-          <p>Actualiza la clave de tu cuenta en GeoURP</p>
-        </div>
-        <button (click)="closeChangePasswordModal()" class="modal-close-btn">✕</button>
+<!-- MODAL CAMBIAR CONTRASEÑA (OUTSIDE HEADER TO PREVENT BACKDROP-FILTER CONTAINMENT) -->
+<div *ngIf="showChangePasswordModal" class="modal-backdrop" (click)="closeChangePasswordModal()">
+  <div class="modal-dialog modal-sm pass-modal-card" (click)="$event.stopPropagation()">
+    <div class="modal-header-custom">
+      <div class="icon-avatar">🔒</div>
+      <div class="header-titles">
+        <h4>Cambiar Contraseña</h4>
+        <p>Actualiza la clave de tu cuenta en GeoURP</p>
+      </div>
+      <button (click)="closeChangePasswordModal()" class="modal-close-btn">✕</button>
+    </div>
+
+    <div class="modal-body-custom">
+      <div *ngIf="messageSuccess" class="alert-custom alert-success">
+        <span>✅ {{ messageSuccess }}</span>
+      </div>
+      <div *ngIf="messageError" class="alert-custom alert-error">
+        <span>⚠️ {{ messageError }}</span>
       </div>
 
-      <div class="modal-body-custom">
-        <div *ngIf="messageSuccess" class="alert-custom alert-success">
-          <span>✅ {{ messageSuccess }}</span>
-        </div>
-        <div *ngIf="messageError" class="alert-custom alert-error">
-          <span>⚠️ {{ messageError }}</span>
-        </div>
-
-        <div class="form-group-custom">
-          <label>Contraseña Actual</label>
-          <div class="input-with-icon">
-            <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>
-            <input type="password" [(ngModel)]="passwordActual" placeholder="Ingresa tu clave actual" class="custom-input">
-          </div>
-        </div>
-
-        <div class="form-group-custom">
-          <label>Nueva Contraseña</label>
-          <div class="input-with-icon">
-            <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 0121 9z"></path></svg>
-            <input type="password" [(ngModel)]="passwordNueva" placeholder="Mínimo 6 caracteres" class="custom-input">
-          </div>
+      <div class="form-group-custom">
+        <label>Contraseña Actual</label>
+        <div class="input-with-icon">
+          <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>
+          <input type="password" [(ngModel)]="passwordActual" placeholder="Ingresa tu clave actual" class="custom-input">
         </div>
       </div>
 
-      <div class="modal-footer-custom">
-        <button (click)="closeChangePasswordModal()" class="btn-custom btn-cancel">Cancelar</button>
-        <button (click)="guardarCambioPassword()" [disabled]="isLoading" class="btn-custom btn-save">
-          {{ isLoading ? 'Guardando...' : 'Actualizar Contraseña' }}
-        </button>
+      <div class="form-group-custom">
+        <label>Nueva Contraseña</label>
+        <div class="input-with-icon">
+          <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 0121 9z"></path></svg>
+          <input type="password" [(ngModel)]="passwordNueva" placeholder="Mínimo 6 caracteres" class="custom-input">
+        </div>
       </div>
     </div>
+
+    <div class="modal-footer-custom">
+      <button (click)="closeChangePasswordModal()" class="btn-custom btn-cancel">Cancelar</button>
+      <button (click)="guardarCambioPassword()" [disabled]="isLoading" class="btn-custom btn-save">
+        {{ isLoading ? 'Guardando...' : 'Actualizar Contraseña' }}
+      </button>
+    </div>
   </div>
-</header>
+</div>

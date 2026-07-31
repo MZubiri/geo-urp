@@ -173,43 +173,56 @@
 
 @media (max-width: 640px) {
   .header-container {
-    padding: 8px 12px;
+    padding: 6px 10px;
   }
   .header-content {
-    gap: 6px;
+    gap: 4px;
   }
   .logo-group {
-    gap: 6px;
+    gap: 4px;
   }
   .brand-logo-img.urp-logo {
     display: none;
   }
+  .brand-logo-img.geo-logo {
+    height: 32px;
+  }
   .brand-title {
-    font-size: 0.92rem;
+    font-size: 0.85rem;
   }
   .header-right {
-    gap: 6px;
-  }
-  .nav-links {
     gap: 4px;
   }
+  .nav-links {
+    gap: 2px;
+  }
   .nav-item {
-    padding: 6px 10px;
+    padding: 6px;
+    border-radius: 6px;
   }
   .nav-item span {
     display: none;
   }
   .user-pill {
-    background: transparent;
-    border: none;
-    padding: 0;
+    display: inline-flex;
+    align-items: center;
+    gap: 3px;
+    background: rgba(15, 90, 54, 0.05);
+    border: 1px solid rgba(15, 90, 54, 0.15);
+    padding: 2px 4px;
+    border-radius: 999px;
   }
   .user-name {
     display: none;
   }
+  .btn-change-pass {
+    padding: 3px 6px;
+    font-size: 0.78rem;
+  }
   .btn-logout {
-    padding: 8px;
-    border-radius: 50%;
+    padding: 5px 8px;
+    font-size: 0.75rem;
+    border-radius: 999px;
   }
   .btn-logout span {
     display: none;
