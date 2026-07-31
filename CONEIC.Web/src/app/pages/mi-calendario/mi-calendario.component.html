@@ -21,7 +21,7 @@
         </button>
       </div>
 
-      <button (click)="descargarPdfHorizontal()" class="btn btn-primary" title="Descargar agenda en PDF horizontal (A4 landscape)">
+      <button (click)="abrirPdfModal()" class="btn btn-primary" title="Ver y descargar mi agenda en PDF horizontal (A4 landscape)">
         📄 PDF Horizontal
       </button>
 
@@ -201,4 +201,70 @@
     (close)="closeModal()"
     (removeFromAgenda)="quitar($event)">
   </app-actividad-modal>
+
+  <!-- MODAL DE VISTA PREVIA Y DESCARGA DE PDF HORIZONTAL -->
+  <div *ngIf="showPdfModal" class="modal-backdrop pdf-preview-backdrop" (click)="cerrarPdfModal()">
+    <div class="pdf-modal-container" (click)="$event.stopPropagation()">
+      <div class="pdf-modal-header">
+        <div class="pdf-title-group">
+          <h4>📄 Vista Previa de Mi Agenda (PDF Horizontal)</h4>
+          <p>Documento oficial A4 listo para guardar o imprimir</p>
+        </div>
+        <div class="pdf-action-buttons">
+          <button (click)="imprimirDirecto()" class="btn-pdf-act btn-print">🖨️ Imprimir</button>
+          <button (click)="descargarPdfDirecto()" class="btn-pdf-act btn-download">📥 Guardar PDF</button>
+          <button (click)="cerrarPdfModal()" class="btn-pdf-close">✕</button>
+        </div>
+      </div>
+
+      <div class="pdf-modal-scroll-body">
+        <div id="pdf-report-content" class="pdf-report-paper">
+          <div class="pdf-paper-header">
+            <div class="pdf-header-left">
+              <h2>GEO URP — MI AGENDA CONEIC CUSCO 2026</h2>
+              <p>Usuario Registrado: <strong>{{ authService.currentUser()?.nombre || 'Participante' }}</strong> ({{ authService.currentUser()?.correo || '' }})</p>
+            </div>
+            <div class="pdf-header-right">
+              <span class="badge-official">DOCUMENTO OFICIAL</span>
+              <p>Generado el {{ getFechaEmision() }}</p>
+            </div>
+          </div>
+
+          <table class="pdf-table">
+            <thead>
+              <tr>
+                <th style="width: 14%;">FECHA</th>
+                <th style="width: 18%;">HORARIO</th>
+                <th style="width: 42%;">ACTIVIDAD / DESCRIPCIÓN</th>
+                <th style="width: 16%;">CATEGORÍA</th>
+                <th style="width: 10%; text-align: center;">URP 💚</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let act of getActividadesOrdenadas()">
+                <td class="col-fecha">{{ formatDate(act.horaInicio) }}</td>
+                <td class="col-horario">{{ formatTime(act.horaInicio) }} - {{ formatTime(act.horaFin) }}</td>
+                <td class="col-actividad">
+                  <div class="act-name">{{ act.nombre }}</div>
+                  <div class="act-desc" *ngIf="act.descripcion">{{ act.descripcion }}</div>
+                </td>
+                <td class="col-cat">{{ act.apartadoNombre || 'General' }}</td>
+                <td class="col-urp" style="text-align: center;">
+                  <span *ngIf="act.urpParticipa" class="urp-yes">💚 SÍ</span>
+                  <span *ngIf="!act.urpParticipa" class="urp-no">NO</span>
+                </td>
+              </tr>
+              <tr *ngIf="misActividades.length === 0">
+                <td colspan="5" class="empty-row">No tienes actividades agendadas.</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <div class="pdf-paper-footer">
+            GEO URP — Universidad Ricardo Palma | CONEIC Cusco 2026 | https://geourp.org/coneic/
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>

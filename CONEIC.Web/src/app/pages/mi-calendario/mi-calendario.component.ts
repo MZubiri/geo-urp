@@ -304,101 +304,56 @@ export class MiCalendarioComponent implements OnInit {
     return `${h12.toString().padStart(2, '0')}:00 ${period}`;
   }
 
-  descargarPdfHorizontal(): void {
-    const user = this.authService.currentUser();
-    const userName = user ? user.nombre : 'Participante';
+  showPdfModal: boolean = false;
 
-    // Ordenar actividades cronológicamente por hora de inicio
-    const sortedActivities = [...this.misActividades].sort((a, b) => 
+  abrirPdfModal(): void {
+    this.showPdfModal = true;
+    this.cdr.detectChanges();
+  }
+
+  cerrarPdfModal(): void {
+    this.showPdfModal = false;
+    this.cdr.detectChanges();
+  }
+
+  getActividadesOrdenadas(): Actividad[] {
+    return [...this.misActividades].sort((a, b) => 
       new Date(a.horaInicio).getTime() - new Date(b.horaInicio).getTime()
     );
+  }
 
-    // Crear un contenedor temporal exclusivo para exportación PDF horizontal
-    const pdfWrapper = document.createElement('div');
-    pdfWrapper.id = 'pdf-export-wrapper';
-    pdfWrapper.style.position = 'fixed';
-    pdfWrapper.style.left = '-9999px';
-    pdfWrapper.style.top = '0';
-    pdfWrapper.style.width = '1050px';
-    pdfWrapper.style.backgroundColor = '#ffffff';
-    pdfWrapper.style.padding = '24px';
-    pdfWrapper.style.boxSizing = 'border-box';
-    pdfWrapper.style.fontFamily = "'Inter', Arial, sans-serif";
+  getFechaEmision(): string {
+    const d = new Date();
+    return `${d.toLocaleDateString('es-PE')} a las ${d.toLocaleTimeString('es-PE', { hour: '2-digit', minute: '2-digit' })}`;
+  }
 
-    let rowsHtml = '';
-    sortedActivities.forEach(act => {
-      const dateStr = this.formatDate(act.horaInicio);
-      const timeStr = `${this.formatTime(act.horaInicio)} - ${this.formatTime(act.horaFin)}`;
-      const urpTag = act.urpParticipa ? '<span style="color:#0F5A36; font-weight:800;">💚 SÍ</span>' : '<span style="color:#9CA3AF;">NO</span>';
-      
-      rowsHtml += `
-        <tr style="border-bottom: 1px solid #E5E7EB;">
-          <td style="padding: 10px 8px; font-weight: 700; color: #111B15;">${dateStr}</td>
-          <td style="padding: 10px 8px; font-weight: 600; color: #0F5A36; white-space: nowrap;">${timeStr}</td>
-          <td style="padding: 10px 8px;">
-            <div style="font-weight: 700; font-size: 13px; color: #111B15;">${act.nombre}</div>
-            ${act.descripcion ? `<div style="font-size: 11px; color: #4B5563; margin-top: 2px;">${act.descripcion}</div>` : ''}
-          </td>
-          <td style="padding: 10px 8px; font-weight: 600; color: #4B5563;">${act.apartadoNombre || 'General'}</td>
-          <td style="padding: 10px 8px; text-align: center;">${urpTag}</td>
-        </tr>
-      `;
-    });
+  descargarPdfDirecto(): void {
+    const element = document.getElementById('pdf-report-content');
+    if (!element) {
+      window.print();
+      return;
+    }
 
-    pdfWrapper.innerHTML = `
-      <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 3px solid #0F5A36; padding-bottom: 12px; margin-bottom: 16px;">
-        <div>
-          <h2 style="margin: 0; color: #0F5A36; font-size: 22px; font-weight: 800; font-family: 'Montserrat', sans-serif;">GEO URP — MI AGENDA CONEIC CUSCO 2026</h2>
-          <p style="margin: 4px 0 0 0; color: #4B5563; font-size: 13px;">Usuario Registrado: <strong>${userName}</strong> (${user?.correo || ''})</p>
-        </div>
-        <div style="text-align: right;">
-          <span style="background: #0F5A36; color: #ffffff; padding: 4px 10px; border-radius: 6px; font-size: 11px; font-weight: 700;">DOCUMENTO OFICIAL</span>
-          <p style="margin: 4px 0 0 0; color: #6B7280; font-size: 11px;">Generado el ${new Date().toLocaleDateString('es-PE')} a las ${new Date().toLocaleTimeString('es-PE', { hour: '2-digit', minute: '2-digit' })}</p>
-        </div>
-      </div>
-
-      <table style="width: 100%; border-collapse: collapse; margin-top: 12px; font-size: 12px;">
-        <thead>
-          <tr style="background: #0F5A36; color: #ffffff;">
-            <th style="padding: 10px 8px; text-align: left; width: 14%;">FECHA</th>
-            <th style="padding: 10px 8px; text-align: left; width: 18%;">HORARIO</th>
-            <th style="padding: 10px 8px; text-align: left; width: 42%;">ACTIVIDAD</th>
-            <th style="padding: 10px 8px; text-align: left; width: 16%;">CATEGORÍA</th>
-            <th style="padding: 10px 8px; text-align: center; width: 10%;">URP 💚</th>
-          </tr>
-        </thead>
-        <tbody>
-          ${rowsHtml || '<tr><td colspan="5" style="text-align:center; padding:20px; color:#6B7280;">No hay actividades agendadas.</td></tr>'}
-        </tbody>
-      </table>
-
-      <div style="margin-top: 20px; border-top: 1px solid #E5E7EB; padding-top: 8px; font-size: 10px; color: #9CA3AF; text-align: center;">
-        GEO URP — Universidad Ricardo Palma | CONEIC Cusco 2026 | https://geourp.org/coneic/
-      </div>
-    `;
-
-    document.body.appendChild(pdfWrapper);
+    const user = this.authService.currentUser();
+    const userName = user ? user.nombre : 'Participante';
 
     const opt = {
       margin: [8, 8, 8, 8],
       filename: `Mi_Agenda_CONEIC_2026_${userName.replace(/\s+/g, '_')}.pdf`,
       image: { type: 'jpeg', quality: 0.98 },
-      html2canvas: { scale: 2, useCORS: true, logging: false, width: 1050 },
+      html2canvas: { scale: 2, useCORS: true, logging: false },
       jsPDF: { unit: 'mm', format: 'a4', orientation: 'landscape' }
     };
 
     if ((window as any).html2pdf) {
-      (window as any).html2pdf().set(opt).from(pdfWrapper).save().then(() => {
-        if (document.body.contains(pdfWrapper)) document.body.removeChild(pdfWrapper);
-      }).catch((err: any) => {
-        console.warn('html2pdf error, usando impresión nativa:', err);
-        if (document.body.contains(pdfWrapper)) document.body.removeChild(pdfWrapper);
-        window.print();
-      });
+      (window as any).html2pdf().set(opt).from(element).save().catch(() => window.print());
     } else {
-      if (document.body.contains(pdfWrapper)) document.body.removeChild(pdfWrapper);
       window.print();
     }
+  }
+
+  imprimirDirecto(): void {
+    window.print();
   }
 
   sincronizarAppleCalendar(): void {
@@ -415,7 +370,6 @@ export class MiCalendarioComponent implements OnInit {
 
     const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
     if (isMobile) {
-      // En dispositivos móviles (Android / iOS), la descarga directa del .ics abre la app de calendario nativa para importar
       window.location.href = icsUrl;
     } else {
       const gcalUrl = `https://calendar.google.com/calendar/render?cid=${encodeURIComponent(icsUrl)}`;
