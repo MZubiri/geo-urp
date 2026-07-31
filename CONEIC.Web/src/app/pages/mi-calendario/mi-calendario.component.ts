@@ -412,7 +412,14 @@ export class MiCalendarioComponent implements OnInit {
     const token = this.authService.getToken();
     const origin = window.location.origin;
     const icsUrl = `${origin}/coneic/api/agenda/export/ics?token=${encodeURIComponent(token || '')}`;
-    const gcalUrl = `https://calendar.google.com/calendar/render?cid=${encodeURIComponent(icsUrl)}`;
-    window.open(gcalUrl, '_blank');
+
+    const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+    if (isMobile) {
+      // En dispositivos móviles (Android / iOS), la descarga directa del .ics abre la app de calendario nativa para importar
+      window.location.href = icsUrl;
+    } else {
+      const gcalUrl = `https://calendar.google.com/calendar/render?cid=${encodeURIComponent(icsUrl)}`;
+      window.open(gcalUrl, '_blank');
+    }
   }
 }

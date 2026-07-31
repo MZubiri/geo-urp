@@ -75,6 +75,7 @@ export class AdminComponent implements OnInit {
 
   loadData(): void {
     this.isLoading = true;
+    this.cdr.detectChanges();
     this.apiService.getCalendarioGeneral().subscribe({
       next: (data) => {
         this.apartados = data;
@@ -82,10 +83,12 @@ export class AdminComponent implements OnInit {
           this.actApartadoId = this.apartados[0].id;
         }
         this.isLoading = false;
+        this.cdr.detectChanges();
       },
       error: (err) => {
         console.error(err);
         this.isLoading = false;
+        this.cdr.detectChanges();
       }
     });
   }
@@ -94,9 +97,11 @@ export class AdminComponent implements OnInit {
     this.apiService.getUsuarios().subscribe({
       next: (data) => {
         this.usuarios = data;
+        this.cdr.detectChanges();
       },
       error: (err) => {
         console.error('Error cargando usuarios:', err);
+        this.cdr.detectChanges();
       }
     });
   }

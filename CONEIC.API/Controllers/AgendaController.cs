@@ -191,19 +191,21 @@ namespace CONEIC.API.Controllers
             {
                 if (act == null) continue;
                 sb.AppendLine("BEGIN:VEVENT");
-                sb.AppendLine($"UID:coneic-act-{act.Id}@geourp.org");
+                sb.AppendLine($"UID:coneic-act-{act.Id}-{targetUserId}@geourp.org");
                 sb.AppendLine($"DTSTAMP:{System.DateTime.UtcNow:yyyyMMddTHHmmssZ}");
-                sb.AppendLine($"DTSTART:{act.HoraInicio:yyyyMMddTHHmmss}");
-                sb.AppendLine($"DTEND:{act.HoraFin:yyyyMMddTHHmmss}");
+                sb.AppendLine($"DTSTART;TZID=America/Lima:{act.HoraInicio:yyyyMMddTHHmmss}");
+                sb.AppendLine($"DTEND;TZID=America/Lima:{act.HoraFin:yyyyMMddTHHmmss}");
                 sb.AppendLine($"SUMMARY:{EscapeIcsText(act.Nombre)}");
                 sb.AppendLine($"DESCRIPTION:{EscapeIcsText(act.Descripcion ?? "")}");
                 sb.AppendLine("LOCATION:Cusco\\, Perú");
+                sb.AppendLine("STATUS:CONFIRMED");
                 sb.AppendLine("END:VEVENT");
             }
 
             sb.AppendLine("END:VCALENDAR");
 
-            return Content(sb.ToString(), "text/calendar", System.Text.Encoding.UTF8);
+            var bytes = System.Text.Encoding.UTF8.GetBytes(sb.ToString());
+            return File(bytes, "text/calendar", "MiAgenda_CONEIC_2026.ics");
         }
 
         private static string EscapeIcsText(string text)

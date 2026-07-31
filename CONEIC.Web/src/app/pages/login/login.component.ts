@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
@@ -140,27 +140,32 @@ export class LoginComponent {
   constructor(
     private authService: AuthService,
     private apiService: ApiService,
-    private router: Router
+    private router: Router,
+    private cdr: ChangeDetectorRef
   ) {}
 
   onSubmit(): void {
     if (!this.correo || !this.password) {
       this.errorMessage = 'Ingresa tu correo y contraseña.';
+      this.cdr.detectChanges();
       return;
     }
 
     this.isLoading = true;
     this.errorMessage = '';
     this.successMessage = '';
+    this.cdr.detectChanges();
 
     this.authService.login({ correo: this.correo, password: this.password }).subscribe({
       next: () => {
         this.isLoading = false;
+        this.cdr.detectChanges();
         this.router.navigate(['/']);
       },
       error: (err) => {
         this.isLoading = false;
         this.errorMessage = err.error?.message || 'Error al iniciar sesión. Revisa tus datos.';
+        this.cdr.detectChanges();
       }
     });
   }
@@ -168,12 +173,14 @@ export class LoginComponent {
   onRecoverSubmit(): void {
     if (!this.recoveryCorreo) {
       this.errorMessage = 'Ingresa tu correo electrónico registrado.';
+      this.cdr.detectChanges();
       return;
     }
 
     this.isLoading = true;
     this.errorMessage = '';
     this.successMessage = '';
+    this.cdr.detectChanges();
 
     this.apiService.recuperarPassword(this.recoveryCorreo).subscribe({
       next: (res) => {
@@ -183,10 +190,12 @@ export class LoginComponent {
           this.correo = this.recoveryCorreo;
           this.password = res.tempPassword;
         }
+        this.cdr.detectChanges();
       },
       error: (err) => {
         this.isLoading = false;
         this.errorMessage = err.error?.message || 'Error al procesar la solicitud de recuperación.';
+        this.cdr.detectChanges();
       }
     });
   }
