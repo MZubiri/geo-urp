@@ -56,8 +56,8 @@ export class CronogramaComponent implements OnInit {
   hoursList: number[] = [6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22];
 
   zoomLevel: number = 1.0;
-  minZoom: number = 0.6;
-  maxZoom: number = 1.8;
+  minZoom: number = 0.5;
+  maxZoom: number = 10.0;
   baseHourRowHeight: number = 60;
 
   private touchStartDist: number = 0;
@@ -130,14 +130,16 @@ export class CronogramaComponent implements OnInit {
 
   zoomIn(): void {
     if (this.zoomLevel < this.maxZoom) {
-      this.zoomLevel = Math.min(this.maxZoom, Math.round((this.zoomLevel + 0.15) * 100) / 100);
+      const step = this.zoomLevel >= 3 ? 1.0 : this.zoomLevel >= 1.5 ? 0.5 : 0.25;
+      this.zoomLevel = Math.min(this.maxZoom, Math.round((this.zoomLevel + step) * 100) / 100);
       this.cdr.detectChanges();
     }
   }
 
   zoomOut(): void {
     if (this.zoomLevel > this.minZoom) {
-      this.zoomLevel = Math.max(this.minZoom, Math.round((this.zoomLevel - 0.15) * 100) / 100);
+      const step = this.zoomLevel > 3 ? 1.0 : this.zoomLevel > 1.5 ? 0.5 : 0.25;
+      this.zoomLevel = Math.max(this.minZoom, Math.round((this.zoomLevel - step) * 100) / 100);
       this.cdr.detectChanges();
     }
   }
