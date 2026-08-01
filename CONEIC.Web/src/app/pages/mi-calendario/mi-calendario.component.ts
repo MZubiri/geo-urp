@@ -304,58 +304,6 @@ export class MiCalendarioComponent implements OnInit {
     return `${h12.toString().padStart(2, '0')}:00 ${period}`;
   }
 
-  showPdfModal: boolean = false;
-
-  abrirPdfModal(): void {
-    this.showPdfModal = true;
-    this.cdr.detectChanges();
-  }
-
-  cerrarPdfModal(): void {
-    this.showPdfModal = false;
-    this.cdr.detectChanges();
-  }
-
-  getActividadesOrdenadas(): Actividad[] {
-    return [...this.misActividades].sort((a, b) => 
-      new Date(a.horaInicio).getTime() - new Date(b.horaInicio).getTime()
-    );
-  }
-
-  getFechaEmision(): string {
-    const d = new Date();
-    return `${d.toLocaleDateString('es-PE')} a las ${d.toLocaleTimeString('es-PE', { hour: '2-digit', minute: '2-digit' })}`;
-  }
-
-  descargarPdfDirecto(): void {
-    const element = document.getElementById('pdf-report-content');
-    if (!element) {
-      window.print();
-      return;
-    }
-
-    const user = this.authService.currentUser();
-    const userName = user ? user.nombre : 'Participante';
-
-    const opt = {
-      margin: [8, 8, 8, 8],
-      filename: `Mi_Agenda_CONEIC_2026_${userName.replace(/\s+/g, '_')}.pdf`,
-      image: { type: 'jpeg', quality: 0.98 },
-      html2canvas: { scale: 2, useCORS: true, logging: false },
-      jsPDF: { unit: 'mm', format: 'a4', orientation: 'landscape' }
-    };
-
-    if ((window as any).html2pdf) {
-      (window as any).html2pdf().set(opt).from(element).save().catch(() => window.print());
-    } else {
-      window.print();
-    }
-  }
-
-  imprimirDirecto(): void {
-    window.print();
-  }
-
   sincronizarAppleCalendar(): void {
     const token = this.authService.getToken();
     const path = '/coneic/api/agenda/export/ics';
